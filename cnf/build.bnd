@@ -1,0 +1,13 @@
+-remoteworkspace: true
+
+copyright.year = ${tstamp;yyyy}
+Bundle-Version:             1.0.0.${tstamp}
+
+-releaserepo: Release
+-baselinerepo: Release
+
+# Always use contracts
+-contract: *
+
+-runfw:                 org.apache.felix.framework
+-runee:                 JavaSE-17
