@@ -32,7 +32,7 @@ public interface ExampleToolGroup {
 ```
 Each method in the interface is annotated with the @McpTool and @McpToolParam annotations from the [mcp-annotations](https://github.com/spring-ai-community/mcp-annotations) project and the CallToolResult from the [mcp-java-sdk](https://github.com/modelcontextprotocol/java-sdk).
  
-From the [com.composent.ai.mcp.examples.toolgroup.mcpserver](/com.compsent.ai.mcp.examples.toolgroup.mcpserver) project, [here](https://github.com/ECF/MCPToolGroups/blob/main/com.composent.ai.mcp.examples.toolgroup.mcpserver/src/main/java/com/composent/ai/mcp/examples/toolgroup/mcpserver/ExampleToolGroupComponent.java) is an implementation of the above interface
+From the [com.composent.ai.mcp.examples.toolgroup.mcpserver](/com.compsent.ai.mcp.examples.toolgroup.mcpserver) project, [here](https://github.com/ECF/MCPToolGroups/blob/main/com.composent.ai.mcp.examples.toolgroup.mcpserver/src/main/java/com/composent/ai/mcp/examples/toolgroup/mcpserver/ExampleToolGroupComponent.java) is the full implementation of the above interface
 
 ```java
 @Component(immediate = true)
