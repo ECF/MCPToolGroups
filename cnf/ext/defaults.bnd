@@ -63,6 +63,3 @@ testbin                 ${target-dir}/test-classes
 junit: org.apache.servicemix.bundles.junit
 mockito: org.mockito.mockito-core,\
   org.objenesis
--plugin: aQute.bnd.repository.p2.provider.P2Repository;\
-		name                ='ECF Python.Java Remote Services Provider';\
-		url                 ='https://raw.githubusercontent.com/ECF/Py4j-RemoteServicesProvider/master/build/'

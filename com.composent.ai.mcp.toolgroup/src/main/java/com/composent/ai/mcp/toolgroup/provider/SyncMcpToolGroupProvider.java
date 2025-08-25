@@ -47,8 +47,12 @@ public class SyncMcpToolGroupProvider {
 		return this.toolGroup;
 	}
 
+	protected String getToolGroupName() {
+		return getToolGroup().getName();
+	}
+
 	protected String createFullyQualifiedToolName(String toolName) {
-		return new StringBuffer(this.toolGroup.getName()).append(".").append(toolName).toString();
+		return new StringBuffer(getToolGroupName()).append(".").append(toolName).toString();
 	}
 
 	protected String generateInputSchema(Method method) {
@@ -86,7 +90,7 @@ public class SyncMcpToolGroupProvider {
 
 					// Check if method has CallToolRequest parameter
 					boolean hasCallToolRequestParam = Arrays.stream(mcpToolMethod.getParameterTypes())
-						.anyMatch(type -> CallToolRequest.class.isAssignableFrom(type));
+							.anyMatch(type -> CallToolRequest.class.isAssignableFrom(type));
 
 					String inputSchema;
 					if (hasCallToolRequestParam) {
@@ -95,8 +99,7 @@ public class SyncMcpToolGroupProvider {
 						// The schema generation will handle this appropriately
 						inputSchema = JsonSchemaGenerator.generateForMethodInput(mcpToolMethod);
 						logger.debug("Tool method '{}' uses CallToolRequest parameter, using minimal schema", toolName);
-					}
-					else {
+					} else {
 						inputSchema = JsonSchemaGenerator.generateForMethodInput(mcpToolMethod);
 					}
 

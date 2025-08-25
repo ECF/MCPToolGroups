@@ -50,8 +50,12 @@ public class AsyncMcpToolGroupProvider {
 		return this.toolGroup;
 	}
 
+	protected String getToolGroupName() {
+		return getToolGroup().getName();
+	}
+
 	protected String createFullyQualifiedToolName(String toolName) {
-		return new StringBuffer(this.toolGroup.getName()).append(".").append(toolName).toString();
+		return new StringBuffer(getToolGroupName()).append(".").append(toolName).toString();
 	}
 
 	protected String generateInputSchema(Method method) {
@@ -85,8 +89,8 @@ public class AsyncMcpToolGroupProvider {
 
 					var toolAnnotation = doGetMcpToolAnnotation(mcpToolMethod);
 
-					String toolName = createFullyQualifiedToolName(Utils.hasText(toolAnnotation.name()) ? toolAnnotation.name()
-							: mcpToolMethod.getName());
+					String toolName = createFullyQualifiedToolName(
+							Utils.hasText(toolAnnotation.name()) ? toolAnnotation.name() : mcpToolMethod.getName());
 
 					String toolDescrption = toolAnnotation.description();
 

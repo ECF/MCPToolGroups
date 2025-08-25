@@ -6,4 +6,6 @@
 	io.projectreactor.reactor-core,\
 	org.osgi.annotation.versioning,\
 	org.osgi.annotation.bundle
-Export-Package: com.composent.ai.mcp.toolgroup.provider
+Export-Package: \
+	com.composent.ai.mcp.toolgroup.provider,\
+	com.composent.ai.mcp.toolgroup

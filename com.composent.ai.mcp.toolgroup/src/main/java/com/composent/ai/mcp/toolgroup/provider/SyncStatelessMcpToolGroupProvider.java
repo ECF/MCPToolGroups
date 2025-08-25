@@ -48,8 +48,12 @@ public class SyncStatelessMcpToolGroupProvider {
 		return this.toolGroup;
 	}
 
+	protected String getToolGroupName() {
+		return getToolGroup().getName();
+	}
+
 	protected String createFullyQualifiedToolName(String toolName) {
-		return new StringBuffer(this.toolGroup.getName()).append(".").append(toolName).toString();
+		return new StringBuffer(getToolGroupName()).append(".").append(toolName).toString();
 	}
 
 	protected String generateInputSchema(Method method) {
@@ -87,10 +91,8 @@ public class SyncStatelessMcpToolGroupProvider {
 
 					String inputSchema = JsonSchemaGenerator.generateForMethodInput(mcpToolMethod);
 
-					var toolBuilder = McpSchema.Tool.builder()
-						.name(toolName)
-						.description(toolDescrption)
-						.inputSchema(inputSchema);
+					var toolBuilder = McpSchema.Tool.builder().name(toolName).description(toolDescrption)
+							.inputSchema(inputSchema);
 
 					// Tool annotations
 					if (toolAnnotation.annotations() != null) {

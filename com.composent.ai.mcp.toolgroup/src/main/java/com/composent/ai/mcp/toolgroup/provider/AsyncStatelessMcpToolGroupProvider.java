@@ -50,8 +50,12 @@ public class AsyncStatelessMcpToolGroupProvider {
 		return this.toolGroup;
 	}
 
+	protected String getToolGroupName() {
+		return getToolGroup().getName();
+	}
+
 	protected String createFullyQualifiedToolName(String toolName) {
-		return new StringBuffer(this.toolGroup.getName()).append(".").append(toolName).toString();
+		return new StringBuffer(getToolGroupName()).append(".").append(toolName).toString();
 	}
 
 	protected String generateInputSchema(Method method) {
@@ -85,8 +89,8 @@ public class AsyncStatelessMcpToolGroupProvider {
 
 					var toolAnnotation = doGetMcpToolAnnotation(mcpToolMethod);
 
-					String toolName = createFullyQualifiedToolName(Utils.hasText(toolAnnotation.name()) ? toolAnnotation.name()
-							: mcpToolMethod.getName());
+					String toolName = createFullyQualifiedToolName(
+							Utils.hasText(toolAnnotation.name()) ? toolAnnotation.name() : mcpToolMethod.getName());
 
 					String toolDescrption = toolAnnotation.description();
 
@@ -118,7 +122,7 @@ public class AsyncStatelessMcpToolGroupProvider {
 							if (!ClassUtils.isPrimitiveOrWrapper(methodReturnType)
 									&& !ClassUtils.isSimpleValueType(methodReturnType)) {
 								toolBuilder
-									.outputSchema(JsonSchemaGenerator.generateFromClass((Class<?>) typeArgument));
+										.outputSchema(JsonSchemaGenerator.generateFromClass((Class<?>) typeArgument));
 							}
 						});
 					}
@@ -131,10 +135,8 @@ public class AsyncStatelessMcpToolGroupProvider {
 					BiFunction<McpTransportContext, CallToolRequest, Mono<CallToolResult>> methodCallback = new AsyncStatelessMcpToolMethodCallback(
 							returnMode, mcpToolMethod, getServiceObject());
 
-					AsyncToolSpecification toolSpec = AsyncToolSpecification.builder()
-						.tool(tool)
-						.callHandler(methodCallback)
-						.build();
+					AsyncToolSpecification toolSpec = AsyncToolSpecification.builder().tool(tool)
+							.callHandler(methodCallback).build();
 
 					if (logger.isDebugEnabled()) {
 						logger.debug("created async toolspec={}", toolSpec);
