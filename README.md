@@ -104,4 +104,4 @@ As appropriate for the timing/lifecycle, they can also be dynamically removed
 ```
 Once these specifications are added to a server, MCP clients are able to inspect the @McpTool and @McpToolParam descriptions of the tools in this group, use the descriptions to provide required input, take action and receive output (i.e. call the tool method) from all the tools in this group.
 
-Note that the use of Java interfaces in this way automatically adds MCP metadata (descriptions from the @McpTool and @McpToolParam) to the api contract.  This can be easily duplicated in other languages...e.g. Python, C++, or Typescript via decorators, annotations and abstract classes.
+Note that the use of Java interfaces in this way automatically adds MCP metadata (descriptions from the @McpTool and @McpToolParam) to the api contract.  This can be easily duplicated in other languages...e.g. Python, C++, or Typescript via decorators, annotations, and abstract classes.
