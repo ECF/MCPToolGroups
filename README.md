@@ -1,8 +1,8 @@
 # MCP Dynamic Tool Groups
 
-The Model Context Protocol (MCP) includes support for [tools](https://modelcontextprotocol.io/specification/2025-06-18/server/tools), allowing a common way for AI models to a) Get metadata (descriptions) of tool input, behavior, and output;  b) Take action via the use of one or more available tools.
+The Model Context Protocol (MCP) includes support for [tools](https://modelcontextprotocol.io/specification/2025-06-18/server/tools), allowing a common way for AI models to a) Get metadata (descriptions) of tool input and output;  b) Provide input, run imple/take action and provide output via the use of one or more of the available tools.
 
-Currently, the [specification](https://modelcontextprotocol.io/specification/versioning) provides no way to group tools.  Grouping, however, will become more important as the number of tools increases on a given MCP server/servers, and the need for orchestration of multiple tools (using multiple tools to accomplish a given task) becomes more common.
+Currently, the [specification](https://modelcontextprotocol.io/specification/versioning) provides no way to declare tool groups.  Tool grouping, however, will become important as the number, variety and function of tools increases on a given MCP server/servers, along with the need for orchestration of multiple tools (sequencing the input and output of multiple tools to accomplish a given task) becomes more common.
 
 The jar/package defined [here](/com.composent.ai.mcp.toolgroup) provides a very small api that can use arbitrary Java interfaces (and classes) to define groups of tools and dynamically create the tool specifications needed to add and remove the tools to an MCP server at runtime.
 
