@@ -77,9 +77,9 @@ public class ExampleToolGroupComponent implements ExampleToolGroup {
 
 }
 ```
-Note first that this class provides an implementation of the ExampleToolGroup interface.   
+Note first that this class provides an implementation of the 3 ExampleToolGroup interface methods.   
 
-The McpServer tool specification for the ExampleToolGroup is created here:
+The McpServer tool specification for the ExampleToolGroup is created on component activation here:
 ```java
 toolspecs = new SyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolSpecifications();
 ```
