@@ -4,7 +4,7 @@ The Model Context Protocol (MCP) includes support for [tools](https://modelconte
 
 Currently, the [specification](https://modelcontextprotocol.io/specification/versioning) provides no way to declare tool groups.  Tool grouping, however, will become important as the number, variety and function of tools increases on a given MCP server/servers, along with the need for orchestration of multiple tools (sequencing the input and output of multiple tools to accomplish a given task) becomes more common.
 
-The jar/package defined [here](/com.composent.ai.mcp.toolgroup) provides a very small api that can use arbitrary Java interfaces (and classes) to define groups of tools and dynamically create the tool specifications needed to add and remove the tools to an MCP server at runtime.
+The jar/api defined [here](/com.composent.ai.mcp.toolgroup) provides a very small set of classes that can use arbitrary Java interfaces (and classes) to define groups of tools, and dynamically build the tool specifications and method callback needed to add and remove the tools to an MCP server at runtime.
 
 For example, in the [com.composent.ai.mcp.examples.toolgroup.api](/com.composent.ai.mcp.examples.toolgroup.api) project is the declaration of an ExampleToolGroup:
 
