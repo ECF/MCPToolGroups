@@ -37,10 +37,7 @@ public class ExampleToolGroupComponent implements ExampleToolGroup {
 	@Deactivate
 	void deactivate() {
 		if (toolspecs != null) {
-			toolspecs.stream().forEach(specification -> {
-				logger.debug("removing specification={} from server", specification);
-				this.server.removeTool(specification.tool().name());
-			});
+			this.server.removeTools(toolspecs);
 			toolspecs = null;
 		}
 	}
