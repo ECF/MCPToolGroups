@@ -21,17 +21,7 @@
 -plugin.3.Local: aQute.bnd.deployer.repository.LocalIndexedRepo;\
 		name                =Local;\
 		pretty              =true;\
-		local               ='C:/eclipse-2025-06/eclipse/cnf/local'
-
--plugin.3.Templates: aQute.bnd.deployer.repository.LocalIndexedRepo;\
-		name                =Templates;\
-		pretty              =true;\
-		local               ='C:/eclipse-2025-06/eclipse/cnf/templates'
-
--plugin.3.Release: aQute.bnd.deployer.repository.LocalIndexedRepo;\
-		name                =Release;\
-		pretty              =true;\
-		local               ='C:/eclipse-2025-06/eclipse/cnf/release'
+		local               =${build}/local
 
 -plugin.4.ECFRSSDK: aQute.bnd.repository.p2.provider.P2Repository;\
 		url                 ='https://download.eclipse.org/rt/ecf/3.16.4/site.p2';\

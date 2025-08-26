@@ -1,5 +1,80 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="Local" increment="1755981788863">
+<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="Local" increment="1756178374877">
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="license" value="https://www.apache.org/licenses/LICENSE-2.0.txt"/>
+      <attribute name="osgi.identity" value="com.fasterxml.classmate"/>
+      <attribute name="documentation" value="https://github.com/FasterXML/java-classmate"/>
+      <attribute name="description" value="Library for introspecting types with full generic informationincluding resolving of field and method types."/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" value="1.7.0" type="Version"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="com.fasterxml.classmate.members,com.fasterxml.classmate.types,com.fasterxml.classmate.util"/>
+      <attribute name="bundle-symbolic-name" value="com.fasterxml.classmate"/>
+      <attribute name="bundle-version" value="1.7.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.classmate"/>
+      <attribute name="version" value="1.7.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-1221821517,-511871513,1389877901,1740900376,-230989117,2136375192,706159364,2104342424,-1527516783,-1500758816,585914226,329326843,-1476461919,-2123919352,889596288,-1923478059" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="com.fasterxml.classmate,com.fasterxml.classmate.util"/>
+      <attribute name="bundle-symbolic-name" value="com.fasterxml.classmate"/>
+      <attribute name="bundle-version" value="1.7.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.classmate.members"/>
+      <attribute name="version" value="1.7.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-1447173288,1358981842,544814546,-93679422,-93464823,-1655840574,970055618,203891922,204106521,1988645243,-1923478059" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="com.fasterxml.classmate,com.fasterxml.classmate.members"/>
+      <attribute name="bundle-symbolic-name" value="com.fasterxml.classmate"/>
+      <attribute name="bundle-version" value="1.7.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.classmate.types"/>
+      <attribute name="version" value="1.7.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-1706542085,136192731,926133585,678968201,-1796278956,-256681511,-1923478059" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="com.fasterxml.classmate,com.fasterxml.classmate.types"/>
+      <attribute name="bundle-symbolic-name" value="com.fasterxml.classmate"/>
+      <attribute name="bundle-version" value="1.7.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.classmate.util"/>
+      <attribute name="version" value="1.7.0" type="Version"/>
+      <attribute name="bnd.hashes" value="757059047,1692086288,421078097,-368862566,-1422611047,1149353374,211304240,223691149,-1923478059" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="bundle-version" value="1.7.0" type="Version"/>
+      <attribute name="osgi.wiring.bundle" value="com.fasterxml.classmate"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="bundle-version" value="1.7.0" type="Version"/>
+      <attribute name="osgi.wiring.host" value="com.fasterxml.classmate"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="size" value="68899" type="Long"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+      <attribute name="url" value="com.fasterxml.classmate/com.fasterxml.classmate-1.7.0.jar"/>
+      <attribute name="osgi.content" value="CB868F231C5CCEB89D795EA00E6E1B7A93B8F4AC1CE1D8BE76DDE322DFF4A046"/>
+    </capability>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.classmate)(version&gt;=1.7.0)(!(version&gt;=2.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.classmate"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.classmate.members)(version&gt;=1.7.0)(!(version&gt;=2.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.classmate.members"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.classmate.types)(version&gt;=1.7.0)(!(version&gt;=2.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.classmate.types"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.classmate.util)(version&gt;=1.7.0)(!(version&gt;=2.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.classmate.util"/>
+    </requirement>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=1.8))"/>
+    </requirement>
+  </resource>
   <resource>
     <capability namespace="osgi.identity">
       <attribute name="license" value="&quot;MIT License&quot;;link=&quot;http://www.opensource.org/licenses/mit-license.php&quot;"/>
@@ -135,6 +210,13 @@
       <attribute name="version" value="0.2.0.SNAPSHOT" type="Version"/>
       <attribute name="bnd.hashes" value="289095783,48478677,-1948804568,1803143476" type="List&lt;Long&gt;"/>
     </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.2.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.toolgroup"/>
+      <attribute name="version" value="0.2.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="-1405792038,-1180333012,-1681922119,2040348717" type="List&lt;Long&gt;"/>
+    </capability>
     <capability namespace="osgi.wiring.bundle">
       <attribute name="bundle-version" value="0.2.0.SNAPSHOT" type="Version"/>
       <attribute name="osgi.wiring.bundle" value="org.springaicommunity.mcp-annotations"/>
@@ -144,10 +226,10 @@
       <attribute name="osgi.wiring.host" value="org.springaicommunity.mcp-annotations"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="size" value="252742" type="Long"/>
+      <attribute name="size" value="270005" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
       <attribute name="url" value="org.springaicommunity.mcp-annotations/org.springaicommunity.mcp-annotations-0.2.0.jar"/>
-      <attribute name="osgi.content" value="31A7ED74C9588AAE9F5797D68EDF3DC0E71ED7B6E5EA29F05B712B076FFEE2DC"/>
+      <attribute name="osgi.content" value="0F7489D7C971C74B11BA7491E5662E7FE9D5DBA74DEB1A181F9059CD6F522219"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.annotation)(version&gt;=2.19.0)(!(version&gt;=3.0.0)))"/>
@@ -176,10 +258,6 @@
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.databind.node)(version&gt;=2.19.0)(!(version&gt;=3.0.0)))"/>
       <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind.node"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.datatype.jsr310)(version&gt;=2.19.0)(!(version&gt;=3.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.datatype.jsr310"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(osgi.wiring.package=com.github.victools.jsonschema.generator)"/>
@@ -227,6 +305,613 @@
     </requirement>
     <requirement namespace="osgi.ee">
       <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=17))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="wrapped.com.github.victools.jsonschema-generator"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" value="4.38.0" type="Version"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="com.fasterxml.classmate,com.fasterxml.classmate.members,com.fasterxml.jackson.databind,com.fasterxml.jackson.databind.node,com.github.victools.jsonschema.generator.naming"/>
+      <attribute name="bundle-symbolic-name" value="wrapped.com.github.victools.jsonschema-generator"/>
+      <attribute name="bundle-version" value="4.38.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="com.github.victools.jsonschema.generator"/>
+      <attribute name="version" value="4.38.0" type="Version"/>
+      <attribute name="bnd.hashes" value="152816605,1495385434,486283776,-1964563635,-1707669564,-1616679467,1149196081,-495830407,-1360061558,-1736239718,-894831021,-939149265,967807880,-2074572618,-1254622278,729319891,-1984916852,-1926269803,1505935316,-351555439,444734106,-1129056114,181596598,-419823086,1086659572,2062668039,-531375609,1380004203,-826090527,1544903835,-1114634337,-600618776,565397463,1747240398,-706483328,1227811406,-1189242518,-948424459,-1783213286" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="com.fasterxml.classmate,com.fasterxml.jackson.databind,com.fasterxml.jackson.databind.node,com.github.victools.jsonschema.generator,com.github.victools.jsonschema.generator.naming"/>
+      <attribute name="bundle-symbolic-name" value="wrapped.com.github.victools.jsonschema-generator"/>
+      <attribute name="bundle-version" value="4.38.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="com.github.victools.jsonschema.generator.impl"/>
+      <attribute name="version" value="4.38.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-428724879,-340476948,1774138941,-750643113,1518944062,-386153298,92726129,827584040,-1608909578,-531572684,647334485,2647074" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="com.fasterxml.classmate,com.fasterxml.jackson.databind,com.github.victools.jsonschema.generator"/>
+      <attribute name="bundle-symbolic-name" value="wrapped.com.github.victools.jsonschema-generator"/>
+      <attribute name="bundle-version" value="4.38.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="com.github.victools.jsonschema.generator.impl.module"/>
+      <attribute name="version" value="4.38.0" type="Version"/>
+      <attribute name="bnd.hashes" value="1437194214,1435773145,-1969357144,383024877,-538823264,-1195745713,1191803932,-2117476154,-863865191,-57471568,-1766676040,-211851388,1462740778" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="com.github.victools.jsonschema.generator,com.github.victools.jsonschema.generator.impl"/>
+      <attribute name="bundle-symbolic-name" value="wrapped.com.github.victools.jsonschema-generator"/>
+      <attribute name="bundle-version" value="4.38.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="com.github.victools.jsonschema.generator.naming"/>
+      <attribute name="version" value="4.38.0" type="Version"/>
+      <attribute name="bnd.hashes" value="2047770520,870049168,-1987958993" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="bundle-version" value="4.38.0" type="Version"/>
+      <attribute name="osgi.wiring.bundle" value="wrapped.com.github.victools.jsonschema-generator"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="bundle-version" value="4.38.0" type="Version"/>
+      <attribute name="osgi.wiring.host" value="wrapped.com.github.victools.jsonschema-generator"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="size" value="165133" type="Long"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+      <attribute name="url" value="wrapped.com.github.victools.jsonschema-generator/wrapped.com.github.victools.jsonschema-generator-4.38.0.jar"/>
+      <attribute name="osgi.content" value="B098C5FF297283C6CF68F247056CF62B99C3A44DEBE5EB5781AB4A5AD5826E3C"/>
+    </capability>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.classmate)(version&gt;=1.7.0)(!(version&gt;=2.0.0)))"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.classmate"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.classmate.members)(version&gt;=1.7.0)(!(version&gt;=2.0.0)))"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.classmate.members"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.core)(version&gt;=2.17.0)(!(version&gt;=3.0.0)))"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.core"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.core.json)(version&gt;=2.17.0)(!(version&gt;=3.0.0)))"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.core.json"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.databind)(version&gt;=2.17.0)(!(version&gt;=3.0.0)))"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.databind.node)(version&gt;=2.17.0)(!(version&gt;=3.0.0)))"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind.node"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.lang)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.lang"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.lang.annotation)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.lang.annotation"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.lang.invoke)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.lang.invoke"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.lang.reflect)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.lang.reflect"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.math)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.math"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.net)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.net"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.time)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.time"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.util)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.util"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.util.concurrent.atomic)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.util.concurrent.atomic"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.util.function)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.util.function"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.util.stream)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.util.stream"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.slf4j)(version&gt;=2.0.0)(!(version&gt;=3.0.0)))"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="org.slf4j"/>
+    </requirement>
+    <requirement namespace="bnd.multirelease">
+      <directive name="filter" value="(&amp;(bnd.multirelease=wrapped.com.github.victools.jsonschema-generator)(&amp;(version&gt;=4.38.0)(version&lt;=4.38.0)))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="wrapped.com.github.victools.jsonschema-generator__8"/>
+      <attribute name="type" value="bnd.synthetic"/>
+      <attribute name="version" value="4.38.0" type="Version"/>
+    </capability>
+    <capability namespace="bnd.multirelease">
+      <attribute name="bnd.multirelease" value="wrapped.com.github.victools.jsonschema-generator"/>
+      <attribute name="version" value="4.38.0" type="Version"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="size" value="0" type="Long"/>
+      <attribute name="mime" value="application/octetstream"/>
+      <attribute name="url" value="urn:osgi-bnd-mrj:wrapped.com.github.victools.jsonschema-generator:4.38.0:8"/>
+      <attribute name="osgi.content" value="8D089BA8D2D66870803D42E4EDB44CA258D55F8CC38C251640A96EFA33448505"/>
+    </capability>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(&amp;(version&gt;=1.8.0)(!(version&gt;=9.0.0))))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="wrapped.com.github.victools.jsonschema-generator__9"/>
+      <attribute name="type" value="bnd.synthetic"/>
+      <attribute name="version" value="4.38.0" type="Version"/>
+    </capability>
+    <capability namespace="bnd.multirelease">
+      <attribute name="bnd.multirelease" value="wrapped.com.github.victools.jsonschema-generator"/>
+      <attribute name="version" value="4.38.0" type="Version"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="size" value="0" type="Long"/>
+      <attribute name="mime" value="application/octetstream"/>
+      <attribute name="url" value="urn:osgi-bnd-mrj:wrapped.com.github.victools.jsonschema-generator:4.38.0:9"/>
+      <attribute name="osgi.content" value="385863997A2CD217CEB36834628686F3836D50727BBF6D455D48EF136EB27DE3"/>
+    </capability>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version&gt;=9.0.0))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="wrapped.com.github.victools.jsonschema-module-swagger-2"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" value="4.38.0" type="Version"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="com.fasterxml.classmate,com.fasterxml.jackson.databind.node,com.github.victools.jsonschema.generator,com.github.victools.jsonschema.generator.impl,com.github.victools.jsonschema.generator.naming,io.swagger.v3.oas.annotations.media"/>
+      <attribute name="bundle-symbolic-name" value="wrapped.com.github.victools.jsonschema-module-swagger-2"/>
+      <attribute name="bundle-version" value="4.38.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="com.github.victools.jsonschema.module.swagger2"/>
+      <attribute name="version" value="4.38.0" type="Version"/>
+      <attribute name="bnd.hashes" value="1526784637,-711038828,-1605343945,-1418568072" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="bundle-version" value="4.38.0" type="Version"/>
+      <attribute name="osgi.wiring.bundle" value="wrapped.com.github.victools.jsonschema-module-swagger-2"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="bundle-version" value="4.38.0" type="Version"/>
+      <attribute name="osgi.wiring.host" value="wrapped.com.github.victools.jsonschema-module-swagger-2"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="size" value="20322" type="Long"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+      <attribute name="url" value="wrapped.com.github.victools.jsonschema-module-swagger-2/wrapped.com.github.victools.jsonschema-module-swagger-2-4.38.0.jar"/>
+      <attribute name="osgi.content" value="445DC6DE05278118126370D498334F6CD8976D29550E3E9A42EA46A081F40D1D"/>
+    </capability>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=com.fasterxml.classmate)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.classmate"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=com.fasterxml.jackson.databind)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=com.fasterxml.jackson.databind.node)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind.node"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=com.github.victools.jsonschema.generator)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="com.github.victools.jsonschema.generator"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=com.github.victools.jsonschema.generator.impl)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="com.github.victools.jsonschema.generator.impl"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=com.github.victools.jsonschema.generator.naming)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="com.github.victools.jsonschema.generator.naming"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=io.swagger.v3.oas.annotations.media)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="io.swagger.v3.oas.annotations.media"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.lang)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.lang"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.lang.annotation)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.lang.annotation"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.lang.invoke)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.lang.invoke"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.lang.reflect)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.lang.reflect"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.math)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.math"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.util)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.util"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.util.function)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.util.function"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.util.stream)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.util.stream"/>
+    </requirement>
+    <requirement namespace="bnd.multirelease">
+      <directive name="filter" value="(&amp;(bnd.multirelease=wrapped.com.github.victools.jsonschema-module-swagger-2)(&amp;(version&gt;=4.38.0)(version&lt;=4.38.0)))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="wrapped.com.github.victools.jsonschema-module-swagger-2__8"/>
+      <attribute name="type" value="bnd.synthetic"/>
+      <attribute name="version" value="4.38.0" type="Version"/>
+    </capability>
+    <capability namespace="bnd.multirelease">
+      <attribute name="bnd.multirelease" value="wrapped.com.github.victools.jsonschema-module-swagger-2"/>
+      <attribute name="version" value="4.38.0" type="Version"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="size" value="0" type="Long"/>
+      <attribute name="mime" value="application/octetstream"/>
+      <attribute name="url" value="urn:osgi-bnd-mrj:wrapped.com.github.victools.jsonschema-module-swagger-2:4.38.0:8"/>
+      <attribute name="osgi.content" value="3B49D4B67ACBA0447F569161983CC067AB7051BA8F4EDCD35598AA17F218A0DC"/>
+    </capability>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(&amp;(version&gt;=1.8.0)(!(version&gt;=9.0.0))))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="wrapped.com.github.victools.jsonschema-module-swagger-2__9"/>
+      <attribute name="type" value="bnd.synthetic"/>
+      <attribute name="version" value="4.38.0" type="Version"/>
+    </capability>
+    <capability namespace="bnd.multirelease">
+      <attribute name="bnd.multirelease" value="wrapped.com.github.victools.jsonschema-module-swagger-2"/>
+      <attribute name="version" value="4.38.0" type="Version"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="size" value="0" type="Long"/>
+      <attribute name="mime" value="application/octetstream"/>
+      <attribute name="url" value="urn:osgi-bnd-mrj:wrapped.com.github.victools.jsonschema-module-swagger-2:4.38.0:9"/>
+      <attribute name="osgi.content" value="09DEA46C8355B00D0E4E79A5F4088BECE71D82789B8B6B1F5851E5BF58739C96"/>
+    </capability>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version&gt;=9.0.0))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="com.composent.ai.mcp.transport.uds"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" value="1.0.0.202508202359" type="Version"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="com.fasterxml.jackson.core.type,com.fasterxml.jackson.databind,io.modelcontextprotocol.spec,reactor.core.publisher"/>
+      <attribute name="bundle-symbolic-name" value="com.composent.ai.mcp.transport.uds"/>
+      <attribute name="bundle-version" value="1.0.0.202508202359" type="Version"/>
+      <attribute name="osgi.wiring.package" value="com.composent.ai.mcp.transport.uds"/>
+      <attribute name="version" value="1.0.0" type="Version"/>
+      <attribute name="bnd.hashes" value="1912210792,-576780119,929082113,-1923478059" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="bundle-version" value="1.0.0.202508202359" type="Version"/>
+      <attribute name="osgi.wiring.bundle" value="com.composent.ai.mcp.transport.uds"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="bundle-version" value="1.0.0.202508202359" type="Version"/>
+      <attribute name="osgi.wiring.host" value="com.composent.ai.mcp.transport.uds"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="size" value="20879" type="Long"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+      <attribute name="url" value="com.composent.ai.mcp.transport.uds/com.composent.ai.mcp.transport.uds-1.0.0.jar"/>
+      <attribute name="osgi.content" value="4376FFBEB06069BCEAE72D9102B2737D7541F002650516FA14421C6AF8D72A68"/>
+    </capability>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.core.type)(version&gt;=2.19.0)(!(version&gt;=3.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.core.type"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.databind)(version&gt;=2.19.0)(!(version&gt;=3.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=io.modelcontextprotocol.spec)(version&gt;=0.10.0)(!(version&gt;=1.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="io.modelcontextprotocol.spec"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=io.modelcontextprotocol.util)(version&gt;=0.10.0)(!(version&gt;=1.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="io.modelcontextprotocol.util"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.io)"/>
+      <attribute name="osgi.wiring.package" value="java.io"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.lang)"/>
+      <attribute name="osgi.wiring.package" value="java.lang"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.lang.invoke)"/>
+      <attribute name="osgi.wiring.package" value="java.lang.invoke"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.net)"/>
+      <attribute name="osgi.wiring.package" value="java.net"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.nio.channels)"/>
+      <attribute name="osgi.wiring.package" value="java.nio.channels"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.time)"/>
+      <attribute name="osgi.wiring.package" value="java.time"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.util.concurrent)"/>
+      <attribute name="osgi.wiring.package" value="java.util.concurrent"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.util.concurrent.atomic)"/>
+      <attribute name="osgi.wiring.package" value="java.util.concurrent.atomic"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.util.function)"/>
+      <attribute name="osgi.wiring.package" value="java.util.function"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.eclipse.ecf.ai.mcp.transports)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="org.eclipse.ecf.ai.mcp.transports"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.reactivestreams)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="org.reactivestreams"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.slf4j)(version&gt;=1.7.0)(!(version&gt;=2.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="org.slf4j"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=reactor.core)(version&gt;=3.7.0)(!(version&gt;=4.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="reactor.core"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=reactor.core.publisher)(version&gt;=3.7.0)(!(version&gt;=4.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="reactor.core.publisher"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=reactor.core.scheduler)(version&gt;=3.7.0)(!(version&gt;=4.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="reactor.core.scheduler"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=reactor.util.context)(version&gt;=3.7.0)(!(version&gt;=4.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="reactor.util.context"/>
+    </requirement>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=17))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="wrapped.com.github.victools.jsonschema-module-jackson"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" value="4.38.0" type="Version"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="com.fasterxml.classmate,com.fasterxml.classmate.members,com.fasterxml.jackson.annotation,com.fasterxml.jackson.databind,com.github.victools.jsonschema.generator"/>
+      <attribute name="bundle-symbolic-name" value="wrapped.com.github.victools.jsonschema-module-jackson"/>
+      <attribute name="bundle-version" value="4.38.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="com.github.victools.jsonschema.module.jackson"/>
+      <attribute name="version" value="4.38.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-2016559050,1968262527,2026909576,18363721,-855693272,-1396909259,-599318937,215492392" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="bundle-version" value="4.38.0" type="Version"/>
+      <attribute name="osgi.wiring.bundle" value="wrapped.com.github.victools.jsonschema-module-jackson"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="bundle-version" value="4.38.0" type="Version"/>
+      <attribute name="osgi.wiring.host" value="wrapped.com.github.victools.jsonschema-module-jackson"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="size" value="35300" type="Long"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+      <attribute name="url" value="wrapped.com.github.victools.jsonschema-module-jackson/wrapped.com.github.victools.jsonschema-module-jackson-4.38.0.jar"/>
+      <attribute name="osgi.content" value="F99DDDB0A72C5ACA3FB21A368C54A589A075969AA3B6396CD59EF688FD05436D"/>
+    </capability>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=com.fasterxml.classmate)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.classmate"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=com.fasterxml.classmate.members)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.classmate.members"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=com.fasterxml.jackson.annotation)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.annotation"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=com.fasterxml.jackson.databind)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=com.fasterxml.jackson.databind.annotation)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind.annotation"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=com.fasterxml.jackson.databind.cfg)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind.cfg"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=com.fasterxml.jackson.databind.introspect)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind.introspect"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=com.fasterxml.jackson.databind.node)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind.node"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=com.fasterxml.jackson.databind.type)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind.type"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=com.github.victools.jsonschema.generator)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="com.github.victools.jsonschema.generator"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=com.github.victools.jsonschema.generator.impl)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="com.github.victools.jsonschema.generator.impl"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.lang)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.lang"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.lang.annotation)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.lang.annotation"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.lang.invoke)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.lang.invoke"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.lang.reflect)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.lang.reflect"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.util)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.util"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.util.function)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.util.function"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=java.util.stream)"/>
+      <directive name="resolution" value="optional"/>
+      <attribute name="osgi.wiring.package" value="java.util.stream"/>
+    </requirement>
+    <requirement namespace="bnd.multirelease">
+      <directive name="filter" value="(&amp;(bnd.multirelease=wrapped.com.github.victools.jsonschema-module-jackson)(&amp;(version&gt;=4.38.0)(version&lt;=4.38.0)))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="wrapped.com.github.victools.jsonschema-module-jackson__8"/>
+      <attribute name="type" value="bnd.synthetic"/>
+      <attribute name="version" value="4.38.0" type="Version"/>
+    </capability>
+    <capability namespace="bnd.multirelease">
+      <attribute name="bnd.multirelease" value="wrapped.com.github.victools.jsonschema-module-jackson"/>
+      <attribute name="version" value="4.38.0" type="Version"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="size" value="0" type="Long"/>
+      <attribute name="mime" value="application/octetstream"/>
+      <attribute name="url" value="urn:osgi-bnd-mrj:wrapped.com.github.victools.jsonschema-module-jackson:4.38.0:8"/>
+      <attribute name="osgi.content" value="D1E44898DEBD942EE65E6E43F3974DA54E4C8E7296AB35E874D6D5D03098D9DB"/>
+    </capability>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(&amp;(version&gt;=1.8.0)(!(version&gt;=9.0.0))))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="osgi.identity" value="wrapped.com.github.victools.jsonschema-module-jackson__9"/>
+      <attribute name="type" value="bnd.synthetic"/>
+      <attribute name="version" value="4.38.0" type="Version"/>
+    </capability>
+    <capability namespace="bnd.multirelease">
+      <attribute name="bnd.multirelease" value="wrapped.com.github.victools.jsonschema-module-jackson"/>
+      <attribute name="version" value="4.38.0" type="Version"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="size" value="0" type="Long"/>
+      <attribute name="mime" value="application/octetstream"/>
+      <attribute name="url" value="urn:osgi-bnd-mrj:wrapped.com.github.victools.jsonschema-module-jackson:4.38.0:9"/>
+      <attribute name="osgi.content" value="B3B575AC00E532421E61DC8CBDEE2028F7041A734593821171E3AB74D6B8C47A"/>
+    </capability>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version&gt;=9.0.0))"/>
     </requirement>
   </resource>
   <resource>
