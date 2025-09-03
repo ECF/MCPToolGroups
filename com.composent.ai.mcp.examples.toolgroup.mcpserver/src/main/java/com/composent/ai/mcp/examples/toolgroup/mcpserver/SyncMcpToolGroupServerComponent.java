@@ -11,24 +11,27 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.composent.ai.mcp.toolgroup.AbstractSyncMcpToolGroupServer;
 import com.composent.ai.mcp.toolgroup.SyncMcpToolGroupServer;
 import com.composent.ai.mcp.transport.uds.UDSMcpServerTransportProvider;
 
 import io.modelcontextprotocol.server.McpServer;
-import io.modelcontextprotocol.server.McpServerFeatures.SyncToolSpecification;
 import io.modelcontextprotocol.server.McpSyncServer;
-import io.modelcontextprotocol.spec.McpError;
 import io.modelcontextprotocol.spec.McpSchema.ServerCapabilities;
-import io.modelcontextprotocol.util.Assert;
 
-@Component(service = { SyncMcpToolGroupServer.class })
-public class SyncToolGroupServerComponent implements SyncMcpToolGroupServer {
+@Component(immediate=true, service = { SyncMcpToolGroupServer.class })
+public class SyncMcpToolGroupServerComponent extends AbstractSyncMcpToolGroupServer {
 
-	private static Logger logger = LoggerFactory.getLogger(SyncToolGroupServerComponent.class);
+	private static Logger logger = LoggerFactory.getLogger(SyncMcpToolGroupServerComponent.class);
 	// file named to be used for client <-> server communication
 	private final Path socketPath = Paths.get("").resolve("s.socket").toAbsolutePath();
 
 	private McpSyncServer server;
+
+	@Override
+	protected McpSyncServer getServer() {
+		return this.server;
+	}
 
 	@Activate
 	void activate() throws Exception {
@@ -51,34 +54,6 @@ public class SyncToolGroupServerComponent implements SyncMcpToolGroupServer {
 			this.server = null;
 			Files.deleteIfExists(socketPath);
 			logger.debug("uds sync server stopped");
-		}
-	}
-
-	@Override
-	public boolean addTool(SyncToolSpecification toolHandler) {
-		Assert.notNull(toolHandler, "toolHandler must not be null");
-		McpSyncServer s = this.server;
-		Assert.notNull(s, "Server cannot be null");
-		try {
-			s.addTool(toolHandler);
-			return true;
-		} catch (McpError e) {
-			logger.error("Error adding tool to server", e);
-			return false;
-		}
-	}
-
-	@Override
-	public boolean removeTool(String fqToolName) {
-		Assert.notNull(fqToolName, "fqToolName must not be null");
-		McpSyncServer s = this.server;
-		Assert.notNull(s, "Server must not be null");
-		try {
-			s.removeTool(fqToolName);
-			return true;
-		} catch (McpError e) {
-			logger.error("Error removing tool from server", e);
-			return false;
 		}
 	}
 

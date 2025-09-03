@@ -144,7 +144,7 @@ public class SyncStatelessMcpToolGroupProvider {
 									.build();
 
 							if (logger.isDebugEnabled()) {
-								logger.debug("created ssync stateless toolspec={}", toolSpec);
+								logger.debug("created sync stateless toolspec={}", toolSpec);
 							}
 
 							return toolSpec;

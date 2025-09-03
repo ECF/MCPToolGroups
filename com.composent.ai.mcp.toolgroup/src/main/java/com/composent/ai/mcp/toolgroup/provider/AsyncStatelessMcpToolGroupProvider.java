@@ -101,7 +101,6 @@ public class AsyncStatelessMcpToolGroupProvider {
 		List<AsyncToolSpecification> toolSpecs = this.toolObjects.stream().map(toolObject -> {
 			return Stream.of(doGetClasses(toolObject)).map(toolGroup -> {
 				return Stream.of(doGetMethods(toolGroup)).filter(method -> method.isAnnotationPresent(McpTool.class))
-						.filter(method -> !Mono.class.isAssignableFrom(method.getReturnType()))
 						.filter(method -> Mono.class.isAssignableFrom(method.getReturnType())
 								|| Flux.class.isAssignableFrom(method.getReturnType())
 								|| Publisher.class.isAssignableFrom(method.getReturnType()))

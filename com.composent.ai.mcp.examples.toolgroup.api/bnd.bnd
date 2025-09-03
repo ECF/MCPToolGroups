@@ -3,5 +3,6 @@
 	io.modelcontextprotocol.sdk.mcp,\
 	org.osgi.annotation.versioning,\
 	org.osgi.annotation.bundle,\
-	com.composent.ai.mcp.toolgroup;version=snapshot
+	com.composent.ai.mcp.toolgroup;version=snapshot,\
+	io.projectreactor.reactor-core
 Export-Package: com.composent.ai.mcp.examples.toolgroup.api

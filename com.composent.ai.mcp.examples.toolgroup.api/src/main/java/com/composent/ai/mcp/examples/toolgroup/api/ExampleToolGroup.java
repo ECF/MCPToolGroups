@@ -4,6 +4,7 @@ import org.springaicommunity.mcp.annotation.McpTool;
 import org.springaicommunity.mcp.annotation.McpToolParam;
 
 import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
+import reactor.core.publisher.Mono;
 
 public interface ExampleToolGroup {
 
@@ -18,5 +19,14 @@ public interface ExampleToolGroup {
 	@McpTool(name = "get-image-and-message-tool", description = "Tool returning CallToolResult")
 	public CallToolResult getImageAndMessage(
 			@McpToolParam(description = "Message to return along with tool group image") String message);
+
+	@McpTool(description = "return asynchronously the sum of the two double precision input arguments a and b")
+	Mono<Double> aadd(@McpToolParam(description = "x is the first argument") double x,
+			@McpToolParam(description = "y is the second argument") double y);
+
+	@McpTool(description = "return asynchronously the product of the two given double precision arguments named a and b")
+	Mono<Double> amultiply(@McpToolParam(description = "x is the first argument") double x,
+			@McpToolParam(description = "y is the second argument") double y);
+
 
 }

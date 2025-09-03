@@ -100,9 +100,7 @@ public class AsyncMcpToolGroupProvider {
 	public List<AsyncToolSpecification> getToolSpecifications() {
 		List<AsyncToolSpecification> toolSpecs = this.toolObjects.stream().map(toolObject -> {
 			return Stream.of(doGetClasses(toolObject)).map(toolGroup -> {
-				return Stream.of(doGetMethods(toolGroup))
-						.filter(method -> method.isAnnotationPresent(McpTool.class))
-						.filter(method -> !Mono.class.isAssignableFrom(method.getReturnType()))
+				return Stream.of(doGetMethods(toolGroup)).filter(method -> method.isAnnotationPresent(McpTool.class))
 						.filter(method -> Mono.class.isAssignableFrom(method.getReturnType())
 								|| Flux.class.isAssignableFrom(method.getReturnType())
 								|| Publisher.class.isAssignableFrom(method.getReturnType()))
@@ -157,7 +155,7 @@ public class AsyncMcpToolGroupProvider {
 									.callHandler(methodCallback).build();
 
 							if (logger.isDebugEnabled()) {
-								logger.debug("created async stateless toolspec={}", toolSpec);
+								logger.debug("created async toolspec={}", toolSpec);
 							}
 
 							return toolSpec;

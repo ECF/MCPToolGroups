@@ -4,7 +4,7 @@ import java.util.List;
 
 import io.modelcontextprotocol.server.McpStatelessServerFeatures;
 
-public interface SyncStatelessMcpToolGroupServer {
+public interface StatelessSyncMcpToolGroupServer {
 
 	boolean addTool(McpStatelessServerFeatures.SyncToolSpecification specification);
 
@@ -13,7 +13,7 @@ public interface SyncStatelessMcpToolGroupServer {
 	}
 
 	boolean removeTool(String fqToolName);
-	
+
 	default void removeTools(List<McpStatelessServerFeatures.SyncToolSpecification> specifications) {
 		specifications.forEach(specification -> removeTool(specification.tool().name()));
 	}

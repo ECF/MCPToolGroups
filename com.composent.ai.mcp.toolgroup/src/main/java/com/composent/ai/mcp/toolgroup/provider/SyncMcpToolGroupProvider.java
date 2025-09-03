@@ -38,11 +38,14 @@ public class SyncMcpToolGroupProvider {
 
 	/**
 	 * Create a new SyncMcpToolProvider.
-	 * @param toolObjects the objects containing methods annotated with {@link McpTool}
-	 * @param toolGroups optional array of classes defining the tool groups that all
-	 * toolObjects are required to implement
-	 * @exception IllegalArgumentException thrown if toolObjects is null, or any of the
-	 * specified toolGroups are not implemented by all of the toolObjects
+	 * 
+	 * @param toolObjects the objects containing methods annotated with
+	 *                    {@link McpTool}
+	 * @param toolGroups  optional array of classes defining the tool groups that
+	 *                    all toolObjects are required to implement
+	 * @exception IllegalArgumentException thrown if toolObjects is null, or any of
+	 *                                     the specified toolGroups are not
+	 *                                     implemented by all of the toolObjects
 	 */
 	public SyncMcpToolGroupProvider(List<Object> toolObjects, Class<?>... toolGroups) {
 		Assert.notNull(toolObjects, "toolObjects cannot be null");
@@ -51,9 +54,8 @@ public class SyncMcpToolGroupProvider {
 		this.toolGroups = toolGroups;
 		// verify that every toolObject is instance of all toolGroups
 		this.toolObjects.forEach(toolObject -> {
-			Arrays.asList(this.toolGroups)
-				.forEach(clazz -> Assert.isTrue(clazz.isInstance(toolObject),
-						String.format("toolObject=%s is not an instance of %s", toolObject, clazz.getName())));
+			Arrays.asList(this.toolGroups).forEach(clazz -> Assert.isTrue(clazz.isInstance(toolObject),
+					String.format("toolObject=%s is not an instance of %s", toolObject, clazz.getName())));
 		});
 	}
 
@@ -65,8 +67,7 @@ public class SyncMcpToolGroupProvider {
 		// For interfaces, getMethods() gets super interface methods
 		if (toolGroup.isInterface()) {
 			return toolGroup.getMethods();
-		}
-		else {
+		} else {
 			return toolGroup.getDeclaredMethods();
 		}
 	}
@@ -87,90 +88,91 @@ public class SyncMcpToolGroupProvider {
 
 	/**
 	 * Get the tool handler.
+	 * 
 	 * @return the tool handler
-	 * @throws IllegalStateException if no tool methods are found or if multiple tool
-	 * methods are found
+	 * @throws IllegalStateException if no tool methods are found or if multiple
+	 *                               tool methods are found
 	 */
 	public List<SyncToolSpecification> getToolSpecifications() {
 		List<SyncToolSpecification> toolSpecs = this.toolObjects.stream().map(toolObject -> {
 			return Stream.of(doGetClasses(toolObject)).map(toolGroup -> {
-				return Stream.of(doGetMethods(toolGroup))
-					.filter(method -> method.isAnnotationPresent(McpTool.class))
-					.filter(method -> !Mono.class.isAssignableFrom(method.getReturnType()))
-					.map(mcpToolMethod -> {
+				return Stream.of(doGetMethods(toolGroup)).filter(method -> method.isAnnotationPresent(McpTool.class))
+						.filter(method -> !Mono.class.isAssignableFrom(method.getReturnType())).map(mcpToolMethod -> {
 
-						McpTool toolAnnotation = doGetMcpToolAnnotation(mcpToolMethod);
+							McpTool toolAnnotation = doGetMcpToolAnnotation(mcpToolMethod);
 
-						String annotationToolName = Utils.hasText(toolAnnotation.name()) ? toolAnnotation.name()
-								: mcpToolMethod.getName();
+							String annotationToolName = Utils.hasText(toolAnnotation.name()) ? toolAnnotation.name()
+									: mcpToolMethod.getName();
 
-						String toolName = doGetFullyQualifiedToolName(annotationToolName, toolGroup);
+							String toolName = doGetFullyQualifiedToolName(annotationToolName, toolGroup);
 
-						String toolDescription = toolAnnotation.description();
+							String toolDescription = toolAnnotation.description();
 
-						// Check if method has CallToolRequest parameter
-						boolean hasCallToolRequestParam = Arrays.stream(mcpToolMethod.getParameterTypes())
-							.anyMatch(type -> CallToolRequest.class.isAssignableFrom(type));
+							// Check if method has CallToolRequest parameter
+							boolean hasCallToolRequestParam = Arrays.stream(mcpToolMethod.getParameterTypes())
+									.anyMatch(type -> CallToolRequest.class.isAssignableFrom(type));
 
-						String inputSchema;
-						if (hasCallToolRequestParam) {
-							// For methods with CallToolRequest, generate minimal schema
-							// or
-							// use the one from the request
-							// The schema generation will handle this appropriately
-							inputSchema = JsonSchemaGenerator.generateForMethodInput(mcpToolMethod);
-							logger.debug("Tool method '{}' uses CallToolRequest parameter, using minimal schema",
-									toolName);
-						}
-						else {
-							inputSchema = JsonSchemaGenerator.generateForMethodInput(mcpToolMethod);
-						}
+							String inputSchema;
+							if (hasCallToolRequestParam) {
+								// For methods with CallToolRequest, generate minimal schema
+								// or
+								// use the one from the request
+								// The schema generation will handle this appropriately
+								inputSchema = JsonSchemaGenerator.generateForMethodInput(mcpToolMethod);
+								logger.debug("Tool method '{}' uses CallToolRequest parameter, using minimal schema",
+										toolName);
+							} else {
+								inputSchema = JsonSchemaGenerator.generateForMethodInput(mcpToolMethod);
+							}
 
-						var toolBuilder = McpSchema.Tool.builder()
-							.name(toolName)
-							.description(toolDescription)
-							.inputSchema(inputSchema);
+							var toolBuilder = McpSchema.Tool.builder().name(toolName).description(toolDescription)
+									.inputSchema(inputSchema);
 
-						// Tool annotations
-						if (toolAnnotation.annotations() != null) {
-							var toolAnnotations = toolAnnotation.annotations();
-							toolBuilder.annotations(new McpSchema.ToolAnnotations(toolAnnotations.title(),
-									toolAnnotations.readOnlyHint(), toolAnnotations.destructiveHint(),
-									toolAnnotations.idempotentHint(), toolAnnotations.openWorldHint(), null));
-						}
+							// Tool annotations
+							if (toolAnnotation.annotations() != null) {
+								var toolAnnotations = toolAnnotation.annotations();
+								toolBuilder.annotations(new McpSchema.ToolAnnotations(toolAnnotations.title(),
+										toolAnnotations.readOnlyHint(), toolAnnotations.destructiveHint(),
+										toolAnnotations.idempotentHint(), toolAnnotations.openWorldHint(), null));
+							}
 
-						// ReactiveUtils.isReactiveReturnTypeOfCallToolResult(mcpToolMethod);
+							// ReactiveUtils.isReactiveReturnTypeOfCallToolResult(mcpToolMethod);
 
-						// Generate Output Schema from the method return type.
-						// Output schema is not generated for primitive types, void,
-						// CallToolResult, simple value types (String, etc.)
-						// or if generateOutputSchema attribute is set to false.
-						Class<?> methodReturnType = mcpToolMethod.getReturnType();
-						if (toolAnnotation.generateOutputSchema() && methodReturnType != null
-								&& methodReturnType != CallToolResult.class && methodReturnType != Void.class
-								&& methodReturnType != void.class && !ClassUtils.isPrimitiveOrWrapper(methodReturnType)
-								&& !ClassUtils.isSimpleValueType(methodReturnType)) {
+							// Generate Output Schema from the method return type.
+							// Output schema is not generated for primitive types, void,
+							// CallToolResult, simple value types (String, etc.)
+							// or if generateOutputSchema attribute is set to false.
+							Class<?> methodReturnType = mcpToolMethod.getReturnType();
+							if (toolAnnotation.generateOutputSchema() && methodReturnType != null
+									&& methodReturnType != CallToolResult.class && methodReturnType != Void.class
+									&& methodReturnType != void.class
+									&& !ClassUtils.isPrimitiveOrWrapper(methodReturnType)
+									&& !ClassUtils.isSimpleValueType(methodReturnType)) {
 
-							toolBuilder.outputSchema(JsonSchemaGenerator.generateFromClass(methodReturnType));
-						}
+								toolBuilder.outputSchema(JsonSchemaGenerator.generateFromClass(methodReturnType));
+							}
 
-						var tool = toolBuilder.build();
+							var tool = toolBuilder.build();
 
-						boolean useStructuredOtput = tool.outputSchema() != null;
+							boolean useStructuredOtput = tool.outputSchema() != null;
 
-						ReturnMode returnMode = useStructuredOtput ? ReturnMode.STRUCTURED
-								: (methodReturnType == Void.TYPE || methodReturnType == void.class ? ReturnMode.VOID
-										: ReturnMode.TEXT);
+							ReturnMode returnMode = useStructuredOtput ? ReturnMode.STRUCTURED
+									: (methodReturnType == Void.TYPE || methodReturnType == void.class ? ReturnMode.VOID
+											: ReturnMode.TEXT);
 
-						BiFunction<McpSyncServerExchange, CallToolRequest, CallToolResult> methodCallback = new SyncMcpToolMethodCallback(
-								returnMode, mcpToolMethod, toolObject);
+							BiFunction<McpSyncServerExchange, CallToolRequest, CallToolResult> methodCallback = new SyncMcpToolMethodCallback(
+									returnMode, mcpToolMethod, toolObject);
 
-						var toolSpec = SyncToolSpecification.builder().tool(tool).callHandler(methodCallback).build();
+							var toolSpec = SyncToolSpecification.builder().tool(tool).callHandler(methodCallback)
+									.build();
 
-						return toolSpec;
+							if (logger.isDebugEnabled()) {
+								logger.debug("created sync toolspec={}", toolSpec);
+							}
 
-					})
-					.toList();
+							return toolSpec;
+
+						}).toList();
 			}).flatMap(List::stream).toList();
 		}).flatMap(List::stream).filter(distinctByName(s -> s.tool().name())).toList();
 
@@ -184,6 +186,5 @@ public class SyncMcpToolGroupProvider {
 	protected McpTool doGetMcpToolAnnotation(Method method) {
 		return method.getAnnotation(McpTool.class);
 	}
-
 
 }
