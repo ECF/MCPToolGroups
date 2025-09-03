@@ -3,9 +3,14 @@ package com.composent.ai.mcp.toolgroup.provider;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Flow.Publisher;
 import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
-import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springaicommunity.mcp.annotation.McpTool;
@@ -29,29 +34,59 @@ public class AsyncMcpToolGroupProvider {
 
 	protected static final Logger logger = LoggerFactory.getLogger(AsyncMcpToolGroupProvider.class);
 
-	private final Object serviceObject;
+	protected final List<Object> toolObjects;
 
-	private final Class<?>[] toolGroups;
+	// optional set of classes defining groups of annotated McpTools methods
+	protected final Class<?>[] toolGroups;
 
-	public AsyncMcpToolGroupProvider(Object serviceObject, Class<?>... toolGroups) {
-		Assert.notNull(serviceObject, "serviceObject cannot be null");
-		this.serviceObject = serviceObject;
+	/**
+	 * Create a new AsyncMcpToolGroupProvider.
+	 * 
+	 * @param toolObjects the objects containing methods annotated with
+	 *                    {@link McpTool}
+	 * @param toolGroups  optional array of classes defining the tool groups that
+	 *                    all toolObjects are required to implement
+	 * @exception IllegalArgumentException thrown if toolObjects is null, or any of
+	 *                                     the specified toolGroups are not
+	 *                                     implemented by all of the toolObjects
+	 */
+	public AsyncMcpToolGroupProvider(List<Object> toolObjects, Class<?>... toolGroups) {
+		Assert.notNull(toolObjects, "toolObjects cannot be null");
+		this.toolObjects = toolObjects;
 		Assert.notNull(toolGroups, "toolGroups cannot be null");
 		this.toolGroups = toolGroups;
-		Arrays.asList(this.toolGroups).forEach(clazz -> Assert.isTrue(clazz.isInstance(this.serviceObject),
-				String.format("serviceObject must be instance of toolGroup=%s", clazz.getName())));
+		// verify that every toolObject is instance of all toolGroups
+		this.toolObjects.forEach(toolObject -> {
+			Arrays.asList(this.toolGroups).forEach(clazz -> Assert.isTrue(clazz.isInstance(toolObject),
+					String.format("toolObject=%s is not an instance of %s", toolObject, clazz.getName())));
+		});
 	}
 
-	protected Object getServiceObject() {
-		return this.serviceObject;
+	public AsyncMcpToolGroupProvider(Object toolObject, Class<?>... toolGroups) {
+		this(List.of(toolObject), toolGroups);
 	}
 
-	protected Class<?>[] getToolGroups() {
-		return this.toolGroups;
+	protected Method[] doGetMethods(Class<?> toolGroup) {
+		// For interfaces, getMethods() gets super interface methods
+		if (toolGroup.isInterface()) {
+			return toolGroup.getMethods();
+		} else {
+			return toolGroup.getDeclaredMethods();
+		}
 	}
 
-	protected String createFullyQualifiedToolName(Class<?> toolGroup, String toolName) {
-		return new StringBuffer(toolGroup.getName()).append(".").append(toolName).toString();
+	protected String doGetFullyQualifiedToolName(String annotationToolName, Class<?> toolGroup) {
+		return (this.toolGroups.length == 0) ? annotationToolName
+				: new StringBuffer(toolGroup.getName()).append(".").append(annotationToolName).toString();
+	}
+
+	protected Class<?>[] doGetClasses(Object toolObject) {
+		return (this.toolGroups.length == 0) ? new Class[] { toolObject.getClass() } : this.toolGroups;
+	}
+
+	protected <T> Predicate<T> distinctByName(Function<? super T, Object> nameExtractor) {
+		Map<Object, Boolean> map = new ConcurrentHashMap<>();
+		return t -> map.putIfAbsent(nameExtractor.apply(t), Boolean.TRUE) == null;
 	}
 
 	protected String generateInputSchema(Method method) {
@@ -62,84 +97,84 @@ public class AsyncMcpToolGroupProvider {
 		return JsonSchemaGenerator.generateFromClass(methodReturnType);
 	}
 
+	public List<AsyncToolSpecification> getToolSpecifications() {
+		List<AsyncToolSpecification> toolSpecs = this.toolObjects.stream().map(toolObject -> {
+			return Stream.of(doGetClasses(toolObject)).map(toolGroup -> {
+				return Stream.of(doGetMethods(toolGroup))
+						.filter(method -> method.isAnnotationPresent(McpTool.class))
+						.filter(method -> !Mono.class.isAssignableFrom(method.getReturnType()))
+						.filter(method -> Mono.class.isAssignableFrom(method.getReturnType())
+								|| Flux.class.isAssignableFrom(method.getReturnType())
+								|| Publisher.class.isAssignableFrom(method.getReturnType()))
+						.map(mcpToolMethod -> {
+
+							var toolAnnotation = doGetMcpToolAnnotation(mcpToolMethod);
+
+							String annotationToolName = Utils.hasText(toolAnnotation.name()) ? toolAnnotation.name()
+									: mcpToolMethod.getName();
+
+							String toolName = doGetFullyQualifiedToolName(annotationToolName, toolGroup);
+
+							String toolDescrption = toolAnnotation.description();
+
+							String inputSchema = generateInputSchema(mcpToolMethod);
+
+							var toolBuilder = McpSchema.Tool.builder().name(toolName).description(toolDescrption)
+									.inputSchema(inputSchema);
+
+							// annotations
+							if (toolAnnotation.annotations() != null) {
+								var toolAnnotations = toolAnnotation.annotations();
+								toolBuilder.annotations(new McpSchema.ToolAnnotations(toolAnnotations.title(),
+										toolAnnotations.readOnlyHint(), toolAnnotations.destructiveHint(),
+										toolAnnotations.idempotentHint(), toolAnnotations.openWorldHint(), null));
+							}
+
+							if (toolAnnotation.generateOutputSchema()
+									&& !ReactiveUtils.isReactiveReturnTypeOfVoid(mcpToolMethod)
+									&& !ReactiveUtils.isReactiveReturnTypeOfCallToolResult(mcpToolMethod)) {
+
+								ReactiveUtils.getReactiveReturnTypeArgument(mcpToolMethod).ifPresent(typeArgument -> {
+									Class<?> methodReturnType = typeArgument instanceof Class<?>
+											? (Class<?>) typeArgument
+											: null;
+									if (!ClassUtils.isPrimitiveOrWrapper(methodReturnType)
+											&& !ClassUtils.isSimpleValueType(methodReturnType)) {
+										toolBuilder.outputSchema(generateOutputSchema((Class<?>) typeArgument));
+									}
+								});
+							}
+							var tool = toolBuilder.build();
+
+							ReturnMode returnMode = tool.outputSchema() != null ? ReturnMode.STRUCTURED
+									: ReactiveUtils.isReactiveReturnTypeOfVoid(mcpToolMethod) ? ReturnMode.VOID
+											: ReturnMode.TEXT;
+
+							BiFunction<McpAsyncServerExchange, CallToolRequest, Mono<CallToolResult>> methodCallback = new AsyncMcpToolMethodCallback(
+									returnMode, mcpToolMethod, toolObject);
+
+							AsyncToolSpecification toolSpec = AsyncToolSpecification.builder().tool(tool)
+									.callHandler(methodCallback).build();
+
+							if (logger.isDebugEnabled()) {
+								logger.debug("created async stateless toolspec={}", toolSpec);
+							}
+
+							return toolSpec;
+
+						}).toList();
+			}).flatMap(List::stream).toList();
+		}).flatMap(List::stream).filter(distinctByName(s -> s.tool().name())).toList();
+
+		if (toolSpecs.isEmpty()) {
+			logger.warn("No tool methods found in the provided tool objects: {}", this.toolObjects);
+		}
+
+		return toolSpecs;
+	}
+
 	protected McpTool doGetMcpToolAnnotation(Method method) {
 		return method.getAnnotation(McpTool.class);
-	}
-
-	protected Method[] doGetClassMethods(Class<?> toolGroup) {
-		if (toolGroup.isInterface()) {
-			return toolGroup.getMethods();
-		} else {
-			return toolGroup.getDeclaredMethods();
-		}
-	}
-
-	public List<AsyncToolSpecification> getToolSpecifications() {
-		List<AsyncToolSpecification> toolServiceSpecs = Arrays.asList(getToolGroups()).stream().map(toolGroup -> {
-			return Arrays.asList(doGetClassMethods(toolGroup)).stream()
-					.filter(method -> method.isAnnotationPresent(McpTool.class))
-					.filter(method -> Mono.class.isAssignableFrom(method.getReturnType())
-							|| Flux.class.isAssignableFrom(method.getReturnType())
-							|| Publisher.class.isAssignableFrom(method.getReturnType()))
-					.map(mcpToolMethod -> {
-
-						var toolAnnotation = doGetMcpToolAnnotation(mcpToolMethod);
-
-						String toolName = createFullyQualifiedToolName(toolGroup,
-								Utils.hasText(toolAnnotation.name()) ? toolAnnotation.name() : mcpToolMethod.getName());
-
-						String toolDescrption = toolAnnotation.description();
-
-						String inputSchema = generateInputSchema(mcpToolMethod);
-
-						var toolBuilder = McpSchema.Tool.builder().name(toolName).description(toolDescrption)
-								.inputSchema(inputSchema);
-
-						// annotations
-						if (toolAnnotation.annotations() != null) {
-							var toolAnnotations = toolAnnotation.annotations();
-							toolBuilder.annotations(new McpSchema.ToolAnnotations(toolAnnotations.title(),
-									toolAnnotations.readOnlyHint(), toolAnnotations.destructiveHint(),
-									toolAnnotations.idempotentHint(), toolAnnotations.openWorldHint(), null));
-						}
-
-						if (toolAnnotation.generateOutputSchema()
-								&& !ReactiveUtils.isReactiveReturnTypeOfVoid(mcpToolMethod)
-								&& !ReactiveUtils.isReactiveReturnTypeOfCallToolResult(mcpToolMethod)) {
-
-							ReactiveUtils.getReactiveReturnTypeArgument(mcpToolMethod).ifPresent(typeArgument -> {
-								Class<?> methodReturnType = typeArgument instanceof Class<?> ? (Class<?>) typeArgument
-										: null;
-								if (!ClassUtils.isPrimitiveOrWrapper(methodReturnType)
-										&& !ClassUtils.isSimpleValueType(methodReturnType)) {
-									toolBuilder.outputSchema(generateOutputSchema((Class<?>) typeArgument));
-								}
-							});
-						}
-						var tool = toolBuilder.build();
-
-						ReturnMode returnMode = tool.outputSchema() != null ? ReturnMode.STRUCTURED
-								: ReactiveUtils.isReactiveReturnTypeOfVoid(mcpToolMethod) ? ReturnMode.VOID
-										: ReturnMode.TEXT;
-
-						BiFunction<McpAsyncServerExchange, CallToolRequest, Mono<CallToolResult>> methodCallback = new AsyncMcpToolMethodCallback(
-								returnMode, mcpToolMethod, getServiceObject());
-
-						AsyncToolSpecification toolSpec = AsyncToolSpecification.builder().tool(tool)
-								.callHandler(methodCallback).build();
-
-						if (logger.isDebugEnabled()) {
-							logger.debug("created async stateless toolspec={}", toolSpec);
-						}
-
-						return toolSpec;
-					});
-		}).flatMap(l -> l).toList();
-
-		if (toolServiceSpecs.isEmpty()) {
-			logger.warn("No async toolgroup methods found in service object: {}", getServiceObject());
-		}
-		return toolServiceSpecs;
 	}
 
 }
