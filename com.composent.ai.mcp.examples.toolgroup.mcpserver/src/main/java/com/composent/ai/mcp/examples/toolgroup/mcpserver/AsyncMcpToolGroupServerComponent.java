@@ -1,6 +1,5 @@
 package com.composent.ai.mcp.examples.toolgroup.mcpserver;
 
-import java.net.UnixDomainSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,7 +18,7 @@ import io.modelcontextprotocol.server.McpAsyncServer;
 import io.modelcontextprotocol.server.McpServer;
 import io.modelcontextprotocol.spec.McpSchema.ServerCapabilities;
 
-@Component(immediate=true, service = { AsyncMcpToolGroupServer.class })
+@Component(immediate = true, service = { AsyncMcpToolGroupServer.class })
 public class AsyncMcpToolGroupServerComponent extends AbstractAsyncMcpToolGroupServer {
 
 	private static Logger logger = LoggerFactory.getLogger(AsyncMcpToolGroupServerComponent.class);
@@ -39,8 +38,7 @@ public class AsyncMcpToolGroupServerComponent extends AbstractAsyncMcpToolGroupS
 		Files.deleteIfExists(socketPath);
 		logger.debug("starting uds sync server with socket at path={}", socketPath);
 		// Create unix domain socket transport
-		UDSMcpServerTransportProvider transport = new UDSMcpServerTransportProvider(
-				UnixDomainSocketAddress.of(socketPath));
+		UDSMcpServerTransportProvider transport = new UDSMcpServerTransportProvider(socketPath);
 		// Create sync server
 		this.server = McpServer.async(transport).serverInfo("example-sync-uds-transport-server", "1.0.0")
 				.capabilities(ServerCapabilities.builder().tools(true).build()).build();

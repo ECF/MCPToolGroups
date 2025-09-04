@@ -21,7 +21,7 @@ import io.modelcontextprotocol.spec.McpSchema;
 import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
 import reactor.core.publisher.Mono;
 
-@Component(immediate=true)
+@Component(immediate = true)
 public class SyncToolGroupComponent implements ExampleToolGroup {
 
 	private static Logger logger = LoggerFactory.getLogger(SyncToolGroupComponent.class);
@@ -30,7 +30,7 @@ public class SyncToolGroupComponent implements ExampleToolGroup {
 	private SyncMcpToolGroupServer syncServer;
 	@Reference
 	private AsyncMcpToolGroupServer asyncServer;
-	
+
 	// Instance created in activate
 	private List<SyncToolSpecification> syncToolspecs;
 
