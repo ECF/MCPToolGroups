@@ -35,49 +35,78 @@ public interface ExampleToolGroup {
 ```
 Each method in the interface is annotated with the @McpTool and @McpToolParam annotations from the [mcp-annotations](https://github.com/spring-ai-community/mcp-annotations) project and the CallToolResult from the [mcp-java-sdk](https://github.com/modelcontextprotocol/java-sdk).  There are both sync methods (add, multiply, getImageAndMessage) and async methods (aadd and amultiply).
  
-From the [com.composent.ai.mcp.examples.toolgroup.mcpserver](/com.compsent.ai.mcp.examples.toolgroup.mcpserver) project, [here](/MCPToolGroups/blob/main/com.composent.ai.mcp.examples.toolgroup.mcpserver/src/main/java/com/composent/ai/mcp/examples/toolgroup/mcpserver/ToolGroupComponent.java) is the full implementation of the above interface
+From the [com.composent.ai.mcp.examples.toolgroup.mcpserver](/com.compsent.ai.mcp.examples.toolgroup.mcpserver) project, [here](/com.composent.ai.mcp.examples.toolgroup.mcpserver/src/main/java/com/composent/ai/mcp/examples/toolgroup/mcpserver/ToolGroupComponent.java) is the full implementation of the above interface
 
 ```java
 @Component(immediate = true)
-public class ExampleToolGroupComponent implements ExampleToolGroup {
+public class ToolGroupComponent implements ExampleToolGroup {
+
+	private static Logger logger = LoggerFactory.getLogger(ToolGroupComponent.class);
 
 	@Reference
-	private SyncMcpToolGroupServer server;
+	private SyncMcpToolGroupServer syncServer;
+	@Reference
+	private AsyncMcpToolGroupServer asyncServer;
+
 	// Instance created in activate
-	private List<SyncToolSpecification> toolspecs;
+	private List<SyncToolSpecification> syncToolspecs;
+
+	private List<AsyncToolSpecification> asyncToolspecs;
 
 	@Activate
 	void activate() {
-		toolspecs = new SyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolSpecifications();
-		// Add to server
-		server.addTools(toolspecs);
+		syncToolspecs = new SyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolSpecifications();
+		// Add to syncServer
+		syncServer.addTools(syncToolspecs);
+		asyncToolspecs = new AsyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolSpecifications();
+		// Add to asyncServer
+		asyncServer.addTools(asyncToolspecs);
 	}
 
 	@Deactivate
 	void deactivate() {
-		if (toolspecs != null) {
-			this.server.removeTools(toolspecs);
-			toolspecs = null;
+		if (syncToolspecs != null) {
+			this.syncServer.removeTools(syncToolspecs);
+			syncToolspecs = null;
 		}
+		if (asyncToolspecs != null) {
+			this.asyncServer.removeTools(asyncToolspecs);
+			asyncToolspecs = null;
+		}
+
 	}
 
 	@Override
 	public double add(double x, double y) {
+		logger.debug("Adding x={} y={}", x, y);
 		return x + y;
 	}
 
 	@Override
 	public double multiply(double x, double y) {
+		logger.debug("Multiplying x={} y={}", x, y);
 		return x * y;
 	}
 
 	@Override
 	public CallToolResult getImageAndMessage(String message) {
+		logger.debug("getImageAndMessage message={}", message);
 		return CallToolResult.builder().addTextContent("Message is: " + message).addContent(
 				new McpSchema.ImageContent(null, "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD...", "image/jpeg"))
 				.build();
 	}
 
+	@Override
+	public Mono<Double> aadd(double x, double y) {
+		logger.debug("Async Adding x={} y={}", x, y);
+		return Mono.fromRunnable(() -> add(x, y));
+	}
+
+	@Override
+	public Mono<Double> amultiply(double x, double y) {
+		logger.debug("Async Multiplying x={} y={}", x, y);
+		return Mono.fromRunnable(() -> multiply(x, y));
+	}
 }
 ```
 Note first that this class provides an implementation of ExampleToolGroup interface methods.   
