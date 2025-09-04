@@ -18,6 +18,8 @@ import org.springaicommunity.mcp.method.tool.SyncMcpToolMethodCallback;
 import org.springaicommunity.mcp.method.tool.utils.ClassUtils;
 import org.springaicommunity.mcp.method.tool.utils.JsonSchemaGenerator;
 
+import com.composent.ai.mcp.toolgroup.util.ToolGroupUtil;
+
 import io.modelcontextprotocol.server.McpServerFeatures.SyncToolSpecification;
 import io.modelcontextprotocol.server.McpSyncServerExchange;
 import io.modelcontextprotocol.spec.McpSchema;
@@ -74,7 +76,7 @@ public class SyncMcpToolGroupProvider {
 
 	protected String doGetFullyQualifiedToolName(String annotationToolName, Class<?> toolGroup) {
 		return (this.toolGroups.length == 0) ? annotationToolName
-				: new StringBuffer(toolGroup.getName()).append(".").append(annotationToolName).toString();
+				: ToolGroupUtil.getFQToolName(toolGroup.getName(), annotationToolName);
 	}
 
 	protected Class<?>[] doGetClasses(Object toolObject) {

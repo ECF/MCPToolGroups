@@ -28,6 +28,9 @@ public abstract class AbstractAsyncMcpToolGroupServer implements AsyncMcpToolGro
 		Assert.notNull(s, "Server cannot be null");
 		try {
 			s.addTool(toolHandler);
+			if (logger.isDebugEnabled()) {
+				logger.debug("added tool specification={} to async server={}",toolHandler.tool().name(), s);
+			}
 			return true;
 		} catch (McpError e) {
 			return handleMcpError(toolHandler.tool().name(), e, true);
@@ -41,6 +44,9 @@ public abstract class AbstractAsyncMcpToolGroupServer implements AsyncMcpToolGro
 		Assert.notNull(s, "Server must not be null");
 		try {
 			s.removeTool(fqToolName);
+			if (logger.isDebugEnabled()) {
+				logger.debug("removed tool specification={} to async server={}",fqToolName, s);
+			}
 			return true;
 		} catch (McpError e) {
 			return handleMcpError(fqToolName, e, false);

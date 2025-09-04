@@ -20,6 +20,8 @@ import org.springaicommunity.mcp.method.tool.ReturnMode;
 import org.springaicommunity.mcp.method.tool.utils.ClassUtils;
 import org.springaicommunity.mcp.method.tool.utils.JsonSchemaGenerator;
 
+import com.composent.ai.mcp.toolgroup.util.ToolGroupUtil;
+
 import io.modelcontextprotocol.server.McpAsyncServerExchange;
 import io.modelcontextprotocol.server.McpServerFeatures.AsyncToolSpecification;
 import io.modelcontextprotocol.spec.McpSchema;
@@ -77,7 +79,7 @@ public class AsyncMcpToolGroupProvider {
 
 	protected String doGetFullyQualifiedToolName(String annotationToolName, Class<?> toolGroup) {
 		return (this.toolGroups.length == 0) ? annotationToolName
-				: new StringBuffer(toolGroup.getName()).append(".").append(annotationToolName).toString();
+				: ToolGroupUtil.getFQToolName(toolGroup.getName(), annotationToolName);
 	}
 
 	protected Class<?>[] doGetClasses(Object toolObject) {

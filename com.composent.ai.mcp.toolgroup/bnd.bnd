@@ -8,4 +8,5 @@
 	org.osgi.annotation.bundle
 Export-Package: \
 	com.composent.ai.mcp.toolgroup.provider,\
-	com.composent.ai.mcp.toolgroup
+	com.composent.ai.mcp.toolgroup,\
+	com.composent.ai.mcp.toolgroup.util

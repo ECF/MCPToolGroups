@@ -28,6 +28,9 @@ public abstract class AbstractSyncMcpToolGroupServer implements SyncMcpToolGroup
 		Assert.notNull(s, "Server cannot be null");
 		try {
 			s.addTool(toolHandler);
+			if (logger.isDebugEnabled()) {
+				logger.debug("added tool specification={} to sync server={}",toolHandler.tool().name(), s);
+			}
 			return true;
 		} catch (McpError e) {
 			return handleMcpError(toolHandler.tool().name(), e, true);
@@ -41,6 +44,9 @@ public abstract class AbstractSyncMcpToolGroupServer implements SyncMcpToolGroup
 		Assert.notNull(s, "Server must not be null");
 		try {
 			s.removeTool(fqToolName);
+			if (logger.isDebugEnabled()) {
+				logger.debug("removed tool specification={} from sync server={}", fqToolName, s);
+			}
 			return true;
 		} catch (McpError e) {
 			return handleMcpError(fqToolName, e, false);
