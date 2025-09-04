@@ -1,9 +1,13 @@
 -buildpath: \
 	org.osgi.service.component.annotations,\
-	io.modelcontextprotocol.sdk.mcp;version='0.12',\
+	io.modelcontextprotocol.sdk.mcp,\
 	com.fasterxml.jackson.core.jackson-databind,\
 	slf4j.api,\
 	com.composent.ai.mcp.toolgroup,\
 	com.composent.ai.mcp.transport.uds,\
 	com.composent.ai.mcp.examples.toolgroup.api;version=snapshot,\
-	io.projectreactor.reactor-core
+	io.projectreactor.reactor-core,\
+	org.springaicommunity.mcp-annotations
+	
+Bundle-Version:             1.1.0.${tstamp}
+	

@@ -6,3 +6,5 @@
 	com.composent.ai.mcp.toolgroup;version=snapshot,\
 	io.projectreactor.reactor-core
 Export-Package: com.composent.ai.mcp.examples.toolgroup.api
+
+Bundle-Version:             1.1.0.${tstamp}

@@ -22,8 +22,8 @@ import org.springaicommunity.mcp.method.tool.utils.JsonSchemaGenerator;
 
 import com.composent.ai.mcp.toolgroup.util.ToolGroupUtil;
 
+import io.modelcontextprotocol.common.McpTransportContext;
 import io.modelcontextprotocol.server.McpStatelessServerFeatures.AsyncToolSpecification;
-import io.modelcontextprotocol.server.McpTransportContext;
 import io.modelcontextprotocol.spec.McpSchema;
 import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
 import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
