@@ -9,11 +9,6 @@ The jar/api defined [here](/com.composent.ai.mcp.toolgroup) provides a very smal
 For example, in the [com.composent.ai.mcp.examples.toolgroup.api](/com.composent.ai.mcp.examples.toolgroup.api) project is the declaration of an ExampleToolGroup:
 
 ```java
-import org.springaicommunity.mcp.annotation.McpTool;
-import org.springaicommunity.mcp.annotation.McpToolParam;
-
-import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
-
 public interface ExampleToolGroup {
 
 	@McpTool(description = "computes the sum of the two double precision input arguments a and b")
@@ -28,11 +23,19 @@ public interface ExampleToolGroup {
 	public CallToolResult getImageAndMessage(
 			@McpToolParam(description = "Message to return along with tool group image") String message);
 
+	@McpTool(description = "return asynchronously the sum of the two double precision input arguments a and b")
+	Mono<Double> aadd(@McpToolParam(description = "x is the first argument") double x,
+			@McpToolParam(description = "y is the second argument") double y);
+
+	@McpTool(description = "return asynchronously the product of the two given double precision arguments named a and b")
+	Mono<Double> amultiply(@McpToolParam(description = "x is the first argument") double x,
+			@McpToolParam(description = "y is the second argument") double y);
+
 }
 ```
-Each method in the interface is annotated with the @McpTool and @McpToolParam annotations from the [mcp-annotations](https://github.com/spring-ai-community/mcp-annotations) project and the CallToolResult from the [mcp-java-sdk](https://github.com/modelcontextprotocol/java-sdk).
+Each method in the interface is annotated with the @McpTool and @McpToolParam annotations from the [mcp-annotations](https://github.com/spring-ai-community/mcp-annotations) project and the CallToolResult from the [mcp-java-sdk](https://github.com/modelcontextprotocol/java-sdk).  There are both sync methods (add, multiply, getImageAndMessage) and async methods (aadd and amultiply).
  
-From the [com.composent.ai.mcp.examples.toolgroup.mcpserver](/com.compsent.ai.mcp.examples.toolgroup.mcpserver) project, [here](https://github.com/ECF/MCPToolGroups/blob/main/com.composent.ai.mcp.examples.toolgroup.mcpserver/src/main/java/com/composent/ai/mcp/examples/toolgroup/mcpserver/ExampleToolGroupComponent.java) is the full implementation of the above interface
+From the [com.composent.ai.mcp.examples.toolgroup.mcpserver](/com.compsent.ai.mcp.examples.toolgroup.mcpserver) project, [here](/MCPToolGroups/blob/main/com.composent.ai.mcp.examples.toolgroup.mcpserver/src/main/java/com/composent/ai/mcp/examples/toolgroup/mcpserver/ToolGroupComponent.java) is the full implementation of the above interface
 
 ```java
 @Component(immediate = true)
@@ -77,13 +80,13 @@ public class ExampleToolGroupComponent implements ExampleToolGroup {
 
 }
 ```
-Note first that this class provides an implementation of the 3 ExampleToolGroup interface methods.   
+Note first that this class provides an implementation of ExampleToolGroup interface methods.   
 
 The McpServer tool specification for the ExampleToolGroup is created on component activation here:
 ```java
 toolspecs = new SyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolSpecifications();
 ```
-The SyncMcpToolGroupProvider class is from [this package](https://github.com/ECF/MCPToolGroups/tree/main/com.composent.ai.mcp.toolgroup/src/main/java/com/composent/ai/mcp/toolgroup/provider). These tool group provider classes are similar to those in the [mcp-annotation provider/tool package](https://github.com/spring-ai-community/mcp-annotations/tree/main/mcp-annotations/src/main/java/org/springaicommunity/mcp/provider/tool).
+The SyncMcpToolGroupProvider class is from [this package](https://github.com/ECF/MCPToolGroups/tree/main/com.composent.ai.mcp.toolgroup/src/main/java/com/composent/ai/mcp/toolgroup/provider). 
 
 ```java
 new SyncMcpToolGroupProvider(this, ExampleToolGroup.class)
@@ -95,13 +98,15 @@ The SyncMcpToolGroupProvider constructor request an implementing instance...this
 		// Add to server
 		server.addTools(toolspecs);
 ```
-As appropriate for the timing/lifecycle, they can also be dynamically removed
+As appropriate for the timing/lifecycle, the toolspecs can also be dynamically removed
 ```java
 		if (toolspecs != null) {
 			this.server.removeTools(toolspecs);
 			toolspecs = null;
 		}
 ```
-Once these specifications are added to a server, MCP clients are able to inspect the @McpTool and @McpToolParam descriptions of the tools in this group, use the descriptions to provide required input, take action and receive output (i.e. call the tool method) from all the tools in this group.
+Once these specifications are added to a server, MCP clients are able to inspect the @McpTool and @McpToolParam descriptions of the tools in this group, use the descriptions to provide required input, take action and receive output (i.e. call the tool method) from all the relevant tools in this group.  Note that the ExampleTools has both sync and async tool methods, and the McpSyncServer and McpSyncServer get the appropriate types of tools from the ExampleTools interface class.
 
 Note that the use of Java interfaces in this way automatically adds MCP metadata (descriptions from the @McpTool and @McpToolParam) to the api contract.  This can be easily duplicated in other languages...e.g. Python, C++, or Typescript via decorators, annotations, and abstract classes.
+
+
