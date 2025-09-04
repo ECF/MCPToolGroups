@@ -22,9 +22,9 @@ import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
 import reactor.core.publisher.Mono;
 
 @Component(immediate = true)
-public class SyncToolGroupComponent implements ExampleToolGroup {
+public class ToolGroupComponent implements ExampleToolGroup {
 
-	private static Logger logger = LoggerFactory.getLogger(SyncToolGroupComponent.class);
+	private static Logger logger = LoggerFactory.getLogger(ToolGroupComponent.class);
 
 	@Reference
 	private SyncMcpToolGroupServer syncServer;
