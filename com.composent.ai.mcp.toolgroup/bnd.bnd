@@ -11,4 +11,4 @@ Export-Package: \
 	com.composent.ai.mcp.toolgroup,\
 	com.composent.ai.mcp.toolgroup.util
 
-Bundle-Version:             1.1.0.${tstamp}
+Bundle-Version: 1.1.1.${tstamp}

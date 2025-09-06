@@ -27,7 +27,7 @@ public abstract class AbstractStatelessAsyncMcpToolGroupServer implements Statel
 		McpStatelessAsyncServer s = getServer();
 		Assert.notNull(s, "Server cannot be null");
 		try {
-			s.addTool(toolHandler);
+			s.addTool(toolHandler).block();
 			if (logger.isDebugEnabled()) {
 				logger.debug("added tool specification={} to stateless async server={}",toolHandler.tool().name(), s);
 			}
@@ -43,7 +43,7 @@ public abstract class AbstractStatelessAsyncMcpToolGroupServer implements Statel
 		McpStatelessAsyncServer s = getServer();
 		Assert.notNull(s, "Server must not be null");
 		try {
-			s.removeTool(fqToolName);
+			s.removeTool(fqToolName).block();
 			if (logger.isDebugEnabled()) {
 				logger.debug("removed tool specification={} to stateless async server={}",fqToolName, s);
 			}
