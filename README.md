@@ -24,13 +24,12 @@ public interface ExampleToolGroup {
 			@McpToolParam(description = "Message to return along with tool group image") String message);
 
 	@McpTool(description = "return asynchronously the sum of the two double precision input arguments a and b")
-	Mono<Double> aadd(@McpToolParam(description = "x is the first argument") double x,
+	Mono<Double> asyncAdd(@McpToolParam(description = "x is the first argument") double x,
 			@McpToolParam(description = "y is the second argument") double y);
 
 	@McpTool(description = "return asynchronously the product of the two given double precision arguments named a and b")
-	Mono<Double> amultiply(@McpToolParam(description = "x is the first argument") double x,
+	Mono<Double> asyncMultiply(@McpToolParam(description = "x is the first argument") double x,
 			@McpToolParam(description = "y is the second argument") double y);
-
 }
 ```
 Each method in the interface is annotated with the @McpTool and @McpToolParam annotations from the [mcp-annotations](https://github.com/spring-ai-community/mcp-annotations) project and the CallToolResult from the [mcp-java-sdk](https://github.com/modelcontextprotocol/java-sdk).  There are both sync methods (add, multiply, getImageAndMessage) and async methods (aadd and amultiply).
