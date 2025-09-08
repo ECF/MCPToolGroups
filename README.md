@@ -97,15 +97,15 @@ public class ToolGroupComponent implements ExampleToolGroup {
 	}
 
 	@Override
-	public Mono<Double> aadd(double x, double y) {
+	public Mono<Double> asyncAdd(double x, double y) {
 		logger.debug("Async Adding x={} y={}", x, y);
-		return Mono.fromRunnable(() -> add(x, y));
+		return Mono.just(add(x, y));
 	}
 
 	@Override
-	public Mono<Double> amultiply(double x, double y) {
+	public Mono<Double> asyncMultiply(double x, double y) {
 		logger.debug("Async Multiplying x={} y={}", x, y);
-		return Mono.fromRunnable(() -> multiply(x, y));
+		return Mono.just(multiply(x, y));
 	}
 }
 ```
