@@ -40,7 +40,7 @@ public class AsyncMcpToolGroupServerComponent extends AbstractAsyncMcpToolGroupS
 		// Create unix domain socket transport
 		UDSMcpServerTransportProvider transport = new UDSMcpServerTransportProvider(socketPath);
 		// Create async server
-		this.server = McpServer.async(transport).serverInfo("example-sync-uds-transport-server", "1.0.0")
+		this.server = McpServer.async(transport).serverInfo("example-async-uds-transport-server", "1.0.0")
 				.capabilities(ServerCapabilities.builder().tools(true).build()).build();
 		logger.debug("uds async server started");
 	}
