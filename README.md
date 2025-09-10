@@ -1,6 +1,6 @@
 # MCP Dynamic Tool Groups
 
-The Model Context Protocol (MCP) includes support for [tools](https://modelcontextprotocol.io/specification/2025-06-18/server/tools), allowing a common way for AI models to a) Get metadata (descriptions) of tool input and output;  b) Provide input, run imple/take action and provide output via the use of one or more of the available tools.
+The Model Context Protocol (MCP) includes support for [tools](https://modelcontextprotocol.io/specification/2025-06-18/server/tools), allowing a common way for AI models to a) Get metadata (descriptions) of tool input and output;  b) Provide input, run impl/take action and provide output via the use of one or more of the available tools.
 
 Currently, the [specification](https://modelcontextprotocol.io/specification/versioning) provides no way to declare tool groups.  Tool grouping, however, will become important as the number, variety and function of tools increases on a given MCP server/servers, along with the need for orchestration of multiple tools (sequencing the input and output of multiple tools to accomplish a given task) becomes more common.
 
