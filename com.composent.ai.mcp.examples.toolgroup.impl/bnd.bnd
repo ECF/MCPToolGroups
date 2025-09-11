@@ -1,0 +1,6 @@
+-buildpath: \
+	org.osgi.service.component.annotations,\
+	com.composent.ai.mcp.examples.toolgroup.api,\
+	io.projectreactor.reactor-core,\
+	io.modelcontextprotocol.sdk.mcp,\
+	slf4j.api
