@@ -21,7 +21,7 @@
 -plugin.3.Local: aQute.bnd.deployer.repository.LocalIndexedRepo;\
 		name                =Local;\
 		pretty              =true;\
-		local               =${build}/local
+		local               ='${build}/local'
 
 -plugin.4.ECFRSSDK: aQute.bnd.repository.p2.provider.P2Repository;\
 		url                 ='https://download.eclipse.org/rt/ecf/3.16.5/site.p2';\
@@ -53,3 +53,6 @@ testbin                 ${target-dir}/test-classes
 junit: org.apache.servicemix.bundles.junit
 mockito: org.mockito.mockito-core,\
   org.objenesis
+-plugin: aQute.bnd.repository.p2.provider.P2Repository;\
+		name                ='ECF gRPC Distribution Provider';\
+		url                 ='https://raw.githubusercontent.com/ECF/grpc-RemoteServicesProvider/master/build/'
