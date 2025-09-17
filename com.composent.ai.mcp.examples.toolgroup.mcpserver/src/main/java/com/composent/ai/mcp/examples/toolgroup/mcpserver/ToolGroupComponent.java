@@ -10,13 +10,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.composent.ai.mcp.examples.toolgroup.api.ExampleToolGroup;
-import com.composent.ai.mcp.toolgroup.AsyncMcpToolGroupServer;
-import com.composent.ai.mcp.toolgroup.SyncMcpToolGroupServer;
+import com.composent.ai.mcp.toolgroup.AsyncToolGroup;
+import com.composent.ai.mcp.toolgroup.SyncToolGroup;
 import com.composent.ai.mcp.toolgroup.provider.AsyncMcpToolGroupProvider;
 import com.composent.ai.mcp.toolgroup.provider.SyncMcpToolGroupProvider;
+import com.composent.ai.mcp.toolgroup.server.AsyncMcpToolGroupServer;
+import com.composent.ai.mcp.toolgroup.server.SyncMcpToolGroupServer;
 
-import io.modelcontextprotocol.server.McpServerFeatures.AsyncToolSpecification;
-import io.modelcontextprotocol.server.McpServerFeatures.SyncToolSpecification;
 import io.modelcontextprotocol.spec.McpSchema;
 import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
 import reactor.core.publisher.Mono;
@@ -32,29 +32,29 @@ public class ToolGroupComponent implements ExampleToolGroup {
 	private AsyncMcpToolGroupServer asyncServer;
 
 	// Instance created in activate
-	private List<SyncToolSpecification> syncToolspecs;
+	private List<SyncToolGroup> syncToolGroups;
 
-	private List<AsyncToolSpecification> asyncToolspecs;
+	private List<AsyncToolGroup> asyncToolGroups;
 
 	@Activate
 	void activate() {
-		syncToolspecs = new SyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolSpecifications();
+		syncToolGroups = new SyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolGroups();
 		// Add to syncServer
-		syncServer.addTools(syncToolspecs);
-		asyncToolspecs = new AsyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolSpecifications();
+		syncServer.addToolGroups(syncToolGroups);
+		asyncToolGroups = new AsyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolGroups();
 		// Add to asyncServer
-		asyncServer.addTools(asyncToolspecs);
+		asyncServer.addToolGroups(asyncToolGroups);
 	}
 
 	@Deactivate
 	void deactivate() {
-		if (syncToolspecs != null) {
-			this.syncServer.removeTools(syncToolspecs);
-			syncToolspecs = null;
+		if (syncToolGroups != null) {
+			this.syncServer.removeToolGroups(syncToolGroups);
+			syncToolGroups = null;
 		}
-		if (asyncToolspecs != null) {
-			this.asyncServer.removeTools(asyncToolspecs);
-			asyncToolspecs = null;
+		if (asyncToolGroups != null) {
+			this.asyncServer.removeToolGroups(asyncToolGroups);
+			asyncToolGroups = null;
 		}
 
 	}

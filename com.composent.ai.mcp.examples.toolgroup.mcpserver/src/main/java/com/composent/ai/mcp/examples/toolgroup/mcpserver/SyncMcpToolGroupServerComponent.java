@@ -10,8 +10,8 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.composent.ai.mcp.toolgroup.AbstractSyncMcpToolGroupServer;
-import com.composent.ai.mcp.toolgroup.SyncMcpToolGroupServer;
+import com.composent.ai.mcp.toolgroup.server.AbstractSyncMcpToolGroupServer;
+import com.composent.ai.mcp.toolgroup.server.SyncMcpToolGroupServer;
 import com.composent.ai.mcp.transport.uds.UDSMcpServerTransportProvider;
 
 import io.modelcontextprotocol.server.McpServer;

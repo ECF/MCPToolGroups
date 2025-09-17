@@ -9,6 +9,7 @@
 Export-Package: \
 	com.composent.ai.mcp.toolgroup.provider,\
 	com.composent.ai.mcp.toolgroup,\
-	com.composent.ai.mcp.toolgroup.util
+	com.composent.ai.mcp.toolgroup.util,\
+	com.composent.ai.mcp.toolgroup.server
 
 Bundle-Version: 1.1.1.${tstamp}

@@ -1,7 +1,9 @@
-package com.composent.ai.mcp.toolgroup;
+package com.composent.ai.mcp.toolgroup.server;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.composent.ai.mcp.toolgroup.SyncToolGroup;
 
 import io.modelcontextprotocol.server.McpServerFeatures.SyncToolSpecification;
 import io.modelcontextprotocol.server.McpSyncServer;
@@ -53,4 +55,13 @@ public abstract class AbstractSyncMcpToolGroupServer implements SyncMcpToolGroup
 		}
 	}
 
+	@Override
+	public void addToolGroup(SyncToolGroup toolGroup) {
+		addTools(toolGroup.getSpecifications());
+	}
+	
+	@Override
+	public void removeToolGroup(SyncToolGroup toolGroup) {
+		removeTools(toolGroup.getSpecifications());
+	}
 }

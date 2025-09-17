@@ -1,4 +1,4 @@
-package com.composent.ai.mcp.toolgroup;
+package com.composent.ai.mcp.toolgroup.server;
 
 import java.util.List;
 

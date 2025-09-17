@@ -11,12 +11,12 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 import com.composent.ai.mcp.examples.toolgroup.api.ExampleToolGroup;
-import com.composent.ai.mcp.toolgroup.AbstractSyncMcpToolGroupServer;
+import com.composent.ai.mcp.toolgroup.SyncToolGroup;
 import com.composent.ai.mcp.toolgroup.provider.SyncMcpToolGroupProvider;
+import com.composent.ai.mcp.toolgroup.server.AbstractSyncMcpToolGroupServer;
 import com.composent.ai.mcp.transport.uds.UDSMcpServerTransportProvider;
 
 import io.modelcontextprotocol.server.McpServer;
-import io.modelcontextprotocol.server.McpServerFeatures.SyncToolSpecification;
 import io.modelcontextprotocol.server.McpSyncServer;
 import io.modelcontextprotocol.spec.McpSchema.ServerCapabilities;
 
@@ -37,8 +37,8 @@ public class RemoteExampleToolGroupConsumerComponent extends AbstractSyncMcpTool
 	// Server instance created in activate below
 	private McpSyncServer server;
 
-	// List of specifications created via the remoteExampleToolGroup proxy instance 
-	private List<SyncToolSpecification> syncToolspecs;
+	// List of toolgroups created via the remoteExampleToolGroup proxy instance 
+	private List<SyncToolGroup> syncToolGroups;
 
 	@Activate
 	// Called after ExampleToolGroup service reference is satisfied (by injection of 
@@ -53,16 +53,16 @@ public class RemoteExampleToolGroupConsumerComponent extends AbstractSyncMcpTool
 				.capabilities(ServerCapabilities.builder().tools(true).build()).build();
 		// Here is where the remote service proxy, along with the ExampleToolGroup annotated class
 		// are used to create sync server tool specs from the remote service proxy
-		syncToolspecs = new SyncMcpToolGroupProvider(remoteExampleToolGroup, ExampleToolGroup.class).getToolSpecifications();
+		syncToolGroups = new SyncMcpToolGroupProvider(remoteExampleToolGroup, ExampleToolGroup.class).getToolGroups();
 		// Add specs to syncServer
-		addTools(syncToolspecs);
+		addToolGroups(syncToolGroups);
 	}
 
 	@Deactivate
 	void deactivate() {
-		if (syncToolspecs != null) {
-			removeTools(syncToolspecs);
-			syncToolspecs = null;
+		if (syncToolGroups != null) {
+			removeToolGroups(syncToolGroups);
+			syncToolGroups = null;
 		}
 	}
 

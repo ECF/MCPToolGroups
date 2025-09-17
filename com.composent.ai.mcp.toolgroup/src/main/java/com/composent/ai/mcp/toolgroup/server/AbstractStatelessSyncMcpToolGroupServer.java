@@ -1,4 +1,4 @@
-package com.composent.ai.mcp.toolgroup;
+package com.composent.ai.mcp.toolgroup.server;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

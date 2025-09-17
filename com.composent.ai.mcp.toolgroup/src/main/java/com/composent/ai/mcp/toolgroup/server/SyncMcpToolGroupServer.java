@@ -1,6 +1,8 @@
-package com.composent.ai.mcp.toolgroup;
+package com.composent.ai.mcp.toolgroup.server;
 
 import java.util.List;
+
+import com.composent.ai.mcp.toolgroup.SyncToolGroup;
 
 import io.modelcontextprotocol.server.McpServerFeatures;
 
@@ -18,4 +20,17 @@ public interface SyncMcpToolGroupServer {
 		specifications.forEach(specification -> removeTool(specification.tool().name()));
 	}
 
+	void addToolGroup(SyncToolGroup toolGroup);
+
+	default void addToolGroups(List<SyncToolGroup> toolGroups) {
+		toolGroups.forEach(toolGroup -> addToolGroup(toolGroup));
+	}
+
+	void removeToolGroup(SyncToolGroup toolGroup);
+
+	default void removeToolGroups(List<SyncToolGroup> toolGroups) {
+		toolGroups.forEach(toolGroup -> removeToolGroup(toolGroup));
+	}
+
+	
 }
