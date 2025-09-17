@@ -12,8 +12,8 @@ public class ToolGroupName extends ToolGroupNameSegment {
 		}
 		ToolGroupNameSegment parent = null;
 		ToolGroupName result = null;
-		for(int i=0; i < segments.length; i++) {
-			if (i==(segments.length - 1)) {
+		for (int i = 0; i < segments.length; i++) {
+			if (i == (segments.length - 1)) {
 				result = new ToolGroupName(parent, segments[i]);
 			} else {
 				parent = new ToolGroupNameSegment(parent, segments[i]);
@@ -21,15 +21,15 @@ public class ToolGroupName extends ToolGroupNameSegment {
 		}
 		return result;
 	}
-	
+
 	public static ToolGroupName fromClass(Class<?> clazz) {
 		return parseName(clazz.getName());
 	}
-	
+
 	public ToolGroupName(ToolGroupNameSegment parent, String segmentName) {
 		super(parent, segmentName);
 	}
-	
+
 	public ToolGroupName(String segmentName) {
 		this(null, segmentName);
 	}

@@ -31,7 +31,7 @@ public abstract class AbstractAsyncMcpToolGroupServer implements AsyncMcpToolGro
 		try {
 			s.addTool(toolHandler).block();
 			if (logger.isDebugEnabled()) {
-				logger.debug("added tool specification={} to async server={}",toolHandler.tool().name(), s);
+				logger.debug("added tool specification={} to async server={}", toolHandler.tool().name(), s);
 			}
 			return true;
 		} catch (McpError e) {
@@ -47,7 +47,7 @@ public abstract class AbstractAsyncMcpToolGroupServer implements AsyncMcpToolGro
 		try {
 			s.removeTool(fqToolName).block();
 			if (logger.isDebugEnabled()) {
-				logger.debug("removed tool specification={} to async server={}",fqToolName, s);
+				logger.debug("removed tool specification={} to async server={}", fqToolName, s);
 			}
 			return true;
 		} catch (McpError e) {
@@ -59,7 +59,7 @@ public abstract class AbstractAsyncMcpToolGroupServer implements AsyncMcpToolGro
 	public void addToolGroup(AsyncToolGroup toolGroup) {
 		addTools(toolGroup.getSpecifications());
 	}
-	
+
 	@Override
 	public void removeToolGroup(AsyncToolGroup toolGroup) {
 		removeTools(toolGroup.getSpecifications());

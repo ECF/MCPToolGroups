@@ -101,8 +101,9 @@ public class SyncMcpToolGroupProvider {
 				ToolGroupName toolGroupName = ToolGroupName.fromClass(toolGroup);
 				// XXX tool group description is gotten right here (from new annotation)
 				String toolGroupDescription = null;
-				
-				List<SyncToolSpecification> specs = Stream.of(doGetMethods(toolGroup)).filter(method -> method.isAnnotationPresent(McpTool.class))
+
+				List<SyncToolSpecification> specs = Stream.of(doGetMethods(toolGroup))
+						.filter(method -> method.isAnnotationPresent(McpTool.class))
 						.filter(method -> !Mono.class.isAssignableFrom(method.getReturnType())).map(mcpToolMethod -> {
 
 							McpTool toolAnnotation = doGetMcpToolAnnotation(mcpToolMethod);
@@ -183,8 +184,9 @@ public class SyncMcpToolGroupProvider {
 		}).flatMap(List::stream).filter(distinctByName(tg -> tg.name().getFQName())).toList();
 
 		return toolGroups;
-		
+
 	}
+
 	/**
 	 * Get the tool handler.
 	 * 

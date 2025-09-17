@@ -7,7 +7,7 @@ import io.modelcontextprotocol.server.McpStatelessServerFeatures.SyncToolSpecifi
 public class SyncStatelessToolGroup extends ToolGroup {
 
 	private final List<SyncToolSpecification> specifications;
-	
+
 	public SyncStatelessToolGroup(ToolGroupName name, String description, List<SyncToolSpecification> specifications) {
 		super(name, description);
 		this.specifications = specifications;

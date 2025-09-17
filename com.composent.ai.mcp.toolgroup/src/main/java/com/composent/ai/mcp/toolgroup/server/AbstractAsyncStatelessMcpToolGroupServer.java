@@ -3,14 +3,16 @@ package com.composent.ai.mcp.toolgroup.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.composent.ai.mcp.toolgroup.AsyncStatelessToolGroup;
+
 import io.modelcontextprotocol.server.McpStatelessAsyncServer;
 import io.modelcontextprotocol.server.McpStatelessServerFeatures.AsyncToolSpecification;
 import io.modelcontextprotocol.spec.McpError;
 import io.modelcontextprotocol.util.Assert;
 
-public abstract class AbstractStatelessAsyncMcpToolGroupServer implements StatelessAsyncMcpToolGroupServer {
+public abstract class AbstractAsyncStatelessMcpToolGroupServer implements AsyncStatelessMcpToolGroupServer {
 
-	private static Logger logger = LoggerFactory.getLogger(AbstractStatelessAsyncMcpToolGroupServer.class);
+	private static Logger logger = LoggerFactory.getLogger(AbstractAsyncStatelessMcpToolGroupServer.class);
 
 	protected abstract McpStatelessAsyncServer getServer();
 
@@ -29,7 +31,7 @@ public abstract class AbstractStatelessAsyncMcpToolGroupServer implements Statel
 		try {
 			s.addTool(toolHandler).block();
 			if (logger.isDebugEnabled()) {
-				logger.debug("added tool specification={} to stateless async server={}",toolHandler.tool().name(), s);
+				logger.debug("added tool specification={} to stateless async server={}", toolHandler.tool().name(), s);
 			}
 			return true;
 		} catch (McpError e) {
@@ -45,12 +47,22 @@ public abstract class AbstractStatelessAsyncMcpToolGroupServer implements Statel
 		try {
 			s.removeTool(fqToolName).block();
 			if (logger.isDebugEnabled()) {
-				logger.debug("removed tool specification={} to stateless async server={}",fqToolName, s);
+				logger.debug("removed tool specification={} to stateless async server={}", fqToolName, s);
 			}
 			return true;
 		} catch (McpError e) {
 			return handleMcpError(fqToolName, e, false);
 		}
+	}
+
+	@Override
+	public void addToolGroup(AsyncStatelessToolGroup toolGroup) {
+		addTools(toolGroup.getSpecifications());
+	}
+
+	@Override
+	public void removeToolGroup(AsyncStatelessToolGroup toolGroup) {
+		removeTools(toolGroup.getSpecifications());
 	}
 
 }

@@ -32,5 +32,4 @@ public interface SyncMcpToolGroupServer {
 		toolGroups.forEach(toolGroup -> removeToolGroup(toolGroup));
 	}
 
-	
 }

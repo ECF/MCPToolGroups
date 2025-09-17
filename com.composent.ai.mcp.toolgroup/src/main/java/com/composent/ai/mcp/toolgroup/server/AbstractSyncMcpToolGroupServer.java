@@ -31,7 +31,7 @@ public abstract class AbstractSyncMcpToolGroupServer implements SyncMcpToolGroup
 		try {
 			s.addTool(toolHandler);
 			if (logger.isDebugEnabled()) {
-				logger.debug("added tool specification={} to sync server={}",toolHandler.tool().name(), s);
+				logger.debug("added tool specification={} to sync server={}", toolHandler.tool().name(), s);
 			}
 			return true;
 		} catch (McpError e) {
@@ -59,7 +59,7 @@ public abstract class AbstractSyncMcpToolGroupServer implements SyncMcpToolGroup
 	public void addToolGroup(SyncToolGroup toolGroup) {
 		addTools(toolGroup.getSpecifications());
 	}
-	
+
 	@Override
 	public void removeToolGroup(SyncToolGroup toolGroup) {
 		removeTools(toolGroup.getSpecifications());

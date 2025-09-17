@@ -112,8 +112,9 @@ public class AsyncMcpToolGroupProvider {
 				ToolGroupName toolGroupName = ToolGroupName.fromClass(toolGroup);
 				// XXX tool group description is gotten right here (from new annotation)
 				String toolGroupDescription = null;
-				
-				List<AsyncToolSpecification> specs = Stream.of(doGetMethods(toolGroup)).filter(method -> method.isAnnotationPresent(McpTool.class))
+
+				List<AsyncToolSpecification> specs = Stream.of(doGetMethods(toolGroup))
+						.filter(method -> method.isAnnotationPresent(McpTool.class))
 						.filter(method -> Mono.class.isAssignableFrom(method.getReturnType())
 								|| Flux.class.isAssignableFrom(method.getReturnType())
 								|| Publisher.class.isAssignableFrom(method.getReturnType()))
@@ -181,7 +182,7 @@ public class AsyncMcpToolGroupProvider {
 		return toolGroups;
 
 	}
-	
+
 	public List<AsyncToolSpecification> getToolSpecifications() {
 		List<AsyncToolSpecification> toolSpecs = this.toolObjects.stream().map(toolObject -> {
 			return Stream.of(doGetClasses(toolObject)).map(toolGroup -> {

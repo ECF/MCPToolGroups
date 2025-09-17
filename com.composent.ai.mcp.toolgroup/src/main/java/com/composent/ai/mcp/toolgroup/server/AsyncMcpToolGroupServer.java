@@ -32,6 +32,4 @@ public interface AsyncMcpToolGroupServer {
 		toolGroups.forEach(toolGroup -> removeToolGroup(toolGroup));
 	}
 
-	
-
 }

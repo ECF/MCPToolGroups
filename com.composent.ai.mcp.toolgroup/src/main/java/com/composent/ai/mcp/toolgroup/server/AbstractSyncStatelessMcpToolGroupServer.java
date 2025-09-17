@@ -3,14 +3,16 @@ package com.composent.ai.mcp.toolgroup.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.composent.ai.mcp.toolgroup.SyncStatelessToolGroup;
+
 import io.modelcontextprotocol.server.McpStatelessServerFeatures.SyncToolSpecification;
 import io.modelcontextprotocol.server.McpStatelessSyncServer;
 import io.modelcontextprotocol.spec.McpError;
 import io.modelcontextprotocol.util.Assert;
 
-public abstract class AbstractStatelessSyncMcpToolGroupServer implements StatelessSyncMcpToolGroupServer {
+public abstract class AbstractSyncStatelessMcpToolGroupServer implements SyncStatelessMcpToolGroupServer {
 
-	private static Logger logger = LoggerFactory.getLogger(AbstractStatelessSyncMcpToolGroupServer.class);
+	private static Logger logger = LoggerFactory.getLogger(AbstractSyncStatelessMcpToolGroupServer.class);
 
 	protected abstract McpStatelessSyncServer getServer();
 
@@ -29,7 +31,7 @@ public abstract class AbstractStatelessSyncMcpToolGroupServer implements Statele
 		try {
 			s.addTool(toolHandler);
 			if (logger.isDebugEnabled()) {
-				logger.debug("added tool specification={} to stateless sync server={}",toolHandler.tool().name(), s);
+				logger.debug("added tool specification={} to stateless sync server={}", toolHandler.tool().name(), s);
 			}
 			return true;
 		} catch (McpError e) {
@@ -45,12 +47,22 @@ public abstract class AbstractStatelessSyncMcpToolGroupServer implements Statele
 		try {
 			s.removeTool(fqToolName);
 			if (logger.isDebugEnabled()) {
-				logger.debug("removed tool specification={} to stateless sync server={}",fqToolName, s);
+				logger.debug("removed tool specification={} to stateless sync server={}", fqToolName, s);
 			}
 			return true;
 		} catch (McpError e) {
 			return handleMcpError(fqToolName, e, false);
 		}
+	}
+
+	@Override
+	public void addToolGroup(SyncStatelessToolGroup toolGroup) {
+		addTools(toolGroup.getSpecifications());
+	}
+
+	@Override
+	public void removeToolGroup(SyncStatelessToolGroup toolGroup) {
+		removeTools(toolGroup.getSpecifications());
 	}
 
 }
