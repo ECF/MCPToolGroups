@@ -2,11 +2,25 @@
 
 The Model Context Protocol (MCP) includes support for [tools](https://modelcontextprotocol.io/specification/2025-06-18/server/tools), allowing a common way for AI models to a) Get metadata (descriptions) of tool input and output;  b) Provide input, run impl/take action and provide output via the use of one or more of the available tools.
 
-Currently, the [specification](https://modelcontextprotocol.io/specification/versioning) provides no way to declare tool groups.  Tool grouping, however, will become important as the number, variety and function of tools increases on a given MCP server/servers, along with the need for orchestration of multiple tools (sequencing the input and output of multiple tools to accomplish a given task) becomes more common.
+Currently, the [specification](https://modelcontextprotocol.io/specification/versioning) provides no way to declare tool groups.  Tool grouping, however, will become important as the number, variety and function of tools increases, along with the need for orchestration of multiple tools (sequencing the input and output of multiple tools to accomplish a given task) becomes more common.
 
-The jar/api defined [here](/com.composent.ai.mcp.toolgroup) provides a very small set of classes that can use arbitrary Java interfaces (and classes) to define groups of tools, and dynamically build the tool specifications and method callback needed to add and remove the tools to an MCP server at runtime.
+The project [here](/com.composent.ai.mcp.toolgroup) provides a very small set of classes to define ToolGroups, and associated tooling for dynamically building tool specifications to add and remove tool groups to an MCP server at runtime.
 
-For example, in the [com.composent.ai.mcp.examples.toolgroup.api](/com.composent.ai.mcp.examples.toolgroup.api) project is the declaration of an ExampleToolGroup:
+Note: All of the this API can easily be duplicated in languages other than Java.
+
+## ToolGroups
+
+In [this package](/com.composent.ai.mcp.toolgroup/src/main/java/com/composent/ai/mcp/toolgroup) there is a [ToolGroup class](/com.composent.ai.mcp.toolgroup/src/main/java/com/composent/ai/mcp/toolgroup/ToolGroup.java).  This simple class is defined by an immutable and optional [ToolGroupName](/com.composent.ai.mcp.toolgroup/src/main/java/com/composent/ai/mcp/toolgroup/ToolGroupName.java) parent and a [String segmentName](/com.composent.ai.mcp.toolgroup/src/main/java/com/composent/ai/mcp/toolgroup/ToolGroupName.java#L29).   
+
+The ToolGroupName class defines a hierarchical namespace for the ToolGroup with a domain-name-like syntax (using '.' as separators)...e.g.:  ...or 'MyToolGroupName' (no parent) to 'com.composent.ai.mcp.toolgroup.MyToolGroupName' (5 levels of parents).  The name for the tool group can be resolved to a single String via the [getFQName method](/com.composent.ai.mcp.toolgroup/src/main/java/com/composent/ai/mcp/toolgroup/ToolGroupNameSegment.java#L28).  The ToolGroupName namespace allows unique ToolGroup names to be constructed as appropriate by ToolGroup developers.  Note that other namespaces could be used/supported for ToolGroups by allowing other impls of ToolGroupName.
+
+## SyncToolGroup, AsyncToolGroup, SyncStatelessToolGroup, AsyncStatelessToolGroup
+
+These four subclasses of ToolGroup each have a method named [getSpecifications()](/com.composent.ai.mcp.toolgroup/src/main/java/com/composent/ai/mcp/toolgroup/SyncToolGroup.java#L16).  The type of returned specification is appropriate for each type of McpServer:  Sync, Async, SyncStateless, AsyncStateless servers.
+
+## Example Usage of ToolGroups
+
+In the [com.composent.ai.mcp.examples.toolgroup.api](/com.composent.ai.mcp.examples.toolgroup.api) project is the declaration of an ExampleToolGroup as a Java class:
 
 ```java
 public interface ExampleToolGroup {
@@ -32,9 +46,9 @@ public interface ExampleToolGroup {
 			@McpToolParam(description = "y is the second argument") double y);
 }
 ```
-Each method in the interface is annotated with the @McpTool and @McpToolParam annotations from the [mcp-annotations](https://github.com/spring-ai-community/mcp-annotations) project and the CallToolResult from the [mcp-java-sdk](https://github.com/modelcontextprotocol/java-sdk).  There are both sync methods (add, multiply, getImageAndMessage) and async methods (asyncAdd and asyncMultiply).
+Each method in the interface is annotated with the @McpTool and @McpToolParam annotations from the [mcp-annotations](https://github.com/spring-ai-community/mcp-annotations) project.  There are both sync methods (add, multiply) and async methods (asyncAdd and asyncMultiply).  
  
-From the [com.composent.ai.mcp.examples.toolgroup.mcpserver](/com.compsent.ai.mcp.examples.toolgroup.mcpserver) project, [here](/com.composent.ai.mcp.examples.toolgroup.mcpserver/src/main/java/com/composent/ai/mcp/examples/toolgroup/mcpserver/ToolGroupComponent.java) is the full implementation of the above interface
+From the [com.composent.ai.mcp.examples.toolgroup.mcpserver](/com.composent.ai.mcp.examples.toolgroup.mcpserver) project, [here](/com.composent.ai.mcp.examples.toolgroup.mcpserver/src/main/java/com/composent/ai/mcp/examples/toolgroup/mcpserver/ToolGroupComponent.java) is the full implementation of the above interface
 
 ```java
 @Component(immediate = true)
@@ -48,29 +62,29 @@ public class ToolGroupComponent implements ExampleToolGroup {
 	private AsyncMcpToolGroupServer asyncServer;
 
 	// Instance created in activate
-	private List<SyncToolSpecification> syncToolspecs;
+	private List<SyncToolGroup> syncToolGroups;
 
-	private List<AsyncToolSpecification> asyncToolspecs;
+	private List<AsyncToolGroup> asyncToolGroups;
 
 	@Activate
 	void activate() {
-		syncToolspecs = new SyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolSpecifications();
+		syncToolGroups = new SyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolGroups();
 		// Add to syncServer
-		syncServer.addTools(syncToolspecs);
-		asyncToolspecs = new AsyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolSpecifications();
+		syncServer.addToolGroups(syncToolGroups);
+		asyncToolGroups = new AsyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolGroups();
 		// Add to asyncServer
-		asyncServer.addTools(asyncToolspecs);
+		asyncServer.addToolGroups(asyncToolGroups);
 	}
 
 	@Deactivate
 	void deactivate() {
-		if (syncToolspecs != null) {
-			this.syncServer.removeTools(syncToolspecs);
-			syncToolspecs = null;
+		if (syncToolGroups != null) {
+			this.syncServer.removeToolGroups(syncToolGroups);
+			syncToolGroups = null;
 		}
-		if (asyncToolspecs != null) {
-			this.asyncServer.removeTools(asyncToolspecs);
-			asyncToolspecs = null;
+		if (asyncToolGroups != null) {
+			this.asyncServer.removeToolGroups(asyncToolGroups);
+			asyncToolGroups = null;
 		}
 
 	}
@@ -108,36 +122,27 @@ public class ToolGroupComponent implements ExampleToolGroup {
 	}
 }
 ```
-Note first that this class provides an implementation of ExampleToolGroup interface methods.   
+Note that instances of ToolGroupComponent provide an implementation of the ExampleToolGroup.class methods.   
 
-The McpServer tool specification for the ExampleToolGroup is created on component activation here:
-```java
-toolspecs = new SyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolSpecifications();
-```
-The SyncMcpToolGroupProvider class is from [this package](https://github.com/ECF/MCPToolGroups/tree/main/com.composent.ai.mcp.toolgroup/src/main/java/com/composent/ai/mcp/toolgroup/provider). 
+The McpServer SyncToolGroup is created from 'this' and the ExampleToolGroup.class [here](/com.composent.ai.mcp.examples.toolgroup.mcpserver/src/main/java/com/composent/ai/mcp/examples/toolgroup/mcpserver/ToolGroupComponent.java#L41):
 
 ```java
-new SyncMcpToolGroupProvider(this, ExampleToolGroup.class)
+		syncToolGroups = new SyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolGroups();
 ```
-The SyncMcpToolGroupProvider constructor request an implementing instance...this...and one (or more) Java classes implemented by the given instance.  The getToolSpecifications() method returns a List of tool specifications of the appropriate type (sync mcp server).  Then, those specifications can be dynamically added to one or more servers
+The newly created syncToolGroups list can then be added to a running sync MCP Server
 
 ```java
-		toolspecs = new SyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolSpecifications();
-		// Add to server
-		server.addTools(toolspecs);
+	// Add to syncServer
+	syncServer.addToolGroups(syncToolGroups);
 ```
-As appropriate for the timing/lifecycle, the toolspecs can also be dynamically removed
-```java
-		if (toolspecs != null) {
-			this.server.removeTools(toolspecs);
-			toolspecs = null;
-		}
-```
-Once these specifications are added to a server, MCP clients are able to inspect the @McpTool and @McpToolParam descriptions of the tools in this group, use the descriptions to provide required input, take action and receive output (i.e. call the tool method) from all the relevant tools in this group.  Note that the ExampleTools has both sync and async tool methods, and the McpSyncServer and McpSyncServer get the appropriate types of tools from the ExampleTools interface class.
 
-Note that the use of Java interfaces in this way automatically adds MCP metadata (descriptions from the @McpTool and @McpToolParam) to the api contract.  This can be easily duplicated in other languages...e.g. Python, C++, or Typescript via decorators, annotations, and abstract classes.
+Once SyncToolGroups are added to a sync server, MCP client models will able to inspect the @McpTool and @McpToolParam descriptions of the tools in this group, use the descriptions to provide required input, take action and receive appropriate output (i.e. call the tool method) from all the relevant sync tool specifications in this group.  
 
-## Using Bndtools Project Templates to Build your own Dynamic MCP ToolGroup Server
+The [activate method](/com.composent.ai.mcp.examples.toolgroup.mcpserver/src/main/java/com/composent/ai/mcp/examples/toolgroup/mcpserver/ToolGroupComponent.java#L44) also shows the creation and use of AsyncToolGroups for adding to an async server.
+
+The use of Java classes/interfaces in this example allow MCP metadata (descriptions from the @McpTool and @McpToolParam) to be used in the service api contract. Such an approach can easily duplicated in other languages...e.g. Python, C++, or Typescript via decorators, annotations, and abstract classes, or not used at all if appropriate.
+
+## Using Bndtools Project Templates to Build a Dynamic MCP ToolGroup Server
 
 With Bndtoools 7.1+ installed an a recent version of Eclipse (4.36+), create a new Eclipse workspace and choose New->Bnd OSGi Workspace. 
 
