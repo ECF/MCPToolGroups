@@ -26,12 +26,12 @@ public class ToolGroupName extends ToolGroupNameSegment {
 		return parseName(clazz.getName());
 	}
 
-	public ToolGroupName(ToolGroupNameSegment parent, String segmentName) {
-		super(parent, segmentName);
+	public ToolGroupName(ToolGroupNameSegment parent, String groupName) {
+		super(parent, groupName);
 	}
 
-	public ToolGroupName(String segmentName) {
-		this(null, segmentName);
+	public ToolGroupName(String groupName) {
+		this(null, groupName);
 	}
 
 }
