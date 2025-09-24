@@ -1,35 +1,22 @@
 package com.composent.ai.mcp.toolgroup.server;
 
 import java.util.List;
+import java.util.Objects;
 
-import com.composent.ai.mcp.toolgroup.AsyncToolGroup;
-
-import io.modelcontextprotocol.server.McpServerFeatures;
+import io.modelcontextprotocol.server.McpServerFeatures.AsyncToolSpecification;
 
 public interface AsyncMcpToolGroupServer {
 
-	boolean addTool(McpServerFeatures.AsyncToolSpecification specification);
+	AsyncToolSpecification addTool(AsyncToolSpecification specification);
 
-	default void addTools(List<McpServerFeatures.AsyncToolSpecification> specifications) {
-		specifications.forEach(specification -> addTool(specification));
+	default List<AsyncToolSpecification> addTools(List<AsyncToolSpecification> specifications) {
+		return specifications.stream().map(s -> addTool(s)).filter(Objects::nonNull).toList();
 	}
 
 	boolean removeTool(String fqToolName);
 
-	default void removeTools(List<McpServerFeatures.AsyncToolSpecification> specifications) {
+	default void removeTools(List<AsyncToolSpecification> specifications) {
 		specifications.forEach(specification -> removeTool(specification.tool().name()));
-	}
-
-	void addToolGroup(AsyncToolGroup toolGroup);
-
-	default void addToolGroups(List<AsyncToolGroup> toolGroups) {
-		toolGroups.forEach(toolGroup -> addToolGroup(toolGroup));
-	}
-
-	void removeToolGroup(AsyncToolGroup toolGroup);
-
-	default void removeToolGroups(List<AsyncToolGroup> toolGroups) {
-		toolGroups.forEach(toolGroup -> removeToolGroup(toolGroup));
 	}
 
 }

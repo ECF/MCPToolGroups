@@ -1,35 +1,22 @@
 package com.composent.ai.mcp.toolgroup.server;
 
 import java.util.List;
+import java.util.Objects;
 
-import com.composent.ai.mcp.toolgroup.SyncStatelessToolGroup;
-
-import io.modelcontextprotocol.server.McpStatelessServerFeatures;
+import io.modelcontextprotocol.server.McpStatelessServerFeatures.SyncToolSpecification;
 
 public interface SyncStatelessMcpToolGroupServer {
 
-	boolean addTool(McpStatelessServerFeatures.SyncToolSpecification specification);
+	SyncToolSpecification addTool(SyncToolSpecification specification);
 
-	default void addTools(List<McpStatelessServerFeatures.SyncToolSpecification> specifications) {
-		specifications.forEach(specification -> addTool(specification));
+	default List<SyncToolSpecification> addTools(List<SyncToolSpecification> specifications) {
+		return specifications.stream().map(s -> addTool(s)).filter(Objects::nonNull).toList();
 	}
 
 	boolean removeTool(String fqToolName);
 
-	default void removeTools(List<McpStatelessServerFeatures.SyncToolSpecification> specifications) {
+	default void removeTools(List<SyncToolSpecification> specifications) {
 		specifications.forEach(specification -> removeTool(specification.tool().name()));
-	}
-
-	void addToolGroup(SyncStatelessToolGroup toolGroup);
-
-	default void addToolGroups(List<SyncStatelessToolGroup> toolGroups) {
-		toolGroups.forEach(toolGroup -> addToolGroup(toolGroup));
-	}
-
-	void removeToolGroup(SyncStatelessToolGroup toolGroup);
-
-	default void removeToolGroups(List<SyncStatelessToolGroup> toolGroups) {
-		toolGroups.forEach(toolGroup -> removeToolGroup(toolGroup));
 	}
 
 }
