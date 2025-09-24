@@ -8,9 +8,9 @@ import io.modelcontextprotocol.spec.McpSchema.Tool;
 import io.modelcontextprotocol.spec.McpSchema.ToolGroup;
 import io.modelcontextprotocol.spec.McpSchema.ToolGroupName;
 
-public class AbstractMcpToolGroupServer {
+public class AbstractMcpDynamicToolGroupServer {
 
-	private static Logger logger = LoggerFactory.getLogger(AbstractMcpToolGroupServer.class);
+	private static Logger logger = LoggerFactory.getLogger(AbstractMcpDynamicToolGroupServer.class);
 
 	protected void handleMcpError(String toolName, McpError error, boolean added) {
 		logger.error(String.format("Tool specification name=%s could not be %s to server=", toolName,

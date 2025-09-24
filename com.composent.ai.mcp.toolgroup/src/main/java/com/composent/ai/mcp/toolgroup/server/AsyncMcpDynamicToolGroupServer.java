@@ -1,20 +1,31 @@
 package com.composent.ai.mcp.toolgroup.server;
 
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.modelcontextprotocol.server.McpStatelessAsyncServer;
-import io.modelcontextprotocol.server.McpStatelessServerFeatures.AsyncToolSpecification;
+import io.modelcontextprotocol.server.McpAsyncServer;
+import io.modelcontextprotocol.server.McpServerFeatures.AsyncToolSpecification;
 import io.modelcontextprotocol.spec.McpError;
 import io.modelcontextprotocol.spec.McpSchema.Tool;
 import io.modelcontextprotocol.util.Assert;
 
-public abstract class AbstractAsyncStatelessMcpToolGroupServer extends AbstractMcpToolGroupServer
-		implements AsyncStatelessMcpToolGroupServer {
+public class AsyncMcpDynamicToolGroupServer extends AbstractMcpDynamicToolGroupServer
+		implements AsyncMcpToolGroupServer {
 
-	private static Logger logger = LoggerFactory.getLogger(AbstractAsyncStatelessMcpToolGroupServer.class);
+	private static Logger logger = LoggerFactory.getLogger(AsyncMcpDynamicToolGroupServer.class);
 
-	protected abstract McpStatelessAsyncServer getServer();
+	protected final McpAsyncServer server;
+
+	protected McpAsyncServer getServer() {
+		return this.server;
+	}
+
+	public AsyncMcpDynamicToolGroupServer(McpAsyncServer server) {
+		Objects.requireNonNull(server, "Server must not be null");
+		this.server = server;
+	}
 
 	@Override
 	public AsyncToolSpecification addTool(AsyncToolSpecification toolSpec) {
@@ -22,7 +33,7 @@ public abstract class AbstractAsyncStatelessMcpToolGroupServer extends AbstractM
 		Tool updatedTool = convertTool(toolSpec.tool());
 		AsyncToolSpecification updatedSpec = AsyncToolSpecification.builder().tool(updatedTool)
 				.callHandler(toolSpec.callHandler()).build();
-		McpStatelessAsyncServer s = getServer();
+		McpAsyncServer s = getServer();
 		Assert.notNull(s, "Server cannot be null");
 		try {
 			s.addTool(updatedSpec).block();
@@ -39,7 +50,7 @@ public abstract class AbstractAsyncStatelessMcpToolGroupServer extends AbstractM
 	@Override
 	public boolean removeTool(String fqToolName) {
 		Assert.notNull(fqToolName, "fqToolName must not be null");
-		McpStatelessAsyncServer s = getServer();
+		McpAsyncServer s = getServer();
 		Assert.notNull(s, "Server must not be null");
 		try {
 			s.removeTool(fqToolName).block();

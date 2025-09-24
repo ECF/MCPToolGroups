@@ -1,20 +1,31 @@
 package com.composent.ai.mcp.toolgroup.server;
 
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.modelcontextprotocol.server.McpAsyncServer;
-import io.modelcontextprotocol.server.McpServerFeatures.AsyncToolSpecification;
+import io.modelcontextprotocol.server.McpStatelessAsyncServer;
+import io.modelcontextprotocol.server.McpStatelessServerFeatures.AsyncToolSpecification;
 import io.modelcontextprotocol.spec.McpError;
 import io.modelcontextprotocol.spec.McpSchema.Tool;
 import io.modelcontextprotocol.util.Assert;
 
-public abstract class AbstractAsyncMcpToolGroupServer extends AbstractMcpToolGroupServer
-		implements AsyncMcpToolGroupServer {
+public class AsyncStatelessMcpDynamicToolGroupServer extends AbstractMcpDynamicToolGroupServer
+		implements AsyncStatelessMcpToolGroupServer {
 
-	private static Logger logger = LoggerFactory.getLogger(AbstractAsyncMcpToolGroupServer.class);
+	private static Logger logger = LoggerFactory.getLogger(AsyncStatelessMcpDynamicToolGroupServer.class);
 
-	protected abstract McpAsyncServer getServer();
+	protected final McpStatelessAsyncServer server;
+
+	protected McpStatelessAsyncServer getServer() {
+		return this.server;
+	}
+
+	public AsyncStatelessMcpDynamicToolGroupServer(McpStatelessAsyncServer server) {
+		Objects.requireNonNull(server, "Server must not be null");
+		this.server = server;
+	}
 
 	@Override
 	public AsyncToolSpecification addTool(AsyncToolSpecification toolSpec) {
@@ -22,7 +33,7 @@ public abstract class AbstractAsyncMcpToolGroupServer extends AbstractMcpToolGro
 		Tool updatedTool = convertTool(toolSpec.tool());
 		AsyncToolSpecification updatedSpec = AsyncToolSpecification.builder().tool(updatedTool)
 				.callHandler(toolSpec.callHandler()).build();
-		McpAsyncServer s = getServer();
+		McpStatelessAsyncServer s = getServer();
 		Assert.notNull(s, "Server cannot be null");
 		try {
 			s.addTool(updatedSpec).block();
@@ -39,7 +50,7 @@ public abstract class AbstractAsyncMcpToolGroupServer extends AbstractMcpToolGro
 	@Override
 	public boolean removeTool(String fqToolName) {
 		Assert.notNull(fqToolName, "fqToolName must not be null");
-		McpAsyncServer s = getServer();
+		McpStatelessAsyncServer s = getServer();
 		Assert.notNull(s, "Server must not be null");
 		try {
 			s.removeTool(fqToolName).block();

@@ -1,5 +1,7 @@
 package com.composent.ai.mcp.toolgroup.server;
 
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,12 +11,20 @@ import io.modelcontextprotocol.spec.McpError;
 import io.modelcontextprotocol.spec.McpSchema.Tool;
 import io.modelcontextprotocol.util.Assert;
 
-public abstract class AbstractSyncMcpToolGroupServer extends AbstractMcpToolGroupServer
-		implements SyncMcpToolGroupServer {
+public class SyncMcpDynamicToolGroupServer extends AbstractMcpDynamicToolGroupServer implements SyncMcpToolGroupServer {
 
-	private static Logger logger = LoggerFactory.getLogger(AbstractSyncMcpToolGroupServer.class);
+	private static Logger logger = LoggerFactory.getLogger(SyncMcpDynamicToolGroupServer.class);
 
-	protected abstract McpSyncServer getServer();
+	protected final McpSyncServer server;
+
+	protected McpSyncServer getServer() {
+		return this.server;
+	}
+
+	public SyncMcpDynamicToolGroupServer(McpSyncServer server) {
+		Objects.requireNonNull(server, "Server must not be null");
+		this.server = server;
+	}
 
 	@Override
 	public SyncToolSpecification addTool(SyncToolSpecification toolSpec) {

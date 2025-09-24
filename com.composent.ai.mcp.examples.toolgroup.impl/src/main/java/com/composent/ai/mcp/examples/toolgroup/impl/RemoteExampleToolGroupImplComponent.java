@@ -6,8 +6,6 @@ import org.slf4j.LoggerFactory;
 
 import com.composent.ai.mcp.examples.toolgroup.api.ExampleToolGroup;
 
-import io.modelcontextprotocol.spec.McpSchema;
-import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
 import reactor.core.publisher.Mono;
 
 @Component(immediate=true, property = { "service.exported.interfaces=*", "service.exported.configs=ecf.generic.server" })
@@ -25,14 +23,6 @@ public class RemoteExampleToolGroupImplComponent implements ExampleToolGroup {
 	public double multiply(double x, double y) {
 		logger.debug("Multiplying x={} y={}", x, y);
 		return x * y;
-	}
-
-	@Override
-	public CallToolResult getImageAndMessage(String message) {
-		logger.debug("getImageAndMessage message={}", message);
-		return CallToolResult.builder().addTextContent("Message is: " + message).addContent(
-				new McpSchema.ImageContent(null, "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD...", "image/jpeg"))
-				.build();
 	}
 
 	@Override

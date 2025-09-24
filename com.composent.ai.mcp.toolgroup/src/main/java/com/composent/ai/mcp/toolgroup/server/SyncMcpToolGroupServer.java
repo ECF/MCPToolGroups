@@ -3,6 +3,8 @@ package com.composent.ai.mcp.toolgroup.server;
 import java.util.List;
 import java.util.Objects;
 
+import com.composent.ai.mcp.toolgroup.provider.SyncMcpToolGroupProvider;
+
 import io.modelcontextprotocol.server.McpServerFeatures.SyncToolSpecification;
 
 public interface SyncMcpToolGroupServer {
@@ -17,6 +19,10 @@ public interface SyncMcpToolGroupServer {
 
 	default void removeTools(List<SyncToolSpecification> specifications) {
 		specifications.forEach(specification -> removeTool(specification.tool().name()));
+	}
+
+	default List<SyncToolSpecification> addToolGroups(Object object, Class<?> toolClasses) {
+		return addTools(new SyncMcpToolGroupProvider(object, toolClasses).getToolSpecifications());
 	}
 
 }

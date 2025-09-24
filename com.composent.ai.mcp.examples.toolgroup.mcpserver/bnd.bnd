@@ -1,6 +1,6 @@
 -buildpath: \
 	org.osgi.service.component.annotations,\
-	io.modelcontextprotocol.sdk.mcp,\
+	io.modelcontextprotocol.sdk.mcp-core,\
 	com.fasterxml.jackson.core.jackson-databind,\
 	slf4j.api,\
 	com.composent.ai.mcp.toolgroup,\

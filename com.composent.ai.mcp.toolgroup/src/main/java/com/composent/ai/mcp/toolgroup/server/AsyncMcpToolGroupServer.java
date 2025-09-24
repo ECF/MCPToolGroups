@@ -3,6 +3,8 @@ package com.composent.ai.mcp.toolgroup.server;
 import java.util.List;
 import java.util.Objects;
 
+import com.composent.ai.mcp.toolgroup.provider.AsyncMcpToolGroupProvider;
+
 import io.modelcontextprotocol.server.McpServerFeatures.AsyncToolSpecification;
 
 public interface AsyncMcpToolGroupServer {
@@ -19,4 +21,7 @@ public interface AsyncMcpToolGroupServer {
 		specifications.forEach(specification -> removeTool(specification.tool().name()));
 	}
 
+	default List<AsyncToolSpecification> addToolGroups(Object object, Class<?> toolClasses) {
+		return addTools(new AsyncMcpToolGroupProvider(object, toolClasses).getToolSpecifications());
+	}
 }

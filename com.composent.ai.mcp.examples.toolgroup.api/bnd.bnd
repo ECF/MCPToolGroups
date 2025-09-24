@@ -1,6 +1,6 @@
 -buildpath: \
 	org.springaicommunity.mcp-annotations,\
-	io.modelcontextprotocol.sdk.mcp,\
+	io.modelcontextprotocol.sdk.mcp-core,\
 	org.osgi.annotation.versioning,\
 	org.osgi.annotation.bundle,\
 	com.composent.ai.mcp.toolgroup;version=snapshot,\
