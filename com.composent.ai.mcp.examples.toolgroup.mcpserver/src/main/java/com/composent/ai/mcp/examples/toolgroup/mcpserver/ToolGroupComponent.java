@@ -10,8 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.composent.ai.mcp.examples.toolgroup.api.ExampleToolGroup;
-import com.composent.ai.mcp.toolgroup.provider.AsyncMcpToolGroupProvider;
-import com.composent.ai.mcp.toolgroup.provider.SyncMcpToolGroupProvider;
 import com.composent.ai.mcp.toolgroup.server.AsyncMcpToolGroupServer;
 import com.composent.ai.mcp.toolgroup.server.SyncMcpToolGroupServer;
 
@@ -38,10 +36,10 @@ public class ToolGroupComponent implements ExampleToolGroup {
 	void activate() {
 		// Add to syncServer
 		syncSpecifications = syncServer
-				.addTools(new SyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolSpecifications());
+				.addToolGroups(this, ExampleToolGroup.class);
 		// Add to asyncServer
 		asyncSpecifications = asyncServer
-				.addTools(new AsyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolSpecifications());
+				.addToolGroups(this, ExampleToolGroup.class);
 	}
 
 	@Deactivate
