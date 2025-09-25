@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="Local" increment="1758745320482">
+<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="Local" increment="1758759292493">
   <resource>
     <capability namespace="osgi.identity">
       <attribute name="license" value="&quot;MIT License&quot;;link=&quot;http://www.opensource.org/licenses/mit-license.php&quot;"/>
@@ -369,6 +369,85 @@
     </requirement>
     <requirement namespace="osgi.ee">
       <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=1.8))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="license" value="&quot;MIT License&quot;;link=&quot;http://www.opensource.org/licenses/mit-license.php&quot;"/>
+      <attribute name="osgi.identity" value="io.modelcontextprotocol.sdk.mcp-json-jackson2"/>
+      <attribute name="documentation" value="https://github.com/modelcontextprotocol/java-sdk"/>
+      <attribute name="description" value="Java MCP SDK JSON implementation based on Jackson"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" value="0.14.0.SNAPSHOT" type="Version"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="io.modelcontextprotocol.sdk.mcp-json-jackson2"/>
+      <attribute name="bundle-version" value="0.14.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="io.modelcontextprotocol.json"/>
+      <attribute name="version" value="0.14.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="-1673082273,1638089315,-1435595441,811550425" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="io.modelcontextprotocol.sdk.mcp-json-jackson2"/>
+      <attribute name="bundle-version" value="0.14.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="io.modelcontextprotocol.json.jackson"/>
+      <attribute name="version" value="0.14.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="1465573392,595078652" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="io.modelcontextprotocol.sdk.mcp-json-jackson2"/>
+      <attribute name="bundle-version" value="0.14.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="io.modelcontextprotocol.json.schema"/>
+      <attribute name="version" value="0.14.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="638054054,1464660986,987160713,-548625035" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="io.modelcontextprotocol.sdk.mcp-json-jackson2"/>
+      <attribute name="bundle-version" value="0.14.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="io.modelcontextprotocol.json.schema.jackson"/>
+      <attribute name="version" value="0.14.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="637818056,1379160162" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="bundle-version" value="0.14.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.bundle" value="io.modelcontextprotocol.sdk.mcp-json-jackson2"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="bundle-version" value="0.14.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.host" value="io.modelcontextprotocol.sdk.mcp-json-jackson2"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="size" value="18373" type="Long"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+      <attribute name="url" value="io.modelcontextprotocol.sdk.mcp-json-jackson2/io.modelcontextprotocol.sdk.mcp-json-jackson2-0.14.0.jar"/>
+      <attribute name="osgi.content" value="7934B728EC5409B9AF5C95FAF241978043A7A0A5280DADD52EBB66B99F19E5B7"/>
+    </capability>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.core)(version&gt;=2.17.0)(!(version&gt;=3.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.core"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.databind)(version&gt;=2.17.0)(!(version&gt;=3.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.databind.node)(version&gt;=2.17.0)(!(version&gt;=3.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind.node"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.databind.type)(version&gt;=2.17.0)(!(version&gt;=3.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind.type"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.networknt.schema)(version&gt;=1.5.0)(!(version&gt;=2.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="com.networknt.schema"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.slf4j)(version&gt;=2.0.0)(!(version&gt;=3.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="org.slf4j"/>
+    </requirement>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=17))"/>
     </requirement>
   </resource>
   <resource>
@@ -795,7 +874,7 @@
       <attribute name="size" value="478188" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
       <attribute name="url" value="io.modelcontextprotocol.sdk.mcp-core/io.modelcontextprotocol.sdk.mcp-core-0.14.0.jar"/>
-      <attribute name="osgi.content" value="27F7B2AD4CC79C13F410DCF85DECE6610BB6C0689486C9D907BAC46204F1BFF7"/>
+      <attribute name="osgi.content" value="423BD3E1FC4DE5A9B519FF79ACB8504ACEDE6E3F8A6C414AC69D65E9734F6631"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=jakarta.servlet)(version&gt;=6.1.0)(!(version&gt;=7.0.0)))"/>
@@ -848,6 +927,47 @@
       <directive name="filter" value="(&amp;(osgi.wiring.package=reactor.util.function)(version&gt;=3.7.0)(!(version&gt;=4.0.0)))"/>
       <attribute name="osgi.wiring.package" value="reactor.util.function"/>
     </requirement>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=17))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="license" value="&quot;MIT License&quot;;link=&quot;http://www.opensource.org/licenses/mit-license.php&quot;"/>
+      <attribute name="osgi.identity" value="io.modelcontextprotocol.sdk.mcp-json"/>
+      <attribute name="documentation" value="https://github.com/modelcontextprotocol/java-sdk"/>
+      <attribute name="description" value="Java MCP SDK JSON Support API"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" value="0.14.0.SNAPSHOT" type="Version"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="io.modelcontextprotocol.sdk.mcp-json"/>
+      <attribute name="bundle-version" value="0.14.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="io.modelcontextprotocol.json"/>
+      <attribute name="version" value="0.14.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="-1673082273,1638089315,-1435595441,811550425" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="io.modelcontextprotocol.sdk.mcp-json"/>
+      <attribute name="bundle-version" value="0.14.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="io.modelcontextprotocol.json.schema"/>
+      <attribute name="version" value="0.14.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="638054054,1464660986,987160713,-548625035" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="bundle-version" value="0.14.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.bundle" value="io.modelcontextprotocol.sdk.mcp-json"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="bundle-version" value="0.14.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.host" value="io.modelcontextprotocol.sdk.mcp-json"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="size" value="10730" type="Long"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+      <attribute name="url" value="io.modelcontextprotocol.sdk.mcp-json/io.modelcontextprotocol.sdk.mcp-json-0.14.0.jar"/>
+      <attribute name="osgi.content" value="DE658DA703C213D0864950E1C78C2B4998B6211F53548E077A831609A317D6C1"/>
+    </capability>
     <requirement namespace="osgi.ee">
       <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=17))"/>
     </requirement>
