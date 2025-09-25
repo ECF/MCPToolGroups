@@ -11,14 +11,14 @@ import io.modelcontextprotocol.spec.McpError;
 import io.modelcontextprotocol.spec.McpSchema.Tool;
 import io.modelcontextprotocol.util.Assert;
 
-public abstract class SyncStatelessMcpDynamicToolGroupServer extends AbstractMcpDynamicToolGroupServer
+public class SyncStatelessMcpDynamicToolGroupServer extends AbstractMcpDynamicToolGroupServer
 		implements SyncStatelessMcpToolGroupServer {
 
 	private static Logger logger = LoggerFactory.getLogger(SyncStatelessMcpDynamicToolGroupServer.class);
 
 	protected final McpStatelessSyncServer server;
 
-	protected McpStatelessSyncServer getServer() {
+	public McpStatelessSyncServer getServer() {
 		return this.server;
 	}
 

@@ -5,7 +5,9 @@
 	reactive-streams,\
 	io.projectreactor.reactor-core,\
 	org.osgi.annotation.versioning,\
-	org.osgi.annotation.bundle
+	org.osgi.annotation.bundle,\
+	io.modelcontextprotocol.sdk.mcp-json,\
+	io.modelcontextprotocol.sdk.mcp-json-jackson2
 Export-Package: \
 	com.composent.ai.mcp.toolgroup.provider,\
 	com.composent.ai.mcp.toolgroup,\

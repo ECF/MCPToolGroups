@@ -18,7 +18,7 @@ public class AsyncStatelessMcpDynamicToolGroupServer extends AbstractMcpDynamicT
 
 	protected final McpStatelessAsyncServer server;
 
-	protected McpStatelessAsyncServer getServer() {
+	public McpStatelessAsyncServer getServer() {
 		return this.server;
 	}
 

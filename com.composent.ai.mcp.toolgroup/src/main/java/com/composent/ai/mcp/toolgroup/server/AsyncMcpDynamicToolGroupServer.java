@@ -18,7 +18,7 @@ public class AsyncMcpDynamicToolGroupServer extends AbstractMcpDynamicToolGroupS
 
 	protected final McpAsyncServer server;
 
-	protected McpAsyncServer getServer() {
+	public McpAsyncServer getServer() {
 		return this.server;
 	}
 

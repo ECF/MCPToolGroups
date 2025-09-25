@@ -17,7 +17,7 @@ public class SyncMcpDynamicToolGroupServer extends AbstractMcpDynamicToolGroupSe
 
 	protected final McpSyncServer server;
 
-	protected McpSyncServer getServer() {
+	public McpSyncServer getServer() {
 		return this.server;
 	}
 
