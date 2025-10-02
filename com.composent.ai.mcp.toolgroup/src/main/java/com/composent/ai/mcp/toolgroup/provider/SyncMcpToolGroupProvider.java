@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springaicommunity.mcp.annotation.McpTool;
+import org.springaicommunity.mcp.annotation.McpToolGroup;
 import org.springaicommunity.mcp.method.tool.ReturnMode;
 import org.springaicommunity.mcp.method.tool.SyncMcpToolMethodCallback;
 import org.springaicommunity.mcp.method.tool.utils.ClassUtils;
@@ -77,6 +78,11 @@ public class SyncMcpToolGroupProvider extends AbstractMcpToolProvider {
 		return (this.toolClasses.length == 0) ? new Class[] { toolObject.getClass() } : this.toolClasses;
 	}
 
+	protected ToolGroup doGetToolGroup(Class<?> clazz) {
+		McpToolGroup tgAnnotation = doGetMcpToolGroupAnnotation(clazz);
+		return tgAnnotation != null?doGetToolGroup(tgAnnotation, clazz):null;
+	}
+	
 	/**
 	 * Get the tool handler.
 	 * 

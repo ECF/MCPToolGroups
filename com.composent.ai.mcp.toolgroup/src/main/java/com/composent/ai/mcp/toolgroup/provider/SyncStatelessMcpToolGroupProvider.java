@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springaicommunity.mcp.annotation.McpTool;
+import org.springaicommunity.mcp.annotation.McpToolGroup;
 import org.springaicommunity.mcp.method.tool.ReturnMode;
 import org.springaicommunity.mcp.method.tool.SyncStatelessMcpToolMethodCallback;
 import org.springaicommunity.mcp.method.tool.utils.ClassUtils;
@@ -21,6 +22,7 @@ import io.modelcontextprotocol.server.McpStatelessServerFeatures.SyncToolSpecifi
 import io.modelcontextprotocol.spec.McpSchema;
 import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
 import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
+import io.modelcontextprotocol.spec.McpSchema.ToolGroup;
 import io.modelcontextprotocol.util.Assert;
 import io.modelcontextprotocol.util.Utils;
 
@@ -66,6 +68,11 @@ public class SyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider {
 		}
 	}
 
+	protected ToolGroup doGetToolGroup(Class<?> clazz) {
+		McpToolGroup tgAnnotation = doGetMcpToolGroupAnnotation(clazz);
+		return tgAnnotation != null?doGetToolGroup(tgAnnotation, clazz):null;
+	}
+	
 	protected Class<?>[] doGetClasses(Object toolObject) {
 		return (this.toolClasses.length == 0) ? new Class[] { toolObject.getClass() } : this.toolClasses;
 	}

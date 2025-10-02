@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springaicommunity.mcp.annotation.McpTool;
+import org.springaicommunity.mcp.annotation.McpToolGroup;
 import org.springaicommunity.mcp.method.tool.AsyncStatelessMcpToolMethodCallback;
 import org.springaicommunity.mcp.method.tool.ReactiveUtils;
 import org.springaicommunity.mcp.method.tool.ReturnMode;
@@ -73,6 +74,11 @@ public class AsyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider 
 		return (this.toolClasses.length == 0) ? new Class[] { toolObject.getClass() } : this.toolClasses;
 	}
 
+	protected ToolGroup doGetToolGroup(Class<?> clazz) {
+		McpToolGroup tgAnnotation = doGetMcpToolGroupAnnotation(clazz);
+		return tgAnnotation != null?doGetToolGroup(tgAnnotation, clazz):null;
+	}
+	
 	public List<AsyncToolSpecification> getToolSpecifications() {
 		List<AsyncToolSpecification> toolSpecs = this.toolObjects.stream().map(toolObject -> {
 			return Stream.of(doGetClasses(toolObject)).map(toolClass -> {

@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import io.modelcontextprotocol.spec.McpError;
 import io.modelcontextprotocol.spec.McpSchema.Tool;
 import io.modelcontextprotocol.spec.McpSchema.ToolGroup;
-import io.modelcontextprotocol.spec.McpSchema.ToolGroupName;
 
 public class AbstractMcpDynamicToolGroupServer {
 
@@ -17,11 +16,24 @@ public class AbstractMcpDynamicToolGroupServer {
 				added ? "added to" : "removed from"), error);
 	}
 
+	protected StringBuffer getToolGroupName(StringBuffer sb, ToolGroup tg) {
+		ToolGroup parent = tg.parent();
+		if (parent == null) {
+			return sb;
+		} else {
+			return sb.append(getToolGroupName(sb, parent)).append(".").append(tg.name());
+		}
+	}
+	
+	protected String getToolGroupName(ToolGroup tg) {
+		return getToolGroupName(new StringBuffer(), tg).toString();
+	}
+	
 	protected Tool convertTool(Tool tool) {
 		ToolGroup toolGroup = tool.group();
 		if (toolGroup != null) {
 			tool = new Tool.Builder()
-					.name(toolGroup.name().getFullyQualifiedName() + ToolGroupName.NAME_DELIMITER + tool.name())
+					.name(getToolGroupName(toolGroup) + "." + tool.name())
 					.annotations(tool.annotations()).description(tool.description()).group(toolGroup)
 					.inputSchema(tool.inputSchema()).outputSchema(tool.outputSchema()).meta(tool.meta())
 					.title(tool.title()).build();
