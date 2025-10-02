@@ -29,7 +29,7 @@ public interface ExampleToolGroup {
 			@McpToolParam(description = "y is the second argument") double y);
 }
 ```
-Each method in the interface is annotated with the @McpTool and @McpToolParam annotations from the [mcp-annotations](https://github.com/spring-ai-community/mcp-annotations) project and the CallToolResult from the [mcp-java-sdk](https://github.com/modelcontextprotocol/java-sdk).  There are both sync methods (add, multiply) and async methods (asyncAdd and asyncMultiply).
+Each method in the interface is annotated with the @McpTool and @McpToolParam annotations from the [mcp-annotations](https://github.com/spring-ai-community/mcp-annotations) project. There are both sync methods (add, multiply) and async methods (asyncAdd and asyncMultiply).
  
 From the [com.composent.ai.mcp.examples.toolgroup.mcpserver](/com.compsent.ai.mcp.examples.toolgroup.mcpserver) project, [here](/com.composent.ai.mcp.examples.toolgroup.mcpserver/src/main/java/com/composent/ai/mcp/examples/toolgroup/mcpserver/ToolGroupComponent.java) is the full implementation of the above interface.
 
