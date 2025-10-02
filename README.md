@@ -1,14 +1,15 @@
 # MCP Dynamic Tool Groups
 
-The Model Context Protocol (MCP) includes support for [tools](https://modelcontextprotocol.io/specification/2025-06-18/server/tools), allowing a common way for AI models to a) Get metadata (descriptions) of tool input and output;  b) Provide input, run impl/take action and provide output via the use of one or more of the available tools.
+The Model Context Protocol (MCP) includes support for [tools](https://modelcontextprotocol.io/specification/2025-06-18/server/tools), allowing AI models to a) Get metadata (descriptions) of tool input and output;  b) Provide input, call/take action and c) get output via the use of one or more of the available tools
 
-Currently, the [specification](https://modelcontextprotocol.io/specification/versioning) provides no way to declare tool groups.  Tool grouping, however, will become important as the number, variety and function of tools increases on a given MCP server/servers, along with the need for orchestration of multiple tools (sequencing the input and output of multiple tools to accomplish a given task) becomes more common.
+Currently, the [specification](https://modelcontextprotocol.io/specification/versioning) provides no way to declare tool groups.  Tool grouping, however, will become important as the number, variety and function of tools increases on a given MCP server/servers, along with the need for orchestration of multiple tools (sequencing the input and output of multiple tools to accomplish a given task) becomes more common.  There are also lots of use cases for dynamic group creation for organization, testing, and model red teaming.
 
-The jar/api defined [here](/com.composent.ai.mcp.toolgroup) provides a very small set of classes that can use arbitrary Java interfaces (and classes) to define groups of tools, and dynamically build the tool specifications and method callback needed to add and remove the tools to an MCP server at runtime.
+I've started [a discussion on a proposal for enhancing the mcp specification](https://github.com/modelcontextprotocol/modelcontextprotocol/discussions/1567) to support ToolGroups. The code examples below are based upon this schema addition from [this comment](https://github.com/modelcontextprotocol/modelcontextprotocol/discussions/1567#discussioncomment-14568891) forward, and with the associated [additions to the mcp-java-sdk](https://github.com/scottslewis/mcp-java-sdk/blob/toolgroup_naming/mcp-core/src/main/java/io/modelcontextprotocol/spec/McpSchema.java#L1259), and the [mcp-annotations project](https://github.com/scottslewis/mcp-annotations/blob/toolgroup_naming/mcp-annotations/src/main/java/org/springaicommunity/mcp/annotation/McpToolGroup.java).
 
-For example, in the [com.composent.ai.mcp.examples.toolgroup.api](/com.composent.ai.mcp.examples.toolgroup.api) project is the declaration of an ExampleToolGroup:
+For example, in the [com.composent.ai.mcp.examples.toolgroup.api](/com.composent.ai.mcp.examples.toolgroup.api) project is the declaration of an ExampleToolGroup interface class, with McpTool and McpToolGroup metadata:
 
 ```java
+@McpToolGroup(description="Arithmetic operations exposed as mcp tools")
 public interface ExampleToolGroup {
 
 	@McpTool(description = "computes the sum of the two double precision input arguments a and b")
@@ -19,10 +20,6 @@ public interface ExampleToolGroup {
 	double multiply(@McpToolParam(description = "x is the first argument") double x,
 			@McpToolParam(description = "y is the second argument") double y);
 
-	@McpTool(name = "get-image-and-message-tool", description = "Tool returning CallToolResult")
-	public CallToolResult getImageAndMessage(
-			@McpToolParam(description = "Message to return along with tool group image") String message);
-
 	@McpTool(description = "return asynchronously the sum of the two double precision input arguments a and b")
 	Mono<Double> asyncAdd(@McpToolParam(description = "x is the first argument") double x,
 			@McpToolParam(description = "y is the second argument") double y);
@@ -32,9 +29,11 @@ public interface ExampleToolGroup {
 			@McpToolParam(description = "y is the second argument") double y);
 }
 ```
-Each method in the interface is annotated with the @McpTool and @McpToolParam annotations from the [mcp-annotations](https://github.com/spring-ai-community/mcp-annotations) project and the CallToolResult from the [mcp-java-sdk](https://github.com/modelcontextprotocol/java-sdk).  There are both sync methods (add, multiply, getImageAndMessage) and async methods (asyncAdd and asyncMultiply).
+Each method in the interface is annotated with the @McpTool and @McpToolParam annotations from the [mcp-annotations](https://github.com/spring-ai-community/mcp-annotations) project and the CallToolResult from the [mcp-java-sdk](https://github.com/modelcontextprotocol/java-sdk).  There are both sync methods (add, multiply) and async methods (asyncAdd and asyncMultiply).
  
-From the [com.composent.ai.mcp.examples.toolgroup.mcpserver](/com.compsent.ai.mcp.examples.toolgroup.mcpserver) project, [here](/com.composent.ai.mcp.examples.toolgroup.mcpserver/src/main/java/com/composent/ai/mcp/examples/toolgroup/mcpserver/ToolGroupComponent.java) is the full implementation of the above interface
+From the [com.composent.ai.mcp.examples.toolgroup.mcpserver](/com.compsent.ai.mcp.examples.toolgroup.mcpserver) project, [here](/com.composent.ai.mcp.examples.toolgroup.mcpserver/src/main/java/com/composent/ai/mcp/examples/toolgroup/mcpserver/ToolGroupComponent.java) is the full implementation of the above interface.
+
+Here is the OSGi component that implements the ExampleToolGroup interface.
 
 ```java
 @Component(immediate = true)
@@ -48,31 +47,30 @@ public class ToolGroupComponent implements ExampleToolGroup {
 	private AsyncMcpToolGroupServer asyncServer;
 
 	// Instance created in activate
-	private List<SyncToolSpecification> syncToolspecs;
+	private List<SyncToolSpecification> syncSpecifications;
 
-	private List<AsyncToolSpecification> asyncToolspecs;
+	private List<AsyncToolSpecification> asyncSpecifications;
 
 	@Activate
 	void activate() {
-		syncToolspecs = new SyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolSpecifications();
 		// Add to syncServer
-		syncServer.addTools(syncToolspecs);
-		asyncToolspecs = new AsyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolSpecifications();
+		syncSpecifications = syncServer
+				.addToolGroups(this, ExampleToolGroup.class);
 		// Add to asyncServer
-		asyncServer.addTools(asyncToolspecs);
+		asyncSpecifications = asyncServer
+				.addToolGroups(this, ExampleToolGroup.class);
 	}
 
 	@Deactivate
 	void deactivate() {
-		if (syncToolspecs != null) {
-			this.syncServer.removeTools(syncToolspecs);
-			syncToolspecs = null;
+		if (syncSpecifications != null) {
+			this.syncServer.removeTools(syncSpecifications);
+			syncSpecifications = null;
 		}
-		if (asyncToolspecs != null) {
-			this.asyncServer.removeTools(asyncToolspecs);
-			asyncToolspecs = null;
+		if (asyncSpecifications != null) {
+			this.asyncServer.removeTools(asyncSpecifications);
+			asyncSpecifications = null;
 		}
-
 	}
 
 	@Override
@@ -88,14 +86,6 @@ public class ToolGroupComponent implements ExampleToolGroup {
 	}
 
 	@Override
-	public CallToolResult getImageAndMessage(String message) {
-		logger.debug("getImageAndMessage message={}", message);
-		return CallToolResult.builder().addTextContent("Message is: " + message).addContent(
-				new McpSchema.ImageContent(null, "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD...", "image/jpeg"))
-				.build();
-	}
-
-	@Override
 	public Mono<Double> asyncAdd(double x, double y) {
 		logger.debug("Async Adding x={} y={}", x, y);
 		return Mono.just(add(x, y));
@@ -106,376 +96,26 @@ public class ToolGroupComponent implements ExampleToolGroup {
 		logger.debug("Async Multiplying x={} y={}", x, y);
 		return Mono.just(multiply(x, y));
 	}
+
 }
 ```
-Note first that this class provides an implementation of ExampleToolGroup interface methods.   
-
 The McpServer tool specification for the ExampleToolGroup is created on component activation here:
 ```java
-toolspecs = new SyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolSpecifications();
+		syncSpecifications = syncServer.addToolGroups(this, ExampleToolGroup.class);
 ```
-The SyncMcpToolGroupProvider class is from [this package](https://github.com/ECF/MCPToolGroups/tree/main/com.composent.ai.mcp.toolgroup/src/main/java/com/composent/ai/mcp/toolgroup/provider). 
+The SyncMcpToolGroupProvider class (syncServer type) is from [this package](https://github.com/ECF/MCPToolGroups/tree/main/com.composent.ai.mcp.toolgroup/src/main/java/com/composent/ai/mcp/toolgroup/provider). 
+
+When the syncServer is injected into the ToolGroupComponent, and it is activated, the tool groups and the sync tools discovered on the ExampleToolGroup interface are added to the syncServer via addToolGroups.
+
+As appropriate for the timing/lifecycle of these components, the toolspecs can also be dynamically removed from the syncServer:
 
 ```java
-new SyncMcpToolGroupProvider(this, ExampleToolGroup.class)
-```
-The SyncMcpToolGroupProvider constructor request an implementing instance...this...and one (or more) Java classes implemented by the given instance.  The getToolSpecifications() method returns a List of tool specifications of the appropriate type (sync mcp server).  Then, those specifications can be dynamically added to one or more servers
-
-```java
-		toolspecs = new SyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolSpecifications();
-		// Add to server
-		server.addTools(toolspecs);
-```
-As appropriate for the timing/lifecycle, the toolspecs can also be dynamically removed
-```java
-		if (toolspecs != null) {
-			this.server.removeTools(toolspecs);
-			toolspecs = null;
+		if (syncSpecifications != null) {
+			this.syncServer.removeTools(syncSpecifications);
+			syncSpecifications = null;
 		}
 ```
-Once these specifications are added to a server, MCP clients are able to inspect the @McpTool and @McpToolParam descriptions of the tools in this group, use the descriptions to provide required input, take action and receive output (i.e. call the tool method) from all the relevant tools in this group.  Note that the ExampleTools has both sync and async tool methods, and the McpSyncServer and McpSyncServer get the appropriate types of tools from the ExampleTools interface class.
+Once these specifications are added to a server, MCP clients are able to list the tools, use the toolgroup and tool descriptions to decide on tools to call, provide required input to those calls, make the actual call to the tool(s) and receive output . Note that the ExampleTools has both sync and async tool methods, and the McpSyncServer and McpSyncServer get the appropriate types of tools from the ExampleTools interface class through reflection on the ExampleToolGroup.class.
 
-Note that the use of Java interfaces in this way automatically adds MCP metadata (descriptions from the @McpTool and @McpToolParam) to the api contract.  This can be easily duplicated in other languages...e.g. Python, C++, or Typescript via decorators, annotations, and abstract classes.
-
-## Using Bndtools Project Templates to Build your own Dynamic MCP ToolGroup Server
-
-With Bndtoools 7.1+ installed an a recent version of Eclipse (4.36+), create a new Eclipse workspace and choose New->Bnd OSGi Workspace. 
-
-1. Create a new Bndtools Workspace using the [ECF Bndtools Workspace Template](https://github.com/ECF/bndtools.workspace)
-
-![bndtoolsnewwkspace](https://github.com/user-attachments/assets/95ec5792-6bc2-4c88-990d-4e8d3350627e)
-
-2. Create a new bndtools project using the ArithmeticToolGroup API Project template
-
-<img width="1062" height="847" alt="bndtoolsnewmcpapiproject" src="https://github.com/user-attachments/assets/56edfd30-5808-4aa1-b1c7-7a253e009519" />
-
-The new project wizard will request a name for the project.  You should use a name with java package-like 'dot' 
-notation for the project name...e.g.:  **my.arithmetic.api**
-
-3. Create a MCP Server project using the ArithmeticToolGroup MCP Servers Project template from the New Bnd OSGi Project wizard as shown above.
-
-The project name should be unique, but should have same dot notation as above.  For example:  **my.arithmetic.mcpserver**
-
-After the new project name entry and Next> this dialog will appear:
-
-<img width="867" height="702" alt="bndtoolsnewmcpserver" src="https://github.com/user-attachments/assets/a7707931-7ba8-4349-97c2-877db0264857" />
-
-The name given during api project creation should be provided in this field as shown in the screenshot above.
-
-4. Create a MCP Test Client project using the ArithmeticToolGroup MCP Test Client Project template from the New Bnd OSGi Project wizard.
-
-As before, you should give a project name like the two previous projects: **my.arithmetic.mcpclient**
-
-This dialog will then appear and you should complete both fields with the names for the projects used above and choose Finish
-
-<img width="867" height="702" alt="bndtoolsnewmcpclient" src="https://github.com/user-attachments/assets/a07ce6eb-323d-4cac-9258-cad479ce22fc" />
-
-You should then have three projects in your workspace.  You may examine the API class (ArithmeticToolGroup in API project) or API impl in the mcpserver project
-(ArithmeticToolGroupComponent) the two (sync and async) servers.
-
-<img width="1700" height="1087" alt="bndtoolsmcpworkspace" src="https://github.com/user-attachments/assets/ecd9729c-6886-4a2a-aba8-a6661dff3d69" />
-
-## Run/Debug the ArithmeticToolGroup MCP Servers in Eclipse
-
-To Run or Debug the ArithmeticToolGroup MCP Servers, to to the mcpserver project in your workspace and open the file **mcpservers.bndrun**.   Once the bndrun editor 
-is open you can launch (run or debug) by choosing the Run OSGi or Debug OSGi button in the upper right of the bndrun editor.
-
-In the console you should then get debug output like this
-
-```console
-Sep 08, 2025 2:54:17 PM org.apache.aries.spifly.BaseActivator log
-INFO: Registered provider org.slf4j.simple.SimpleServiceProvider of service org.slf4j.spi.SLF4JServiceProvider in bundle slf4j.simple
-[FelixStartLevel] DEBUG my.arithmetic.mcpserver.AsyncMcpToolGroupServerComponent - starting async server with uds path=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket
-[FelixStartLevel] DEBUG reactor.util.Loggers - Using Slf4j logging framework
-[FelixStartLevel] DEBUG com.composent.ai.mcp.transport.uds.UDSMcpServerTransportProvider - Session transport initProcessing completed
-[FelixStartLevel] DEBUG my.arithmetic.mcpserver.AsyncMcpToolGroupServerComponent - async server started
-[FelixStartLevel] DEBUG my.arithmetic.mcpserver.SyncMcpToolGroupServerComponent - starting sync server with uds at path=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket
-[FelixStartLevel] DEBUG com.composent.ai.mcp.transport.uds.UDSMcpServerTransportProvider - Session transport initProcessing completed
-[FelixStartLevel] DEBUG my.arithmetic.mcpserver.SyncMcpToolGroupServerComponent - sync server started
-[FelixStartLevel] DEBUG com.github.victools.jsonschema.generator.impl.SchemaGenerationContextImpl - storing configured custom inline type for double as definition (since it is the main schema "#")
-[FelixStartLevel] DEBUG com.github.victools.jsonschema.generator.impl.SchemaGenerationContextImpl - storing configured custom inline type for double as definition (since it is the main schema "#")
-[FelixStartLevel] DEBUG com.composent.ai.mcp.toolgroup.provider.SyncMcpToolGroupProvider - created sync toolspec=SyncToolSpecification[tool=Tool[name=my.arithmetic.api.ArithmeticToolGroup.add, title=null, description=computes the sum of the two double precision input arguments a and b, inputSchema=JsonSchema[type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y], additionalProperties=null, defs=null, definitions=null], outputSchema=null, annotations=ToolAnnotations[title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true, returnDirect=null], meta=null], call=null, callHandler=org.springaicommunity.mcp.method.tool.SyncMcpToolMethodCallback@2b941329]
-[FelixStartLevel] DEBUG com.github.victools.jsonschema.generator.impl.SchemaGenerationContextImpl - storing configured custom inline type for double as definition (since it is the main schema "#")
-[FelixStartLevel] DEBUG com.github.victools.jsonschema.generator.impl.SchemaGenerationContextImpl - storing configured custom inline type for double as definition (since it is the main schema "#")
-[FelixStartLevel] DEBUG com.composent.ai.mcp.toolgroup.provider.SyncMcpToolGroupProvider - created sync toolspec=SyncToolSpecification[tool=Tool[name=my.arithmetic.api.ArithmeticToolGroup.multiply, title=null, description=return the product of the two given double precision arguments named a and b, inputSchema=JsonSchema[type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y], additionalProperties=null, defs=null, definitions=null], outputSchema=null, annotations=ToolAnnotations[title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true, returnDirect=null], meta=null], call=null, callHandler=org.springaicommunity.mcp.method.tool.SyncMcpToolMethodCallback@293229b1]
-[FelixStartLevel] DEBUG com.github.victools.jsonschema.generator.impl.SchemaGenerationContextImpl - storing configured custom inline type for java.lang.String as definition (since it is the main schema "#")
-[FelixStartLevel] DEBUG com.composent.ai.mcp.toolgroup.provider.SyncMcpToolGroupProvider - created sync toolspec=SyncToolSpecification[tool=Tool[name=my.arithmetic.api.ArithmeticToolGroup.get-image-and-message-tool, title=null, description=Tool returning CallToolResult with an image and message, inputSchema=JsonSchema[type=object, properties={message={type=string, description=Message to associate with image}}, required=[message], additionalProperties=null, defs=null, definitions=null], outputSchema=null, annotations=ToolAnnotations[title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true, returnDirect=null], meta=null], call=null, callHandler=org.springaicommunity.mcp.method.tool.SyncMcpToolMethodCallback@f34732d]
-[FelixStartLevel] DEBUG io.modelcontextprotocol.server.McpAsyncServer - Added tool handler: my.arithmetic.api.ArithmeticToolGroup.add
-[FelixStartLevel] DEBUG com.composent.ai.mcp.toolgroup.AbstractSyncMcpToolGroupServer - added tool specification=my.arithmetic.api.ArithmeticToolGroup.add to sync server=io.modelcontextprotocol.server.McpSyncServer@e154bde
-[FelixStartLevel] DEBUG io.modelcontextprotocol.server.McpAsyncServer - Added tool handler: my.arithmetic.api.ArithmeticToolGroup.multiply
-[FelixStartLevel] DEBUG com.composent.ai.mcp.toolgroup.AbstractSyncMcpToolGroupServer - added tool specification=my.arithmetic.api.ArithmeticToolGroup.multiply to sync server=io.modelcontextprotocol.server.McpSyncServer@e154bde
-[FelixStartLevel] DEBUG io.modelcontextprotocol.server.McpAsyncServer - Added tool handler: my.arithmetic.api.ArithmeticToolGroup.get-image-and-message-tool
-[FelixStartLevel] DEBUG com.composent.ai.mcp.toolgroup.AbstractSyncMcpToolGroupServer - added tool specification=my.arithmetic.api.ArithmeticToolGroup.get-image-and-message-tool to sync server=io.modelcontextprotocol.server.McpSyncServer@e154bde
-[FelixStartLevel] DEBUG com.github.victools.jsonschema.generator.impl.SchemaGenerationContextImpl - storing configured custom inline type for double as definition (since it is the main schema "#")
-[FelixStartLevel] DEBUG com.github.victools.jsonschema.generator.impl.SchemaGenerationContextImpl - storing configured custom inline type for double as definition (since it is the main schema "#")
-[FelixStartLevel] DEBUG com.composent.ai.mcp.toolgroup.provider.AsyncMcpToolGroupProvider - created async toolspec=AsyncToolSpecification[tool=Tool[name=my.arithmetic.api.ArithmeticToolGroup.asyncAdd, title=null, description=asynchronously computes the sum of the two double precision input arguments a and b, inputSchema=JsonSchema[type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y], additionalProperties=null, defs=null, definitions=null], outputSchema=null, annotations=ToolAnnotations[title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true, returnDirect=null], meta=null], call=null, callHandler=org.springaicommunity.mcp.method.tool.AsyncMcpToolMethodCallback@70c3b659]
-[FelixStartLevel] DEBUG com.github.victools.jsonschema.generator.impl.SchemaGenerationContextImpl - storing configured custom inline type for double as definition (since it is the main schema "#")
-[FelixStartLevel] DEBUG com.github.victools.jsonschema.generator.impl.SchemaGenerationContextImpl - storing configured custom inline type for double as definition (since it is the main schema "#")
-[FelixStartLevel] DEBUG com.composent.ai.mcp.toolgroup.provider.AsyncMcpToolGroupProvider - created async toolspec=AsyncToolSpecification[tool=Tool[name=my.arithmetic.api.ArithmeticToolGroup.asyncMultiply, title=null, description=asynchronously computes the product of the two given double precision arguments named a and b, inputSchema=JsonSchema[type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y], additionalProperties=null, defs=null, definitions=null], outputSchema=null, annotations=ToolAnnotations[title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true, returnDirect=null], meta=null], call=null, callHandler=org.springaicommunity.mcp.method.tool.AsyncMcpToolMethodCallback@1710062c]
-[FelixStartLevel] DEBUG io.modelcontextprotocol.server.McpAsyncServer - Added tool handler: my.arithmetic.api.ArithmeticToolGroup.asyncAdd
-[FelixStartLevel] DEBUG com.composent.ai.mcp.toolgroup.AbstractAsyncMcpToolGroupServer - added tool specification=my.arithmetic.api.ArithmeticToolGroup.asyncAdd to async server=io.modelcontextprotocol.server.McpAsyncServer@463ac911
-[FelixStartLevel] DEBUG io.modelcontextprotocol.server.McpAsyncServer - Added tool handler: my.arithmetic.api.ArithmeticToolGroup.asyncMultiply
-[FelixStartLevel] DEBUG com.composent.ai.mcp.toolgroup.AbstractAsyncMcpToolGroupServer - added tool specification=my.arithmetic.api.ArithmeticToolGroup.asyncMultiply to async server=io.modelcontextprotocol.server.McpAsyncServer@463ac911
-____________________________
-Welcome to Apache Felix Gogo
-
-g! 
-```
-
-The debug output indicates that both async and sync mcp servers were created (see AsyncMcpToolGroupServerComponent and SyncMcpToolGroupServerComponent), and that the
-ArithmeticToolGroupComponent api implementation was created but the api was dynamically inspected, tool specifications created, and then added to the sync or async
-servers appropriately.  See ArithmeticToolGroupComponent.activate() method.
-
-## Run/Debug the Test MCP Client in Eclipse
-
-In your MCP client project in workspace, open the mcpclient.bndrun file and choose Run OSGi/Debug OSGI as desired.  The MCP Test Client has both an async client (McpAsyncClientCompoent)
-and sync client (McpSyncClientComponent).  Both of these client connect via the Unix Domain Socket Transport to the async or sync MCP server that should 
-be already running, and then call some of the async/sync method calls via the MCP protocol.
-
-```console
-Sep 08, 2025 3:12:23 PM org.apache.aries.spifly.BaseActivator log
-INFO: Registered provider org.slf4j.simple.SimpleServiceProvider of service org.slf4j.spi.SLF4JServiceProvider in bundle slf4j.simple
-[FelixStartLevel] DEBUG my.arithmetic.mcpclient.McpAsyncClientComponent - starting uds async client with socket path=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket
-[FelixStartLevel] DEBUG reactor.util.Loggers - Using Slf4j logging framework
-[FelixStartLevel] DEBUG io.modelcontextprotocol.client.LifecycleInitializer - Initialization process started
-[boundedElastic-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - connect targetAddress=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket
-[boundedElastic-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - connect targetAddress=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - select returned count=1
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - client=java.nio.channels.SocketChannel[connection-pending remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket]
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - connected client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket]
-[pool-4-thread-1] INFO com.composent.ai.mcp.transport.uds.UDSMcpClientTransport - CONNECTED to targetAddress=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket
-[boundedElastic-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - connected client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket]
-[FelixStartLevel] DEBUG io.modelcontextprotocol.spec.McpClientSession - Sending message for method initialize
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - select returned count=1
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket]
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket] msg=
-[pool-4-thread-1] DEBUG io.modelcontextprotocol.spec.McpSchema - Received JSON message: {"jsonrpc":"2.0","method":"notifications/tools/list_changed"}
-[pool-2-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing msg={"jsonrpc":"2.0","method":"initialize","id":"28bf018d-0","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"Spring AI MCP Client","version":"0.3.1"}}}
-
-[pool-2-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - doWrite message={"jsonrpc":"2.0","method":"initialize","id":"28bf018d-0","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"Spring AI MCP Client","version":"0.3.1"}}}
-
-[pool-2-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing done msg={"jsonrpc":"2.0","method":"initialize","id":"28bf018d-0","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"Spring AI MCP Client","version":"0.3.1"}}}
-
-[pool-4-thread-1] DEBUG io.modelcontextprotocol.spec.McpClientSession - Received notification: JSONRPCNotification[jsonrpc=2.0, method=notifications/tools/list_changed, params=null]
-[pool-4-thread-1] DEBUG io.modelcontextprotocol.client.LifecycleInitializer - Joining previous initialization
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - select returned count=1
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket]
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket] msg=
-[pool-4-thread-1] DEBUG io.modelcontextprotocol.spec.McpSchema - Received JSON message: {"jsonrpc":"2.0","method":"notifications/tools/list_changed"}
-[pool-4-thread-1] DEBUG io.modelcontextprotocol.spec.McpClientSession - Received notification: JSONRPCNotification[jsonrpc=2.0, method=notifications/tools/list_changed, params=null]
-[pool-4-thread-1] DEBUG io.modelcontextprotocol.client.LifecycleInitializer - Joining previous initialization
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - select returned count=1
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket]
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket] msg=
-[pool-4-thread-1] DEBUG io.modelcontextprotocol.spec.McpSchema - Received JSON message: {"jsonrpc":"2.0","id":"28bf018d-0","result":{"protocolVersion":"2024-11-05","capabilities":{"logging":{},"tools":{"listChanged":true}},"serverInfo":{"name":"my.arithmetic.mcpserver.AsyncMcpToolGroupServerComponent","version":"1.0.0"}}}
-[pool-4-thread-1] DEBUG io.modelcontextprotocol.spec.McpClientSession - Received Response: JSONRPCResponse[jsonrpc=2.0, id=28bf018d-0, result={protocolVersion=2024-11-05, capabilities={logging={}, tools={listChanged=true}}, serverInfo={name=my.arithmetic.mcpserver.AsyncMcpToolGroupServerComponent, version=1.0.0}}, error=null]
-[pool-4-thread-1] INFO io.modelcontextprotocol.client.LifecycleInitializer - Server response with Protocol: 2024-11-05, Capabilities: ServerCapabilities[completions=null, experimental=null, logging=LoggingCapabilities[], prompts=null, resources=null, tools=ToolCapabilities[listChanged=true]], Info: Implementation[name=my.arithmetic.mcpserver.AsyncMcpToolGroupServerComponent, title=null, version=1.0.0] and Instructions null
-[pool-2-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing msg={"jsonrpc":"2.0","method":"notifications/initialized"}
-
-[pool-2-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - doWrite message={"jsonrpc":"2.0","method":"notifications/initialized"}
-
-[pool-2-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing done msg={"jsonrpc":"2.0","method":"notifications/initialized"}
-
-[pool-4-thread-1] DEBUG io.modelcontextprotocol.spec.McpClientSession - Sending message for method tools/list
-[pool-2-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing msg={"jsonrpc":"2.0","method":"tools/list","id":"28bf018d-1","params":{}}
-
-[pool-4-thread-1] DEBUG io.modelcontextprotocol.spec.McpClientSession - Sending message for method tools/list
-[FelixStartLevel] DEBUG my.arithmetic.mcpclient.McpAsyncClientComponent - uds async client initialized
-[pool-2-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - doWrite message={"jsonrpc":"2.0","method":"tools/list","id":"28bf018d-1","params":{}}
-
-[pool-2-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing done msg={"jsonrpc":"2.0","method":"tools/list","id":"28bf018d-1","params":{}}
-
-[pool-2-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing msg={"jsonrpc":"2.0","method":"tools/list","id":"28bf018d-2","params":{}}
-
-[pool-2-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - doWrite message={"jsonrpc":"2.0","method":"tools/list","id":"28bf018d-2","params":{}}
-
-[pool-2-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing done msg={"jsonrpc":"2.0","method":"tools/list","id":"28bf018d-2","params":{}}
-
-[FelixStartLevel] DEBUG io.modelcontextprotocol.client.LifecycleInitializer - Joining previous initialization
-[FelixStartLevel] DEBUG io.modelcontextprotocol.spec.McpClientSession - Sending message for method tools/call
-[FelixStartLevel] DEBUG io.modelcontextprotocol.client.LifecycleInitializer - Joining previous initialization
-[FelixStartLevel] DEBUG io.modelcontextprotocol.spec.McpClientSession - Sending message for method tools/call
-[FelixStartLevel] DEBUG my.arithmetic.mcpclient.McpSyncClientComponent - starting uds client with socket at path=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket
-[pool-2-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing msg={"jsonrpc":"2.0","method":"tools/call","id":"28bf018d-3","params":{"name":"my.arithmetic.api.ArithmeticToolGroup.asyncAdd","arguments":{"y":"26.32","x":"25.1"}}}
-
-[pool-2-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - doWrite message={"jsonrpc":"2.0","method":"tools/call","id":"28bf018d-3","params":{"name":"my.arithmetic.api.ArithmeticToolGroup.asyncAdd","arguments":{"y":"26.32","x":"25.1"}}}
-
-[pool-2-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing done msg={"jsonrpc":"2.0","method":"tools/call","id":"28bf018d-3","params":{"name":"my.arithmetic.api.ArithmeticToolGroup.asyncAdd","arguments":{"y":"26.32","x":"25.1"}}}
-
-[pool-2-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing msg={"jsonrpc":"2.0","method":"tools/call","id":"28bf018d-4","params":{"name":"my.arithmetic.api.ArithmeticToolGroup.asyncMultiply","arguments":{"y":"223.86","x":"210.71"}}}
-
-[pool-2-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - doWrite message={"jsonrpc":"2.0","method":"tools/call","id":"28bf018d-4","params":{"name":"my.arithmetic.api.ArithmeticToolGroup.asyncMultiply","arguments":{"y":"223.86","x":"210.71"}}}
-
-[pool-2-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing done msg={"jsonrpc":"2.0","method":"tools/call","id":"28bf018d-4","params":{"name":"my.arithmetic.api.ArithmeticToolGroup.asyncMultiply","arguments":{"y":"223.86","x":"210.71"}}}
-
-[FelixStartLevel] DEBUG io.modelcontextprotocol.client.LifecycleInitializer - Initialization process started
-[FelixStartLevel] DEBUG io.modelcontextprotocol.spec.McpClientSession - Sending message for method initialize
-[boundedElastic-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - connect targetAddress=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket
-[boundedElastic-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - connect targetAddress=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - select returned count=1
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - client=java.nio.channels.SocketChannel[connection-pending remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket]
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - connected client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket]
-[pool-9-thread-1] INFO com.composent.ai.mcp.transport.uds.UDSMcpClientTransport - CONNECTED to targetAddress=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - select returned count=1
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket]
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket] msg=
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.spec.McpSchema - Received JSON message: {"jsonrpc":"2.0","method":"notifications/tools/list_changed"}
-[boundedElastic-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - connected client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket]
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - select returned count=1
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket]
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read partial={"jsonrpc":"2.0","id":"28bf018d-1","result":{"tools":[{"name":"my.arithmetic.api.ArithmeticToolGroup.asyncAdd","description":"asynchronously computes the sum of the two double precision input arguments a and b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}},{"name":"my.arithmetic.api.ArithmeticToolGroup.asyncMultiply","description":"asynchronously computes the product of the two given double precision arguments named a and b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":tr
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - select returned count=1
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket]
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket] msg=
-[pool-4-thread-1] DEBUG io.modelcontextprotocol.spec.McpSchema - Received JSON message: {"jsonrpc":"2.0","id":"28bf018d-1","result":{"tools":[{"name":"my.arithmetic.api.ArithmeticToolGroup.asyncAdd","description":"asynchronously computes the sum of the two double precision input arguments a and b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}},{"name":"my.arithmetic.api.ArithmeticToolGroup.asyncMultiply","description":"asynchronously computes the product of the two given double precision arguments named a and b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}}]}}
-[pool-4-thread-1] DEBUG io.modelcontextprotocol.spec.McpClientSession - Received Response: JSONRPCResponse[jsonrpc=2.0, id=28bf018d-1, result={tools=[{name=my.arithmetic.api.ArithmeticToolGroup.asyncAdd, description=asynchronously computes the sum of the two double precision input arguments a and b, inputSchema={type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y]}, annotations={title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true}}, {name=my.arithmetic.api.ArithmeticToolGroup.asyncMultiply, description=asynchronously computes the product of the two given double precision arguments named a and b, inputSchema={type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y]}, annotations={title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true}}]}, error=null]
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing msg={"jsonrpc":"2.0","method":"initialize","id":"2b502ad0-0","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"Java SDK MCP Client","version":"1.0.0"}}}
-
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - doWrite message={"jsonrpc":"2.0","method":"initialize","id":"2b502ad0-0","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"Java SDK MCP Client","version":"1.0.0"}}}
-
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing done msg={"jsonrpc":"2.0","method":"initialize","id":"2b502ad0-0","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"Java SDK MCP Client","version":"1.0.0"}}}
-
-[pool-4-thread-1] DEBUG io.modelcontextprotocol.client.McpAsyncClient - Tools changed: [Tool[name=my.arithmetic.api.ArithmeticToolGroup.asyncAdd, title=null, description=asynchronously computes the sum of the two double precision input arguments a and b, inputSchema=JsonSchema[type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y], additionalProperties=null, defs=null, definitions=null], outputSchema=null, annotations=ToolAnnotations[title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true, returnDirect=null], meta=null], Tool[name=my.arithmetic.api.ArithmeticToolGroup.asyncMultiply, title=null, description=asynchronously computes the product of the two given double precision arguments named a and b, inputSchema=JsonSchema[type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y], additionalProperties=null, defs=null, definitions=null], outputSchema=null, annotations=ToolAnnotations[title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true, returnDirect=null], meta=null]]
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - select returned count=1
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket]
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read partial={"jsonrpc":"2.0","id":"28bf018d-2","result":{"tools":[{"name":"my.arithmetic.api.ArithmeticToolGroup.asyncAdd","description":"asynchronously computes the sum of the two double precision input arguments a and b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}},{"name":"my.arithmetic.api.ArithmeticToolGroup.asyncMultiply","description":"asynchronously computes the product of the two given double precision arguments named a and b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":tr
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - select returned count=1
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket]
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket] msg=
-[pool-4-thread-1] DEBUG io.modelcontextprotocol.spec.McpSchema - Received JSON message: {"jsonrpc":"2.0","id":"28bf018d-2","result":{"tools":[{"name":"my.arithmetic.api.ArithmeticToolGroup.asyncAdd","description":"asynchronously computes the sum of the two double precision input arguments a and b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}},{"name":"my.arithmetic.api.ArithmeticToolGroup.asyncMultiply","description":"asynchronously computes the product of the two given double precision arguments named a and b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}}]}}
-[pool-4-thread-1] DEBUG io.modelcontextprotocol.spec.McpClientSession - Received Response: JSONRPCResponse[jsonrpc=2.0, id=28bf018d-2, result={tools=[{name=my.arithmetic.api.ArithmeticToolGroup.asyncAdd, description=asynchronously computes the sum of the two double precision input arguments a and b, inputSchema={type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y]}, annotations={title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true}}, {name=my.arithmetic.api.ArithmeticToolGroup.asyncMultiply, description=asynchronously computes the product of the two given double precision arguments named a and b, inputSchema={type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y]}, annotations={title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true}}]}, error=null]
-[pool-4-thread-1] DEBUG io.modelcontextprotocol.client.McpAsyncClient - Tools changed: [Tool[name=my.arithmetic.api.ArithmeticToolGroup.asyncAdd, title=null, description=asynchronously computes the sum of the two double precision input arguments a and b, inputSchema=JsonSchema[type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y], additionalProperties=null, defs=null, definitions=null], outputSchema=null, annotations=ToolAnnotations[title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true, returnDirect=null], meta=null], Tool[name=my.arithmetic.api.ArithmeticToolGroup.asyncMultiply, title=null, description=asynchronously computes the product of the two given double precision arguments named a and b, inputSchema=JsonSchema[type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y], additionalProperties=null, defs=null, definitions=null], outputSchema=null, annotations=ToolAnnotations[title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true, returnDirect=null], meta=null]]
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.spec.McpClientSession - Received notification: JSONRPCNotification[jsonrpc=2.0, method=notifications/tools/list_changed, params=null]
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.client.LifecycleInitializer - Joining previous initialization
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.spec.McpSchema - Received JSON message: {"jsonrpc":"2.0","method":"notifications/tools/list_changed"}
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.spec.McpClientSession - Received notification: JSONRPCNotification[jsonrpc=2.0, method=notifications/tools/list_changed, params=null]
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.client.LifecycleInitializer - Joining previous initialization
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.spec.McpSchema - Received JSON message: {"jsonrpc":"2.0","method":"notifications/tools/list_changed"}
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.spec.McpClientSession - Received notification: JSONRPCNotification[jsonrpc=2.0, method=notifications/tools/list_changed, params=null]
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.client.LifecycleInitializer - Joining previous initialization
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - select returned count=1
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket]
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket] msg=
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.spec.McpSchema - Received JSON message: {"jsonrpc":"2.0","id":"2b502ad0-0","result":{"protocolVersion":"2024-11-05","capabilities":{"logging":{},"tools":{"listChanged":true}},"serverInfo":{"name":"my.arithmetic.mcpserver.SyncMcpToolGroupServerComponent","version":"1.0.0"}}}
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.spec.McpClientSession - Received Response: JSONRPCResponse[jsonrpc=2.0, id=2b502ad0-0, result={protocolVersion=2024-11-05, capabilities={logging={}, tools={listChanged=true}}, serverInfo={name=my.arithmetic.mcpserver.SyncMcpToolGroupServerComponent, version=1.0.0}}, error=null]
-[pool-9-thread-1] INFO io.modelcontextprotocol.client.LifecycleInitializer - Server response with Protocol: 2024-11-05, Capabilities: ServerCapabilities[completions=null, experimental=null, logging=LoggingCapabilities[], prompts=null, resources=null, tools=ToolCapabilities[listChanged=true]], Info: Implementation[name=my.arithmetic.mcpserver.SyncMcpToolGroupServerComponent, title=null, version=1.0.0] and Instructions null
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.spec.McpClientSession - Sending message for method tools/list
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.spec.McpClientSession - Sending message for method tools/list
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.spec.McpClientSession - Sending message for method tools/list
-[FelixStartLevel] DEBUG my.arithmetic.mcpclient.McpSyncClientComponent - uds sync client initialized
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing msg={"jsonrpc":"2.0","method":"notifications/initialized"}
-
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - doWrite message={"jsonrpc":"2.0","method":"notifications/initialized"}
-
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing done msg={"jsonrpc":"2.0","method":"notifications/initialized"}
-
-[FelixStartLevel] DEBUG io.modelcontextprotocol.client.LifecycleInitializer - Joining previous initialization
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing msg={"jsonrpc":"2.0","method":"tools/list","id":"2b502ad0-1","params":{}}
-
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - doWrite message={"jsonrpc":"2.0","method":"tools/list","id":"2b502ad0-1","params":{}}
-
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing done msg={"jsonrpc":"2.0","method":"tools/list","id":"2b502ad0-1","params":{}}
-
-[FelixStartLevel] DEBUG io.modelcontextprotocol.spec.McpClientSession - Sending message for method tools/list
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing msg={"jsonrpc":"2.0","method":"tools/list","id":"2b502ad0-2","params":{}}
-
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - doWrite message={"jsonrpc":"2.0","method":"tools/list","id":"2b502ad0-2","params":{}}
-
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing done msg={"jsonrpc":"2.0","method":"tools/list","id":"2b502ad0-2","params":{}}
-
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing msg={"jsonrpc":"2.0","method":"tools/list","id":"2b502ad0-3","params":{}}
-
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - doWrite message={"jsonrpc":"2.0","method":"tools/list","id":"2b502ad0-3","params":{}}
-
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing done msg={"jsonrpc":"2.0","method":"tools/list","id":"2b502ad0-3","params":{}}
-
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing msg={"jsonrpc":"2.0","method":"tools/list","id":"2b502ad0-4","params":{}}
-
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - doWrite message={"jsonrpc":"2.0","method":"tools/list","id":"2b502ad0-4","params":{}}
-
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing done msg={"jsonrpc":"2.0","method":"tools/list","id":"2b502ad0-4","params":{}}
-
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - select returned count=1
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket]
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket] msg=
-[pool-4-thread-1] DEBUG io.modelcontextprotocol.spec.McpSchema - Received JSON message: {"jsonrpc":"2.0","id":"28bf018d-3","result":{"content":[{"type":"text","text":"51.42"}],"isError":false}}
-[pool-4-thread-1] DEBUG io.modelcontextprotocol.spec.McpClientSession - Received Response: JSONRPCResponse[jsonrpc=2.0, id=28bf018d-3, result={content=[{type=text, text=51.42}], isError=false}, error=null]
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - select returned count=1
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket]
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read partial={"jsonrpc":"2.0","id":"2b502ad0-1","result":{"tools":[{"name":"my.arithmetic.api.ArithmeticToolGroup.add","description":"computes the sum of the two double precision input arguments a and b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}},{"name":"my.arithmetic.api.ArithmeticToolGroup.multiply","description":"return the product of the two given double precision arguments named a and b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - select returned count=1
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket]
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket] msg=
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.spec.McpSchema - Received JSON message: {"jsonrpc":"2.0","id":"2b502ad0-1","result":{"tools":[{"name":"my.arithmetic.api.ArithmeticToolGroup.add","description":"computes the sum of the two double precision input arguments a and b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}},{"name":"my.arithmetic.api.ArithmeticToolGroup.multiply","description":"return the product of the two given double precision arguments named a and b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}},{"name":"my.arithmetic.api.ArithmeticToolGroup.get-image-and-message-tool","description":"Tool returning CallToolResult with an image and message","inputSchema":{"type":"object","properties":{"message":{"type":"string","description":"Message to associate with image"}},"required":["message"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}}]}}
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.spec.McpClientSession - Received Response: JSONRPCResponse[jsonrpc=2.0, id=2b502ad0-1, result={tools=[{name=my.arithmetic.api.ArithmeticToolGroup.add, description=computes the sum of the two double precision input arguments a and b, inputSchema={type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y]}, annotations={title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true}}, {name=my.arithmetic.api.ArithmeticToolGroup.multiply, description=return the product of the two given double precision arguments named a and b, inputSchema={type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y]}, annotations={title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true}}, {name=my.arithmetic.api.ArithmeticToolGroup.get-image-and-message-tool, description=Tool returning CallToolResult with an image and message, inputSchema={type=object, properties={message={type=string, description=Message to associate with image}}, required=[message]}, annotations={title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true}}]}, error=null]
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.client.McpAsyncClient - Tools changed: [Tool[name=my.arithmetic.api.ArithmeticToolGroup.add, title=null, description=computes the sum of the two double precision input arguments a and b, inputSchema=JsonSchema[type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y], additionalProperties=null, defs=null, definitions=null], outputSchema=null, annotations=ToolAnnotations[title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true, returnDirect=null], meta=null], Tool[name=my.arithmetic.api.ArithmeticToolGroup.multiply, title=null, description=return the product of the two given double precision arguments named a and b, inputSchema=JsonSchema[type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y], additionalProperties=null, defs=null, definitions=null], outputSchema=null, annotations=ToolAnnotations[title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true, returnDirect=null], meta=null], Tool[name=my.arithmetic.api.ArithmeticToolGroup.get-image-and-message-tool, title=null, description=Tool returning CallToolResult with an image and message, inputSchema=JsonSchema[type=object, properties={message={type=string, description=Message to associate with image}}, required=[message], additionalProperties=null, defs=null, definitions=null], outputSchema=null, annotations=ToolAnnotations[title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true, returnDirect=null], meta=null]]
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - select returned count=1
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket]
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read partial={"jsonrpc":"2.0","id":"2b502ad0-2","result":{"tools":[{"name":"my.arithmetic.api.ArithmeticToolGroup.add","description":"computes the sum of the two double precision input arguments a and b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}},{"name":"my.arithmetic.api.ArithmeticToolGroup.multiply","description":"return the product of the two given double precision arguments named a and b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - select returned count=1
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket]
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read partial=true}},{"name":"my.arithmetic.api.ArithmeticToolGroup.get-image-and-message-tool","description":"Tool returning CallToolResult with an image and message","inputSchema":{"type":"object","properties":{"message":{"type":"string","description":"Message to associate with image"}},"required":["message"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}}]}}
-{"jsonrpc":"2.0","id":"2b502ad0-3","result":{"tools":[{"name":"my.arithmetic.api.ArithmeticToolGroup.add","description":"computes the sum of the two double precision input arguments a and b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}},{"name":"my.arithmetic.api.ArithmeticToolGroup.multiply","description
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - select returned count=1
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket]
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read partial=":"return the product of the two given double precision arguments named a and b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}},{"name":"my.arithmetic.api.ArithmeticToolGroup.get-image-and-message-tool","description":"Tool returning CallToolResult with an image and message","inputSchema":{"type":"object","properties":{"message":{"type":"string","description":"Message to associate with image"}},"required":["message"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}}]}}
-{"jsonrpc":"2.0","id":"2b502ad0-4","result":{"tools":[{"name":"my.arithmetic.api.ArithmeticToolGroup.add","description":"computes the sum of the two double precision input arguments a an
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - select returned count=1
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket]
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read partial=d b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}},{"name":"my.arithmetic.api.ArithmeticToolGroup.multiply","description":"return the product of the two given double precision arguments named a and b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}},{"name":"my.arithmetic.api.ArithmeticToolGroup.get-image-and-message-tool","description":"Tool returning CallToolResult with an image and message","inputSchema":{"type":"object","
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - select returned count=1
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket]
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket] msg=
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.spec.McpSchema - Received JSON message: {"jsonrpc":"2.0","id":"2b502ad0-2","result":{"tools":[{"name":"my.arithmetic.api.ArithmeticToolGroup.add","description":"computes the sum of the two double precision input arguments a and b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}},{"name":"my.arithmetic.api.ArithmeticToolGroup.multiply","description":"return the product of the two given double precision arguments named a and b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}},{"name":"my.arithmetic.api.ArithmeticToolGroup.get-image-and-message-tool","description":"Tool returning CallToolResult with an image and message","inputSchema":{"type":"object","properties":{"message":{"type":"string","description":"Message to associate with image"}},"required":["message"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}}]}}
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.spec.McpClientSession - Received Response: JSONRPCResponse[jsonrpc=2.0, id=2b502ad0-2, result={tools=[{name=my.arithmetic.api.ArithmeticToolGroup.add, description=computes the sum of the two double precision input arguments a and b, inputSchema={type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y]}, annotations={title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true}}, {name=my.arithmetic.api.ArithmeticToolGroup.multiply, description=return the product of the two given double precision arguments named a and b, inputSchema={type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y]}, annotations={title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true}}, {name=my.arithmetic.api.ArithmeticToolGroup.get-image-and-message-tool, description=Tool returning CallToolResult with an image and message, inputSchema={type=object, properties={message={type=string, description=Message to associate with image}}, required=[message]}, annotations={title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true}}]}, error=null]
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.client.McpAsyncClient - Tools changed: [Tool[name=my.arithmetic.api.ArithmeticToolGroup.add, title=null, description=computes the sum of the two double precision input arguments a and b, inputSchema=JsonSchema[type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y], additionalProperties=null, defs=null, definitions=null], outputSchema=null, annotations=ToolAnnotations[title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true, returnDirect=null], meta=null], Tool[name=my.arithmetic.api.ArithmeticToolGroup.multiply, title=null, description=return the product of the two given double precision arguments named a and b, inputSchema=JsonSchema[type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y], additionalProperties=null, defs=null, definitions=null], outputSchema=null, annotations=ToolAnnotations[title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true, returnDirect=null], meta=null], Tool[name=my.arithmetic.api.ArithmeticToolGroup.get-image-and-message-tool, title=null, description=Tool returning CallToolResult with an image and message, inputSchema=JsonSchema[type=object, properties={message={type=string, description=Message to associate with image}}, required=[message], additionalProperties=null, defs=null, definitions=null], outputSchema=null, annotations=ToolAnnotations[title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true, returnDirect=null], meta=null]]
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.spec.McpSchema - Received JSON message: {"jsonrpc":"2.0","id":"2b502ad0-3","result":{"tools":[{"name":"my.arithmetic.api.ArithmeticToolGroup.add","description":"computes the sum of the two double precision input arguments a and b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}},{"name":"my.arithmetic.api.ArithmeticToolGroup.multiply","description":"return the product of the two given double precision arguments named a and b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}},{"name":"my.arithmetic.api.ArithmeticToolGroup.get-image-and-message-tool","description":"Tool returning CallToolResult with an image and message","inputSchema":{"type":"object","properties":{"message":{"type":"string","description":"Message to associate with image"}},"required":["message"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}}]}}
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.spec.McpClientSession - Received Response: JSONRPCResponse[jsonrpc=2.0, id=2b502ad0-3, result={tools=[{name=my.arithmetic.api.ArithmeticToolGroup.add, description=computes the sum of the two double precision input arguments a and b, inputSchema={type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y]}, annotations={title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true}}, {name=my.arithmetic.api.ArithmeticToolGroup.multiply, description=return the product of the two given double precision arguments named a and b, inputSchema={type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y]}, annotations={title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true}}, {name=my.arithmetic.api.ArithmeticToolGroup.get-image-and-message-tool, description=Tool returning CallToolResult with an image and message, inputSchema={type=object, properties={message={type=string, description=Message to associate with image}}, required=[message]}, annotations={title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true}}]}, error=null]
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.client.McpAsyncClient - Tools changed: [Tool[name=my.arithmetic.api.ArithmeticToolGroup.add, title=null, description=computes the sum of the two double precision input arguments a and b, inputSchema=JsonSchema[type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y], additionalProperties=null, defs=null, definitions=null], outputSchema=null, annotations=ToolAnnotations[title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true, returnDirect=null], meta=null], Tool[name=my.arithmetic.api.ArithmeticToolGroup.multiply, title=null, description=return the product of the two given double precision arguments named a and b, inputSchema=JsonSchema[type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y], additionalProperties=null, defs=null, definitions=null], outputSchema=null, annotations=ToolAnnotations[title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true, returnDirect=null], meta=null], Tool[name=my.arithmetic.api.ArithmeticToolGroup.get-image-and-message-tool, title=null, description=Tool returning CallToolResult with an image and message, inputSchema=JsonSchema[type=object, properties={message={type=string, description=Message to associate with image}}, required=[message], additionalProperties=null, defs=null, definitions=null], outputSchema=null, annotations=ToolAnnotations[title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true, returnDirect=null], meta=null]]
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.spec.McpSchema - Received JSON message: {"jsonrpc":"2.0","id":"2b502ad0-4","result":{"tools":[{"name":"my.arithmetic.api.ArithmeticToolGroup.add","description":"computes the sum of the two double precision input arguments a and b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}},{"name":"my.arithmetic.api.ArithmeticToolGroup.multiply","description":"return the product of the two given double precision arguments named a and b","inputSchema":{"type":"object","properties":{"x":{"type":"number","format":"double","description":"x is the first argument"},"y":{"type":"number","format":"double","description":"y is the second argument"}},"required":["x","y"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}},{"name":"my.arithmetic.api.ArithmeticToolGroup.get-image-and-message-tool","description":"Tool returning CallToolResult with an image and message","inputSchema":{"type":"object","properties":{"message":{"type":"string","description":"Message to associate with image"}},"required":["message"]},"annotations":{"title":"","readOnlyHint":false,"destructiveHint":true,"idempotentHint":false,"openWorldHint":true}}]}}
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.spec.McpClientSession - Received Response: JSONRPCResponse[jsonrpc=2.0, id=2b502ad0-4, result={tools=[{name=my.arithmetic.api.ArithmeticToolGroup.add, description=computes the sum of the two double precision input arguments a and b, inputSchema={type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y]}, annotations={title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true}}, {name=my.arithmetic.api.ArithmeticToolGroup.multiply, description=return the product of the two given double precision arguments named a and b, inputSchema={type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y]}, annotations={title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true}}, {name=my.arithmetic.api.ArithmeticToolGroup.get-image-and-message-tool, description=Tool returning CallToolResult with an image and message, inputSchema={type=object, properties={message={type=string, description=Message to associate with image}}, required=[message]}, annotations={title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true}}]}, error=null]
-[FelixStartLevel] DEBUG my.arithmetic.mcpclient.McpSyncClientComponent - uds sync client seeing tool=Tool[name=my.arithmetic.api.ArithmeticToolGroup.add, title=null, description=computes the sum of the two double precision input arguments a and b, inputSchema=JsonSchema[type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y], additionalProperties=null, defs=null, definitions=null], outputSchema=null, annotations=ToolAnnotations[title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true, returnDirect=null], meta=null]
-[FelixStartLevel] DEBUG my.arithmetic.mcpclient.McpSyncClientComponent - uds sync client seeing tool=Tool[name=my.arithmetic.api.ArithmeticToolGroup.multiply, title=null, description=return the product of the two given double precision arguments named a and b, inputSchema=JsonSchema[type=object, properties={x={type=number, format=double, description=x is the first argument}, y={type=number, format=double, description=y is the second argument}}, required=[x, y], additionalProperties=null, defs=null, definitions=null], outputSchema=null, annotations=ToolAnnotations[title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true, returnDirect=null], meta=null]
-[FelixStartLevel] DEBUG my.arithmetic.mcpclient.McpSyncClientComponent - uds sync client seeing tool=Tool[name=my.arithmetic.api.ArithmeticToolGroup.get-image-and-message-tool, title=null, description=Tool returning CallToolResult with an image and message, inputSchema=JsonSchema[type=object, properties={message={type=string, description=Message to associate with image}}, required=[message], additionalProperties=null, defs=null, definitions=null], outputSchema=null, annotations=ToolAnnotations[title=, readOnlyHint=false, destructiveHint=true, idempotentHint=false, openWorldHint=true, returnDirect=null], meta=null]
-[FelixStartLevel] DEBUG io.modelcontextprotocol.client.LifecycleInitializer - Joining previous initialization
-[FelixStartLevel] DEBUG io.modelcontextprotocol.spec.McpClientSession - Sending message for method tools/call
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing msg={"jsonrpc":"2.0","method":"tools/call","id":"2b502ad0-5","params":{"name":"my.arithmetic.api.ArithmeticToolGroup.add","arguments":{"y":"6.32","x":"5.1"}}}
-
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - doWrite message={"jsonrpc":"2.0","method":"tools/call","id":"2b502ad0-5","params":{"name":"my.arithmetic.api.ArithmeticToolGroup.add","arguments":{"y":"6.32","x":"5.1"}}}
-
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing done msg={"jsonrpc":"2.0","method":"tools/call","id":"2b502ad0-5","params":{"name":"my.arithmetic.api.ArithmeticToolGroup.add","arguments":{"y":"6.32","x":"5.1"}}}
-
-[pool-4-thread-1] DEBUG my.arithmetic.mcpclient.McpAsyncClientComponent - asyncAdd(25.1,26.32) result=51.42
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - select returned count=1
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket]
-[pool-4-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\a.socket] msg=
-[pool-4-thread-1] DEBUG io.modelcontextprotocol.spec.McpSchema - Received JSON message: {"jsonrpc":"2.0","id":"28bf018d-4","result":{"content":[{"type":"text","text":"47169.54060000001"}],"isError":false}}
-[pool-4-thread-1] DEBUG io.modelcontextprotocol.spec.McpClientSession - Received Response: JSONRPCResponse[jsonrpc=2.0, id=28bf018d-4, result={content=[{type=text, text=47169.54060000001}], isError=false}, error=null]
-[pool-4-thread-1] DEBUG my.arithmetic.mcpclient.McpAsyncClientComponent - asyncMultiply(210.71,223.86) result=47169.54060000001
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - select returned count=1
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket]
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket] msg=
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.spec.McpSchema - Received JSON message: {"jsonrpc":"2.0","id":"2b502ad0-5","result":{"content":[{"type":"text","text":"11.42"}],"isError":false}}
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.spec.McpClientSession - Received Response: JSONRPCResponse[jsonrpc=2.0, id=2b502ad0-5, result={content=[{type=text, text=11.42}], isError=false}, error=null]
-[FelixStartLevel] DEBUG my.arithmetic.mcpclient.McpSyncClientComponent - add(5.1,6.32) result=11.42
-[FelixStartLevel] DEBUG io.modelcontextprotocol.client.LifecycleInitializer - Joining previous initialization
-[FelixStartLevel] DEBUG io.modelcontextprotocol.spec.McpClientSession - Sending message for method tools/call
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing msg={"jsonrpc":"2.0","method":"tools/call","id":"2b502ad0-6","params":{"name":"my.arithmetic.api.ArithmeticToolGroup.multiply","arguments":{"y":"23.86","x":"10.71"}}}
-
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - doWrite message={"jsonrpc":"2.0","method":"tools/call","id":"2b502ad0-6","params":{"name":"my.arithmetic.api.ArithmeticToolGroup.multiply","arguments":{"y":"23.86","x":"10.71"}}}
-
-[pool-8-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - writing done msg={"jsonrpc":"2.0","method":"tools/call","id":"2b502ad0-6","params":{"name":"my.arithmetic.api.ArithmeticToolGroup.multiply","arguments":{"y":"23.86","x":"10.71"}}}
-
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - select returned count=1
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket]
-[pool-9-thread-1] DEBUG org.eclipse.ecf.ai.mcp.transports.AbstractStringChannel - read client=java.nio.channels.SocketChannel[connected local= remote=C:\Users\slewi\eclipse-workspace.bndtools.workspace.test.1\my.arithmetic.mcpserver\s.socket] msg=
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.spec.McpSchema - Received JSON message: {"jsonrpc":"2.0","id":"2b502ad0-6","result":{"content":[{"type":"text","text":"255.5406"}],"isError":false}}
-[pool-9-thread-1] DEBUG io.modelcontextprotocol.spec.McpClientSession - Received Response: JSONRPCResponse[jsonrpc=2.0, id=2b502ad0-6, result={content=[{type=text, text=255.5406}], isError=false}, error=null]
-[FelixStartLevel] DEBUG my.arithmetic.mcpclient.McpSyncClientComponent - multiply(10.71,23.86) result=255.5406
-____________________________
-Welcome to Apache Felix Gogo
-
-g! 
-```
-
+Note that the use of Java interfaces in this way automatically adds MCP metadata (descriptions from the @McpTool and @McpToolParam) to the api contract.  This can be easily duplicated in other languages...e.g. Python, C++, or Typescript via decorators, annotations, and abstract classes. Nested ToolGroups can also be created/added (on the mcp server) in other ways...e.g. via db access, filesystem, other tooling, or via developer or user input.
 
