@@ -22,7 +22,7 @@ import io.modelcontextprotocol.server.McpSyncServerExchange;
 import io.modelcontextprotocol.spec.McpSchema;
 import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
 import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
-import io.modelcontextprotocol.spec.McpSchema.ToolGroup;
+import io.modelcontextprotocol.spec.McpSchema.Group;
 import io.modelcontextprotocol.util.Assert;
 import io.modelcontextprotocol.util.Utils;
 
@@ -78,7 +78,7 @@ public class SyncMcpToolGroupProvider extends AbstractMcpToolProvider {
 		return (this.toolClasses.length == 0) ? new Class[] { toolObject.getClass() } : this.toolClasses;
 	}
 
-	protected ToolGroup doGetToolGroup(Class<?> clazz) {
+	protected Group doGetToolGroup(Class<?> clazz) {
 		McpToolGroup tgAnnotation = doGetMcpToolGroupAnnotation(clazz);
 		return tgAnnotation != null?doGetToolGroup(tgAnnotation, clazz):null;
 	}
@@ -94,7 +94,7 @@ public class SyncMcpToolGroupProvider extends AbstractMcpToolProvider {
 		if (this.toolSpecifications == null) {
 			List<SyncToolSpecification> toolSpecs = this.toolObjects.stream().map(toolObject -> {
 				return Stream.of(doGetClasses(toolObject)).map(toolClass -> {
-					ToolGroup toolGroup = doGetToolGroup(toolClass);
+					Group toolGroup = doGetToolGroup(toolClass);
 					return Stream.of(doGetMethods(toolClass))
 							.filter(method -> method.isAnnotationPresent(McpTool.class))
 							.filter(ProvidrerUtils.isNotReactiveReturnType)

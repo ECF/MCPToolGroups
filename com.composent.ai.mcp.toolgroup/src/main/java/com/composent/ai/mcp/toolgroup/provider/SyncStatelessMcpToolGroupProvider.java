@@ -22,7 +22,7 @@ import io.modelcontextprotocol.server.McpStatelessServerFeatures.SyncToolSpecifi
 import io.modelcontextprotocol.spec.McpSchema;
 import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
 import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
-import io.modelcontextprotocol.spec.McpSchema.ToolGroup;
+import io.modelcontextprotocol.spec.McpSchema.Group;
 import io.modelcontextprotocol.util.Assert;
 import io.modelcontextprotocol.util.Utils;
 
@@ -68,7 +68,7 @@ public class SyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider {
 		}
 	}
 
-	protected ToolGroup doGetToolGroup(Class<?> clazz) {
+	protected Group doGetToolGroup(Class<?> clazz) {
 		McpToolGroup tgAnnotation = doGetMcpToolGroupAnnotation(clazz);
 		return tgAnnotation != null?doGetToolGroup(tgAnnotation, clazz):null;
 	}
@@ -80,6 +80,7 @@ public class SyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider {
 	public List<SyncToolSpecification> getToolSpecifications() {
 		List<SyncToolSpecification> toolSpecs = this.toolObjects.stream().map(toolObject -> {
 			return Stream.of(doGetClasses(toolObject)).map(toolClass -> {
+				Group toolGroup = doGetToolGroup(toolClass);
 				return Stream.of(doGetMethods(toolClass)).filter(method -> method.isAnnotationPresent(McpTool.class))
 						.filter(ProvidrerUtils.isNotReactiveReturnType)
 						.sorted((m1, m2) -> m1.getName().compareTo(m2.getName()))
@@ -140,7 +141,7 @@ public class SyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider {
 							}
 
 							// ToolGroup handling
-							toolBuilder.group(doGetToolGroup(toolObject.getClass()));
+							toolBuilder.group(toolGroup);
 
 							var tool = toolBuilder.build();
 

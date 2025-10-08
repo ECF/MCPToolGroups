@@ -1,13 +1,11 @@
 -buildpath: \
 	slf4j.api,\
 	org.springaicommunity.mcp-annotations,\
-	io.modelcontextprotocol.sdk.mcp-core,\
+	io.modelcontextprotocol.sdk.mcp-osgi,\
 	reactive-streams,\
 	io.projectreactor.reactor-core,\
 	org.osgi.annotation.versioning,\
-	org.osgi.annotation.bundle,\
-	io.modelcontextprotocol.sdk.mcp-json,\
-	io.modelcontextprotocol.sdk.mcp-json-jackson2
+	org.osgi.annotation.bundle
 Export-Package: \
 	com.composent.ai.mcp.toolgroup.provider,\
 	com.composent.ai.mcp.toolgroup,\
