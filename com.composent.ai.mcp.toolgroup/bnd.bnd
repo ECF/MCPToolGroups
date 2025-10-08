@@ -1,7 +1,7 @@
 -buildpath: \
 	slf4j.api,\
 	org.springaicommunity.mcp-annotations,\
-	io.modelcontextprotocol.sdk.mcp;version="0.12",\
+	io.modelcontextprotocol.sdk.mcp-osgi,\
 	reactive-streams,\
 	io.projectreactor.reactor-core,\
 	org.osgi.annotation.versioning,\

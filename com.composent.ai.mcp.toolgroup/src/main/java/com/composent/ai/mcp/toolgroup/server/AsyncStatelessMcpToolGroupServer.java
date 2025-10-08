@@ -1,35 +1,28 @@
 package com.composent.ai.mcp.toolgroup.server;
 
 import java.util.List;
+import java.util.Objects;
 
-import com.composent.ai.mcp.toolgroup.AsyncStatelessToolGroup;
+import com.composent.ai.mcp.toolgroup.provider.AsyncStatelessMcpToolGroupProvider;
 
-import io.modelcontextprotocol.server.McpStatelessServerFeatures;
+import io.modelcontextprotocol.server.McpStatelessServerFeatures.AsyncToolSpecification;
 
 public interface AsyncStatelessMcpToolGroupServer {
 
-	boolean addTool(McpStatelessServerFeatures.AsyncToolSpecification specification);
+	AsyncToolSpecification addTool(AsyncToolSpecification specification);
 
-	default void addTools(List<McpStatelessServerFeatures.AsyncToolSpecification> specifications) {
-		specifications.forEach(specification -> addTool(specification));
+	default List<AsyncToolSpecification> addTools(List<AsyncToolSpecification> specifications) {
+		return specifications.stream().map(s -> addTool(s)).filter(Objects::nonNull).toList();
 	}
 
 	boolean removeTool(String fqToolName);
 
-	default void removeTools(List<McpStatelessServerFeatures.AsyncToolSpecification> specifications) {
+	default void removeTools(List<AsyncToolSpecification> specifications) {
 		specifications.forEach(specification -> removeTool(specification.tool().name()));
 	}
 
-	void addToolGroup(AsyncStatelessToolGroup toolGroup);
-
-	default void addToolGroups(List<AsyncStatelessToolGroup> toolGroups) {
-		toolGroups.forEach(toolGroup -> addToolGroup(toolGroup));
-	}
-
-	void removeToolGroup(AsyncStatelessToolGroup toolGroup);
-
-	default void removeToolGroups(List<AsyncStatelessToolGroup> toolGroups) {
-		toolGroups.forEach(toolGroup -> removeToolGroup(toolGroup));
+	default List<AsyncToolSpecification> addToolGroups(Object object, Class<?> toolClasses) {
+		return addTools(new AsyncStatelessMcpToolGroupProvider(object, toolClasses).getToolSpecifications());
 	}
 
 }

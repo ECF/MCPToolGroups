@@ -1,35 +1,28 @@
 package com.composent.ai.mcp.toolgroup.server;
 
 import java.util.List;
+import java.util.Objects;
 
-import com.composent.ai.mcp.toolgroup.SyncToolGroup;
+import com.composent.ai.mcp.toolgroup.provider.SyncMcpToolGroupProvider;
 
-import io.modelcontextprotocol.server.McpServerFeatures;
+import io.modelcontextprotocol.server.McpServerFeatures.SyncToolSpecification;
 
 public interface SyncMcpToolGroupServer {
 
-	boolean addTool(McpServerFeatures.SyncToolSpecification specification);
+	SyncToolSpecification addTool(SyncToolSpecification specification);
 
-	default void addTools(List<McpServerFeatures.SyncToolSpecification> specifications) {
-		specifications.forEach(specification -> addTool(specification));
+	default List<SyncToolSpecification> addTools(List<SyncToolSpecification> specifications) {
+		return specifications.stream().map(s -> addTool(s)).filter(Objects::nonNull).toList();
 	}
 
 	boolean removeTool(String fqToolName);
 
-	default void removeTools(List<McpServerFeatures.SyncToolSpecification> specifications) {
+	default void removeTools(List<SyncToolSpecification> specifications) {
 		specifications.forEach(specification -> removeTool(specification.tool().name()));
 	}
 
-	void addToolGroup(SyncToolGroup toolGroup);
-
-	default void addToolGroups(List<SyncToolGroup> toolGroups) {
-		toolGroups.forEach(toolGroup -> addToolGroup(toolGroup));
-	}
-
-	void removeToolGroup(SyncToolGroup toolGroup);
-
-	default void removeToolGroups(List<SyncToolGroup> toolGroups) {
-		toolGroups.forEach(toolGroup -> removeToolGroup(toolGroup));
+	default List<SyncToolSpecification> addToolGroups(Object object, Class<?> toolClasses) {
+		return addTools(new SyncMcpToolGroupProvider(object, toolClasses).getToolSpecifications());
 	}
 
 }

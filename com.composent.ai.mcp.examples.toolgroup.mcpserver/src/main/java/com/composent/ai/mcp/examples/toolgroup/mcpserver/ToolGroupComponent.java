@@ -10,15 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.composent.ai.mcp.examples.toolgroup.api.ExampleToolGroup;
-import com.composent.ai.mcp.toolgroup.AsyncToolGroup;
-import com.composent.ai.mcp.toolgroup.SyncToolGroup;
-import com.composent.ai.mcp.toolgroup.provider.AsyncMcpToolGroupProvider;
-import com.composent.ai.mcp.toolgroup.provider.SyncMcpToolGroupProvider;
 import com.composent.ai.mcp.toolgroup.server.AsyncMcpToolGroupServer;
 import com.composent.ai.mcp.toolgroup.server.SyncMcpToolGroupServer;
 
-import io.modelcontextprotocol.spec.McpSchema;
-import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
+import io.modelcontextprotocol.server.McpServerFeatures.AsyncToolSpecification;
+import io.modelcontextprotocol.server.McpServerFeatures.SyncToolSpecification;
 import reactor.core.publisher.Mono;
 
 @Component(immediate = true)
@@ -32,31 +28,30 @@ public class ToolGroupComponent implements ExampleToolGroup {
 	private AsyncMcpToolGroupServer asyncServer;
 
 	// Instance created in activate
-	private List<SyncToolGroup> syncToolGroups;
+	private List<SyncToolSpecification> syncSpecifications;
 
-	private List<AsyncToolGroup> asyncToolGroups;
+	private List<AsyncToolSpecification> asyncSpecifications;
 
 	@Activate
 	void activate() {
-		syncToolGroups = new SyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolGroups();
 		// Add to syncServer
-		syncServer.addToolGroups(syncToolGroups);
-		asyncToolGroups = new AsyncMcpToolGroupProvider(this, ExampleToolGroup.class).getToolGroups();
+		syncSpecifications = syncServer
+				.addToolGroups(this, ExampleToolGroup.class);
 		// Add to asyncServer
-		asyncServer.addToolGroups(asyncToolGroups);
+		asyncSpecifications = asyncServer
+				.addToolGroups(this, ExampleToolGroup.class);
 	}
 
 	@Deactivate
 	void deactivate() {
-		if (syncToolGroups != null) {
-			this.syncServer.removeToolGroups(syncToolGroups);
-			syncToolGroups = null;
+		if (syncSpecifications != null) {
+			this.syncServer.removeTools(syncSpecifications);
+			syncSpecifications = null;
 		}
-		if (asyncToolGroups != null) {
-			this.asyncServer.removeToolGroups(asyncToolGroups);
-			asyncToolGroups = null;
+		if (asyncSpecifications != null) {
+			this.asyncServer.removeTools(asyncSpecifications);
+			asyncSpecifications = null;
 		}
-
 	}
 
 	@Override
@@ -69,14 +64,6 @@ public class ToolGroupComponent implements ExampleToolGroup {
 	public double multiply(double x, double y) {
 		logger.debug("Multiplying x={} y={}", x, y);
 		return x * y;
-	}
-
-	@Override
-	public CallToolResult getImageAndMessage(String message) {
-		logger.debug("getImageAndMessage message={}", message);
-		return CallToolResult.builder().addTextContent("Message is: " + message).addContent(
-				new McpSchema.ImageContent(null, "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD...", "image/jpeg"))
-				.build();
 	}
 
 	@Override
