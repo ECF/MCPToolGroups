@@ -52,7 +52,7 @@ public class RemoteExampleToolGroupConsumerComponent {
 		// Create SyncMcpDynamicToolGroupServer
 		this.toolGroupServer = new SyncMcpDynamicToolGroupServer(syncServer);
 		// Now add the tool groups from this using ExampleToolGroup.class
-		this.syncSpecifications = this.toolGroupServer.addToolGroups(this, ExampleToolGroup.class);
+		this.syncSpecifications = this.toolGroupServer.addToolGroups(remoteExampleToolGroup, ExampleToolGroup.class);
 	}
 
 	@Deactivate
