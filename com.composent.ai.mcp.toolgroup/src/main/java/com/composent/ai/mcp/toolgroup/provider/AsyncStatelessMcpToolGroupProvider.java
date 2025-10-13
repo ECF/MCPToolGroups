@@ -147,7 +147,7 @@ public class AsyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider 
 							}
 
 							// ToolGroup handling
-							toolBuilder.group(toolGroup);
+							toolBuilder.groups(List.of(toolGroup));
 
 							var tool = toolBuilder.build();
 
