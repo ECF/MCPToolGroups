@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import io.modelcontextprotocol.server.McpServerFeatures.SyncToolSpecification;
 import io.modelcontextprotocol.server.McpSyncServer;
 import io.modelcontextprotocol.spec.McpError;
-import io.modelcontextprotocol.spec.McpSchema.Tool;
 import io.modelcontextprotocol.util.Assert;
 
 public class SyncMcpDynamicToolGroupServer extends AbstractMcpDynamicToolGroupServer implements SyncMcpToolGroupServer {
@@ -29,21 +28,18 @@ public class SyncMcpDynamicToolGroupServer extends AbstractMcpDynamicToolGroupSe
 	@Override
 	public SyncToolSpecification addTool(SyncToolSpecification toolSpec) {
 		Assert.notNull(toolSpec, "toolSpec must not be null");
-		Tool updatedTool = convertTool(toolSpec.tool());
-		SyncToolSpecification updatedSpec = SyncToolSpecification.builder().tool(updatedTool)
-				.callHandler(toolSpec.callHandler()).build();
 		McpSyncServer s = getServer();
 		Assert.notNull(s, "Server cannot be null");
 		try {
-			s.addTool(updatedSpec);
+			s.addTool(toolSpec);
 			if (logger.isDebugEnabled()) {
-				logger.debug("added tool specification={} to async server={}", updatedSpec.tool().name(), s);
+				logger.debug("added tool specification={} to sync server={}", toolSpec.tool().name(), s);
 			}
-			return updatedSpec;
+			return toolSpec;
 		} catch (McpError e) {
-			handleMcpError(updatedSpec.tool().name(), e, true);
+			handleMcpError(toolSpec.tool().name(), e, true);
 		}
-		return updatedSpec;
+		return toolSpec;
 	}
 
 	@Override
@@ -54,7 +50,7 @@ public class SyncMcpDynamicToolGroupServer extends AbstractMcpDynamicToolGroupSe
 		try {
 			s.removeTool(fqToolName);
 			if (logger.isDebugEnabled()) {
-				logger.debug("removed tool specification={} to async server={}", fqToolName, s);
+				logger.debug("removed tool specification={} to sync server={}", fqToolName, s);
 			}
 			return true;
 		} catch (McpError e) {

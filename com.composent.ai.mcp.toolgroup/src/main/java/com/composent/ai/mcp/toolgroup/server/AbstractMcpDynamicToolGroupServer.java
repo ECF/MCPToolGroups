@@ -6,8 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.modelcontextprotocol.spec.McpError;
-import io.modelcontextprotocol.spec.McpSchema.Tool;
 import io.modelcontextprotocol.spec.McpSchema.Group;
+import io.modelcontextprotocol.spec.McpSchema.Tool;
 
 public class AbstractMcpDynamicToolGroupServer {
 
@@ -21,11 +21,11 @@ public class AbstractMcpDynamicToolGroupServer {
 	protected Tool convertTool(Tool tool) {
 		List<Group> toolGroups = tool.groups();
 		if (toolGroups != null) {
-			// for this transformation, we will only consider the first group for the creation o
+			// for this transformation, we will only consider the first group for the
+			// creation o
 			// of the tool name
 			if (toolGroups.size() >= 1) {
-				tool = new Tool.Builder()
-						.name(toolGroups.get(0).getFullyQualifiedName(".") + "." + tool.name())
+				tool = new Tool.Builder().name(toolGroups.get(0).getFullyQualifiedName(".") + "." + tool.name())
 						.annotations(tool.annotations()).description(tool.description()).groups(toolGroups)
 						.inputSchema(tool.inputSchema()).outputSchema(tool.outputSchema()).meta(tool.meta())
 						.title(tool.title()).build();

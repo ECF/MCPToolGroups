@@ -40,7 +40,7 @@ public class AsyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider 
 	 * 
 	 * @param toolObjects the objects containing methods annotated with
 	 *                    {@link McpTool}
-	 * @param toolClasses  optional array of classes defining the tool groups that
+	 * @param toolClasses optional array of classes defining the tool groups that
 	 *                    all toolObjects are required to implement
 	 * @exception IllegalArgumentException thrown if toolObjects is null, or any of
 	 *                                     the specified toolClasses are not
@@ -76,31 +76,32 @@ public class AsyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider 
 
 	protected Group doGetToolGroup(Class<?> clazz) {
 		McpToolGroup tgAnnotation = doGetMcpToolGroupAnnotation(clazz);
-		return tgAnnotation != null?doGetToolGroup(tgAnnotation, clazz):null;
+		return tgAnnotation != null ? doGetToolGroup(tgAnnotation, clazz) : null;
 	}
-	
+
 	public List<AsyncToolSpecification> getToolSpecifications() {
 		List<AsyncToolSpecification> toolSpecs = this.toolObjects.stream().map(toolObject -> {
 			return Stream.of(doGetClasses(toolObject)).map(toolClass -> {
 				Group toolGroup = doGetToolGroup(toolClass);
 				return Stream.of(doGetMethods(toolClass)).filter(method -> method.isAnnotationPresent(McpTool.class))
 						.filter(ProvidrerUtils.isReactiveReturnType)
-						.sorted((m1, m2) -> m1.getName().compareTo(m2.getName()))
-						.map(mcpToolMethod -> {
+						.sorted((m1, m2) -> m1.getName().compareTo(m2.getName())).map(mcpToolMethod -> {
 
 							var toolJavaAnnotation = doGetMcpToolAnnotation(mcpToolMethod);
 
 							String toolName = Utils.hasText(toolJavaAnnotation.name()) ? toolJavaAnnotation.name()
 									: mcpToolMethod.getName();
 
+							// Add on group fully qualified name to toolName
+							toolName = (toolGroup == null) ? toolName
+									: toolGroup.getFullyQualifiedName(".") + "." + toolName;
+
 							String toolDescrption = toolJavaAnnotation.description();
 
 							String inputSchema = JsonSchemaGenerator.generateForMethodInput(mcpToolMethod);
 
-							var toolBuilder = McpSchema.Tool.builder()
-								.name(toolName)
-								.description(toolDescrption)
-								.inputSchema(this.getJsonMapper(), inputSchema);
+							var toolBuilder = McpSchema.Tool.builder().name(toolName).description(toolDescrption)
+									.inputSchema(this.getJsonMapper(), inputSchema);
 
 							var title = toolJavaAnnotation.title();
 
@@ -136,7 +137,8 @@ public class AsyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider 
 									&& !ReactiveUtils.isReactiveReturnTypeOfCallToolResult(mcpToolMethod)) {
 
 								ReactiveUtils.getReactiveReturnTypeArgument(mcpToolMethod).ifPresent(typeArgument -> {
-									Class<?> methodReturnType = typeArgument instanceof Class<?> ? (Class<?>) typeArgument
+									Class<?> methodReturnType = typeArgument instanceof Class<?>
+											? (Class<?>) typeArgument
 											: null;
 									if (!ClassUtils.isPrimitiveOrWrapper(methodReturnType)
 											&& !ClassUtils.isSimpleValueType(methodReturnType)) {
@@ -158,10 +160,8 @@ public class AsyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider 
 							BiFunction<McpTransportContext, CallToolRequest, Mono<CallToolResult>> methodCallback = new AsyncStatelessMcpToolMethodCallback(
 									returnMode, mcpToolMethod, toolObject, this.doGetToolCallException());
 
-							AsyncToolSpecification toolSpec = AsyncToolSpecification.builder()
-								.tool(tool)
-								.callHandler(methodCallback)
-								.build();
+							AsyncToolSpecification toolSpec = AsyncToolSpecification.builder().tool(tool)
+									.callHandler(methodCallback).build();
 
 							return toolSpec;
 						}).toList();

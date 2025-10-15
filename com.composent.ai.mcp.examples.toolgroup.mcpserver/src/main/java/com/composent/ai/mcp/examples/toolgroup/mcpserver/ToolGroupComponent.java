@@ -17,7 +17,7 @@ import io.modelcontextprotocol.server.McpServerFeatures.AsyncToolSpecification;
 import io.modelcontextprotocol.server.McpServerFeatures.SyncToolSpecification;
 import reactor.core.publisher.Mono;
 
-@Component(immediate = true)
+@Component(immediate=true)
 public class ToolGroupComponent implements ExampleToolGroup {
 
 	private static Logger logger = LoggerFactory.getLogger(ToolGroupComponent.class);

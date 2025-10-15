@@ -80,9 +80,9 @@ public class SyncMcpToolGroupProvider extends AbstractMcpToolProvider {
 
 	protected Group doGetToolGroup(Class<?> clazz) {
 		McpToolGroup tgAnnotation = doGetMcpToolGroupAnnotation(clazz);
-		return tgAnnotation != null?doGetToolGroup(tgAnnotation, clazz):null;
+		return tgAnnotation != null ? doGetToolGroup(tgAnnotation, clazz) : null;
 	}
-	
+
 	/**
 	 * Get the tool handler.
 	 * 
@@ -104,6 +104,9 @@ public class SyncMcpToolGroupProvider extends AbstractMcpToolProvider {
 
 								String toolName = Utils.hasText(toolJavaAnnotation.name()) ? toolJavaAnnotation.name()
 										: mcpToolMethod.getName();
+								// Add on group fully qualified name to toolName
+								toolName = (toolGroup == null) ? toolName
+										: toolGroup.getFullyQualifiedName(".") + "." + toolName;
 
 								String toolDescription = toolJavaAnnotation.description();
 
