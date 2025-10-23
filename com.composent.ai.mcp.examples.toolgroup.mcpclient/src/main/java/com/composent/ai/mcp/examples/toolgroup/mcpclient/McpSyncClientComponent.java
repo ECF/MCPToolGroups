@@ -1,6 +1,7 @@
 package com.composent.ai.mcp.examples.toolgroup.mcpclient;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
@@ -16,6 +17,7 @@ import io.modelcontextprotocol.client.McpSyncClient;
 import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
 import io.modelcontextprotocol.spec.McpSchema.ClientCapabilities;
 import io.modelcontextprotocol.spec.McpSchema.Content;
+import io.modelcontextprotocol.spec.McpSchema.Group;
 import io.modelcontextprotocol.spec.McpSchema.TextContent;
 
 @Component(immediate = true)
@@ -43,7 +45,15 @@ public class McpSyncClientComponent {
 		logger.debug("uds sync client initialized");
 
 		// test list tools from server
-		client.listTools().tools().forEach(t -> logger.debug("uds sync client seeing tool=" + t.toString()));
+		client.listTools().tools().forEach(t -> { 
+			logger.debug("uds sync client seeing tool=" + t.toString()); 
+			List<Group> groups = t.groups();
+			groups.forEach(g -> {
+				logger.debug("   group name: " + g.name());
+				logger.debug("   group parent: " + g.parent());
+				logger.debug("   group description: " + g.description());
+			});
+		});
 
 		String x = "5.1";
 		String y = "6.32";
