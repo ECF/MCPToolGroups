@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="Local" increment="1761165095300">
+<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="Local" increment="1762887028899">
   <resource>
     <capability namespace="osgi.identity">
       <attribute name="license" value="&quot;MIT License&quot;;link=&quot;http://www.opensource.org/licenses/mit-license.php&quot;"/>
@@ -406,7 +406,7 @@
       <attribute name="bundle-version" value="0.15.1.SNAPSHOT" type="Version"/>
       <attribute name="osgi.wiring.package" value="io.modelcontextprotocol.common"/>
       <attribute name="version" value="0.15.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="1748359199,2097701856" type="List&lt;Long&gt;"/>
+      <attribute name="bnd.hashes" value="371996898,-593394332,1748359199,520806657,2097701856,2030456323,-1279457882,1253713321,-919116838" type="List&lt;Long&gt;"/>
     </capability>
     <capability namespace="osgi.wiring.package">
       <attribute name="bundle-symbolic-name" value="io.modelcontextprotocol.sdk.mcp-osgi"/>
@@ -473,10 +473,10 @@
       <attribute name="osgi.wiring.host" value="io.modelcontextprotocol.sdk.mcp-osgi"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="size" value="504558" type="Long"/>
+      <attribute name="size" value="524861" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
       <attribute name="url" value="io.modelcontextprotocol.sdk.mcp-osgi/io.modelcontextprotocol.sdk.mcp-osgi-0.15.1.jar"/>
-      <attribute name="osgi.content" value="EEB31E2C8FDFC0061E4C95F84742177DF28121729DAEF6E7B82B0BA6E67AC539"/>
+      <attribute name="osgi.content" value="4212F2C1BCD3D334F4B5FFE5BDA9A72A8503744D752A261363475E8EC8D94FD6"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(osgi.wiring.package=jakarta.servlet)"/>

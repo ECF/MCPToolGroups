@@ -47,7 +47,7 @@
 	com.composent.ai.mcp.examples.toolgroup.api;version=snapshot;startlevel=1024,\
 	com.composent.ai.mcp.toolgroup;version=snapshot;startlevel=1025,\
 	org.eclipse.ecf.ai.mcp.transports;version='[1.0.1,1.0.2)';startlevel=1026,\
-	com.composent.ai.mcp.transport.uds;version='[1.1.1,1.1.2)';startlevel=1027,\
+	com.composent.ai.mcp.transport.uds;version='[1.2.0,1.2.1)';startlevel=1027,\
 	org.apache.felix.eventadmin;version='[1.6.4,1.6.5)';startlevel=1028,\
 	org.apache.felix.gogo.runtime;version='[1.1.6,1.1.7)';startlevel=1029,\
 	osgi.promise;version='[8.1.0,8.1.1)';startlevel=1030,\

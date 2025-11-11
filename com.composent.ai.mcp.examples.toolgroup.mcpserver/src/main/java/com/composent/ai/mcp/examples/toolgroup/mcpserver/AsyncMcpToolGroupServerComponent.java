@@ -35,7 +35,7 @@ public class AsyncMcpToolGroupServerComponent implements AsyncMcpToolGroupServer
 		Files.deleteIfExists(socketPath);
 		logger.debug("starting uds async server with socket at path={}", socketPath);
 		// Create unix domain socket transport
-		UDSMcpServerTransportProvider transport = new UDSMcpServerTransportProvider(socketPath);
+		UDSMcpServerTransportProvider transport = new UDSMcpServerTransportProvider(socketPath, true);
 		// Create McpAsyncServer instance with tools support via MCP jdk
 		McpAsyncServer server = McpServer.async(transport).serverInfo("example-async-uds-transport-server", "1.0.0")
 				.capabilities(ServerCapabilities.builder().tools(true).build()).build();

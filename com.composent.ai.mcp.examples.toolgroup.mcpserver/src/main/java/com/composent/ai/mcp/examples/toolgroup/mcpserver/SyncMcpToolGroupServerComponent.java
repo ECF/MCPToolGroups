@@ -35,7 +35,7 @@ public class SyncMcpToolGroupServerComponent implements SyncMcpToolGroupServer {
 		Files.deleteIfExists(socketPath);
 		logger.debug("starting uds sync server with socket at path={}", socketPath);
 		// Create unix domain socket transport
-		UDSMcpServerTransportProvider transport = new UDSMcpServerTransportProvider(socketPath);
+		UDSMcpServerTransportProvider transport = new UDSMcpServerTransportProvider(socketPath, true);
 		// Create sync server
 		McpSyncServer server = McpServer.sync(transport).serverInfo("example-sync-uds-transport-server", "1.0.0")
 				.capabilities(ServerCapabilities.builder().tools(true).build()).build();

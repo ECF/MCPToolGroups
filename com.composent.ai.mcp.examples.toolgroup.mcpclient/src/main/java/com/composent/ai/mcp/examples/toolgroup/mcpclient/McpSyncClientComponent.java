@@ -1,8 +1,11 @@
 package com.composent.ai.mcp.examples.toolgroup.mcpclient;
 
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -14,11 +17,14 @@ import com.composent.ai.mcp.transport.uds.UDSMcpClientTransport;
 
 import io.modelcontextprotocol.client.McpClient;
 import io.modelcontextprotocol.client.McpSyncClient;
+import io.modelcontextprotocol.common.GroupNode;
+import io.modelcontextprotocol.common.ToolNode;
 import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
 import io.modelcontextprotocol.spec.McpSchema.ClientCapabilities;
 import io.modelcontextprotocol.spec.McpSchema.Content;
 import io.modelcontextprotocol.spec.McpSchema.Group;
 import io.modelcontextprotocol.spec.McpSchema.TextContent;
+import io.modelcontextprotocol.spec.McpSchema.Tool;
 
 @Component(immediate = true)
 public class McpSyncClientComponent {
@@ -27,8 +33,8 @@ public class McpSyncClientComponent {
 
 	private static Logger logger = LoggerFactory.getLogger(McpSyncClientComponent.class);
 
-	private final Path socketPath = Path.of("").toAbsolutePath().getParent().resolve("com.composent.ai.mcp.examples.toolgroup.mcpserver")
-			.resolve("s.socket").toAbsolutePath();
+	private final Path socketPath = Path.of("").toAbsolutePath().getParent()
+			.resolve("com.composent.ai.mcp.examples.remote.toolgroup.mcpserver").resolve("rs.socket").toAbsolutePath();
 
 	private McpSyncClient client;
 
@@ -38,21 +44,33 @@ public class McpSyncClientComponent {
 		// create UDS transport via the socketPath (default is
 		UDSMcpClientTransport transport = new UDSMcpClientTransport(socketPath);
 		// Create client with transport
-		client = McpClient.sync(transport).capabilities(ClientCapabilities.builder().build()).build();
+		client = McpClient.sync(transport).capabilities(ClientCapabilities.builder().build())
+				.requestTimeout(Duration.ofMinutes(10)).build();
 
 		// initialize will connect to server
 		client.initialize();
 		logger.debug("uds sync client initialized");
 
 		// test list tools from server
-		client.listTools().tools().forEach(t -> { 
-			logger.debug("uds sync client seeing tool=" + t.toString()); 
+		List<Tool> tools = client.listTools().tools();
+		// Show tools list on logger
+		tools.forEach(t -> {
+			logger.debug("uds sync client seeing tool=" + t.toString());
 			List<Group> groups = t.groups();
 			groups.forEach(g -> {
 				logger.debug("   group name: " + g.name());
 				logger.debug("   group parent: " + g.parent());
 				logger.debug("   group description: " + g.description());
 			});
+		});
+		// NEW: Get ToolNodes from Tools
+		List<ToolNode> toolNodes = ToolNode.deserialize(tools);
+		// Get a Set of all the topGroupNodes (root)
+		Set<GroupNode> topNodes = toolNodes.stream().map(tn -> tn.getRoots()).flatMap(List::stream).distinct()
+				.collect(Collectors.toSet());
+		// Show trees
+		topNodes.forEach(gn -> {
+			logger.debug("Tree=" + gn);
 		});
 
 		String x = "5.1";
