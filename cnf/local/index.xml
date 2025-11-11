@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="Local" increment="1762887028899">
+<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="Local" increment="1762894412907">
   <resource>
     <capability namespace="osgi.identity">
       <attribute name="license" value="&quot;MIT License&quot;;link=&quot;http://www.opensource.org/licenses/mit-license.php&quot;"/>
@@ -473,10 +473,10 @@
       <attribute name="osgi.wiring.host" value="io.modelcontextprotocol.sdk.mcp-osgi"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="size" value="524861" type="Long"/>
+      <attribute name="size" value="524910" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
       <attribute name="url" value="io.modelcontextprotocol.sdk.mcp-osgi/io.modelcontextprotocol.sdk.mcp-osgi-0.15.1.jar"/>
-      <attribute name="osgi.content" value="4212F2C1BCD3D334F4B5FFE5BDA9A72A8503744D752A261363475E8EC8D94FD6"/>
+      <attribute name="osgi.content" value="F686E89BCA9393880DF6255C5E9F70BB5FFDB0BC7D1DF581856F6660FC4BC1A6"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(osgi.wiring.package=jakarta.servlet)"/>
