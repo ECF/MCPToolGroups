@@ -11,7 +11,10 @@
 
 -runfw: org.apache.felix.framework;version='[7.0.5,7.0.5]'
 -runee: JavaSE-17
--runvm: -Dorg.slf4j.simpleLogger.defaultLogLevel=debug 
+-runvm: -Dorg.slf4j.simpleLogger.defaultLogLevel=debug \
+   -DUNIXSOCKET_RELATIVEPATH=com.composent.ai.mcp.examples.remote.toolgroup.mcpserver \
+   -DUNIXSOCKET_FILENAME=rs.socket
+   
 -resolve: manual
 -runbundles: \
 	com.fasterxml.jackson.core.jackson-annotations;version='[2.19.2,2.19.3)';startlevel=1000,\

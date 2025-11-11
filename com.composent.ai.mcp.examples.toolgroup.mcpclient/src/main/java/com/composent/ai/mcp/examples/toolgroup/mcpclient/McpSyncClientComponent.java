@@ -34,7 +34,7 @@ public class McpSyncClientComponent {
 	private static Logger logger = LoggerFactory.getLogger(McpSyncClientComponent.class);
 
 	private final Path socketPath = Path.of("").toAbsolutePath().getParent()
-			.resolve("com.composent.ai.mcp.examples.remote.toolgroup.mcpserver").resolve("rs.socket").toAbsolutePath();
+			.resolve(System.getProperty("UNIXSOCKET_RELATIVEPATH", "com.composent.ai.mcp.examples.toolgroup.mcpserver")).resolve(System.getProperty("UNIXSOCKET_FILENAME","s.socket")).toAbsolutePath();
 
 	private McpSyncClient client;
 
