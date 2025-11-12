@@ -25,6 +25,7 @@ import io.modelcontextprotocol.spec.McpSchema.Content;
 import io.modelcontextprotocol.spec.McpSchema.Group;
 import io.modelcontextprotocol.spec.McpSchema.TextContent;
 import io.modelcontextprotocol.spec.McpSchema.Tool;
+import org.osgi.framework.BundleContext;
 
 @Component(immediate = true)
 public class McpSyncClientComponent {
@@ -33,13 +34,22 @@ public class McpSyncClientComponent {
 
 	private static Logger logger = LoggerFactory.getLogger(McpSyncClientComponent.class);
 
-	private final Path socketPath = Path.of("").toAbsolutePath().getParent()
-			.resolve(System.getProperty("UNIXSOCKET_RELATIVEPATH", "com.composent.ai.mcp.examples.toolgroup.mcpserver")).resolve(System.getProperty("UNIXSOCKET_FILENAME","s.socket")).toAbsolutePath();
+	private Path socketPath = null;
 
 	private McpSyncClient client;
 
 	@Activate
-	void activate() throws Exception {
+	void activate(BundleContext ctxt) throws Exception {
+		String relativePath = ctxt.getProperty("UNIXSOCKET_RELATIVEPATH");
+		if (relativePath == null) {
+			relativePath = "com.composent.ai.mcp.examples.toolgroup.mcpserver";
+		}
+		String fileName = ctxt.getProperty("UNIXSOCKET_FILENAME");
+		if (fileName == null) {
+			fileName = "s.socket";
+		}
+		socketPath = Path.of("").toAbsolutePath().getParent()
+					.resolve(relativePath).resolve(fileName).toAbsolutePath();
 		logger.debug("starting uds client with socket at path={}", socketPath);
 		// create UDS transport via the socketPath (default is
 		UDSMcpClientTransport transport = new UDSMcpClientTransport(socketPath);

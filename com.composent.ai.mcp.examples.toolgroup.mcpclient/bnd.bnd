@@ -2,4 +2,5 @@
 	org.osgi.service.component.annotations,\
 	com.composent.ai.mcp.transport.uds,\
 	io.modelcontextprotocol.sdk.mcp-osgi,\
-	slf4j.api
+	slf4j.api,\
+	osgi.core
