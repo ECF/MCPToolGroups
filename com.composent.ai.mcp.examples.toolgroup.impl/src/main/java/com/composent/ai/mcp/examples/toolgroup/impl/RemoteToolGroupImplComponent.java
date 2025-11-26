@@ -9,9 +9,9 @@ import com.composent.ai.mcp.examples.toolgroup.api.ExampleToolGroup;
 import reactor.core.publisher.Mono;
 
 @Component(immediate=true, property = { "service.exported.interfaces=*", "service.exported.configs=ecf.generic.server" })
-public class RemoteExampleToolGroupImplComponent implements ExampleToolGroup {
+public class RemoteToolGroupImplComponent implements ExampleToolGroup {
 
-	private static Logger logger = LoggerFactory.getLogger(RemoteExampleToolGroupImplComponent.class);
+	private static Logger logger = LoggerFactory.getLogger(RemoteToolGroupImplComponent.class);
 
 	@Override
 	public double add(double x, double y) {

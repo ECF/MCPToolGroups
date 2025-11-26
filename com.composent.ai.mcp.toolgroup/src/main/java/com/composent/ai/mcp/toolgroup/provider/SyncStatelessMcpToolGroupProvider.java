@@ -8,13 +8,13 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springaicommunity.mcp.McpPredicates;
 import org.springaicommunity.mcp.annotation.McpTool;
 import org.springaicommunity.mcp.annotation.McpToolGroup;
 import org.springaicommunity.mcp.method.tool.ReturnMode;
 import org.springaicommunity.mcp.method.tool.SyncStatelessMcpToolMethodCallback;
 import org.springaicommunity.mcp.method.tool.utils.ClassUtils;
 import org.springaicommunity.mcp.method.tool.utils.JsonSchemaGenerator;
-import org.springaicommunity.mcp.provider.ProvidrerUtils;
 import org.springaicommunity.mcp.provider.tool.AbstractMcpToolProvider;
 
 import io.modelcontextprotocol.common.McpTransportContext;
@@ -82,8 +82,10 @@ public class SyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider {
 			return Stream.of(doGetClasses(toolObject)).map(toolClass -> {
 				Group toolGroup = doGetToolGroup(toolClass);
 				return Stream.of(doGetMethods(toolClass)).filter(method -> method.isAnnotationPresent(McpTool.class))
-						.filter(ProvidrerUtils.isNotReactiveReturnType)
+						.filter(McpPredicates.filterReactiveReturnTypeMethod())
+						.filter(McpPredicates.filterMethodWithBidirectionalParameters())
 						.sorted((m1, m2) -> m1.getName().compareTo(m2.getName())).map(mcpToolMethod -> {
+
 							var toolJavaAnnotation = this.doGetMcpToolAnnotation(mcpToolMethod);
 
 							String toolName = Utils.hasText(toolJavaAnnotation.name()) ? toolJavaAnnotation.name()
@@ -97,8 +99,10 @@ public class SyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider {
 
 							String inputSchema = JsonSchemaGenerator.generateForMethodInput(mcpToolMethod);
 
-							var toolBuilder = McpSchema.Tool.builder().name(toolName).description(toolDescrption)
-									.inputSchema(this.getJsonMapper(), inputSchema);
+							var toolBuilder = McpSchema.Tool.builder()
+								.name(toolName)
+								.description(toolDescrption)
+								.inputSchema(this.getJsonMapper(), inputSchema);
 
 							var title = toolJavaAnnotation.title();
 
@@ -125,8 +129,6 @@ public class SyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider {
 							}
 							toolBuilder.title(title);
 
-							// ReactiveUtils.isReactiveReturnTypeOfCallToolResult(mcpToolMethod);
-
 							// Generate Output Schema from the method return type.
 							// Output schema is not generated for primitive types, void,
 							// CallToolResult, simple value types (String, etc.)
@@ -134,8 +136,7 @@ public class SyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider {
 							Class<?> methodReturnType = mcpToolMethod.getReturnType();
 							if (toolJavaAnnotation.generateOutputSchema() && methodReturnType != null
 									&& methodReturnType != CallToolResult.class && methodReturnType != Void.class
-									&& methodReturnType != void.class
-									&& !ClassUtils.isPrimitiveOrWrapper(methodReturnType)
+									&& methodReturnType != void.class && !ClassUtils.isPrimitiveOrWrapper(methodReturnType)
 									&& !ClassUtils.isSimpleValueType(methodReturnType)) {
 
 								toolBuilder.outputSchema(this.getJsonMapper(),
@@ -156,8 +157,7 @@ public class SyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider {
 							BiFunction<McpTransportContext, CallToolRequest, CallToolResult> methodCallback = new SyncStatelessMcpToolMethodCallback(
 									returnMode, mcpToolMethod, toolObject, this.doGetToolCallException());
 
-							var toolSpec = SyncToolSpecification.builder().tool(tool).callHandler(methodCallback)
-									.build();
+							var toolSpec = SyncToolSpecification.builder().tool(tool).callHandler(methodCallback).build();
 
 							return toolSpec;
 

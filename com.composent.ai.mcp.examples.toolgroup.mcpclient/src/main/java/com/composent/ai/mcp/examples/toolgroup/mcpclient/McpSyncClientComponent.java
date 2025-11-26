@@ -1,31 +1,33 @@
 package com.composent.ai.mcp.examples.toolgroup.mcpclient;
 
 import java.nio.file.Path;
-import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.osgi.service.component.ComponentFactory;
+import org.osgi.service.component.ComponentInstance;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.composent.ai.mcp.transport.uds.UDSMcpClientTransport;
+import com.composent.ai.mcp.transport.uds.UDSMcpClientTransportConfig;
 
 import io.modelcontextprotocol.client.McpClient;
 import io.modelcontextprotocol.client.McpSyncClient;
 import io.modelcontextprotocol.common.GroupNode;
 import io.modelcontextprotocol.common.ToolNode;
+import io.modelcontextprotocol.spec.McpClientTransport;
 import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
 import io.modelcontextprotocol.spec.McpSchema.ClientCapabilities;
 import io.modelcontextprotocol.spec.McpSchema.Content;
 import io.modelcontextprotocol.spec.McpSchema.Group;
 import io.modelcontextprotocol.spec.McpSchema.TextContent;
 import io.modelcontextprotocol.spec.McpSchema.Tool;
-import org.osgi.framework.BundleContext;
 
 @Component(immediate = true)
 public class McpSyncClientComponent {
@@ -34,29 +36,29 @@ public class McpSyncClientComponent {
 
 	private static Logger logger = LoggerFactory.getLogger(McpSyncClientComponent.class);
 
-	private Path socketPath = null;
+	private final Path socketPath = Path.of("").toAbsolutePath().getParent()
+			.resolve(System.getProperty("UNIXSOCKET_RELATIVEPATH")).resolve(System.getProperty("UNIXSOCKET_FILENAME"))
+			.toAbsolutePath();
 
+	private ComponentInstance<McpClientTransport> transportComponent;
 	private McpSyncClient client;
 
-	@Activate
-	void activate(BundleContext ctxt) throws Exception {
-		String relativePath = ctxt.getProperty("UNIXSOCKET_RELATIVEPATH");
-		if (relativePath == null) {
-			relativePath = "com.composent.ai.mcp.examples.toolgroup.mcpserver";
-		}
-		String fileName = ctxt.getProperty("UNIXSOCKET_FILENAME");
-		if (fileName == null) {
-			fileName = "s.socket";
-		}
-		socketPath = Path.of("").toAbsolutePath().getParent()
-					.resolve(relativePath).resolve(fileName).toAbsolutePath();
-		logger.debug("starting uds client with socket at path={}", socketPath);
-		// create UDS transport via the socketPath (default is
-		UDSMcpClientTransport transport = new UDSMcpClientTransport(socketPath);
-		// Create client with transport
-		client = McpClient.sync(transport).capabilities(ClientCapabilities.builder().build())
-				.requestTimeout(Duration.ofMinutes(10)).build();
+	@Reference(target = "(component.factory=UDSMcpClientTransportFactory)")
+	void setTransportComponentFactory(ComponentFactory<McpClientTransport> factory) {
+		this.transportComponent = new UDSMcpClientTransportConfig(socketPath).newInstanceFromFactory(factory);
+	}
 
+	void printTextContent(String op, Content content) {
+		if (content instanceof TextContent) {
+			logger.debug(op + " result=" + ((TextContent) content).text());
+		}
+	}
+
+	@Activate
+	void activate() throws Exception {
+		// Create client with transport
+		client = McpClient.sync(this.transportComponent.getInstance())
+				.capabilities(ClientCapabilities.builder().build()).build();
 		// initialize will connect to server
 		client.initialize();
 		logger.debug("uds sync client initialized");
@@ -91,16 +93,10 @@ public class McpSyncClientComponent {
 
 		String x1 = "10.71";
 		String y1 = "23.86";
-// Call multiply(10.71,23.86)
+		// Call multiply(10.71,23.86)
 		client.callTool(
 				new CallToolRequest(String.format(ARITHMETIC_TOOLGROUP_NAME, "multiply"), Map.of("x", x1, "y", y1)))
 				.content().forEach(content -> printTextContent("multiply(" + x1 + "," + y1 + ")", content));
-	}
-
-	void printTextContent(String op, Content content) {
-		if (content instanceof TextContent) {
-			logger.debug(op + " result=" + ((TextContent) content).text());
-		}
 	}
 
 	@Deactivate

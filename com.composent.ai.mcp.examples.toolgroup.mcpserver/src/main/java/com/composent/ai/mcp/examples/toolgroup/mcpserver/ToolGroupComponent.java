@@ -17,7 +17,7 @@ import io.modelcontextprotocol.server.McpServerFeatures.AsyncToolSpecification;
 import io.modelcontextprotocol.server.McpServerFeatures.SyncToolSpecification;
 import reactor.core.publisher.Mono;
 
-@Component(immediate=true)
+@Component(immediate = true)
 public class ToolGroupComponent implements ExampleToolGroup {
 
 	private static Logger logger = LoggerFactory.getLogger(ToolGroupComponent.class);
@@ -35,11 +35,9 @@ public class ToolGroupComponent implements ExampleToolGroup {
 	@Activate
 	void activate() {
 		// Add to syncServer
-		syncSpecifications = syncServer
-				.addToolGroups(this, ExampleToolGroup.class);
+		syncSpecifications = syncServer.addToolGroups(this, ExampleToolGroup.class);
 		// Add to asyncServer
-		asyncSpecifications = asyncServer
-				.addToolGroups(this, ExampleToolGroup.class);
+		asyncSpecifications = asyncServer.addToolGroups(this, ExampleToolGroup.class);
 	}
 
 	@Deactivate

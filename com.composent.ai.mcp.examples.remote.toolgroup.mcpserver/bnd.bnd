@@ -1,6 +1,7 @@
 -buildpath: \
 	org.osgi.service.component.annotations,\
-	io.modelcontextprotocol.sdk.mcp-osgi,\
 	com.composent.ai.mcp.toolgroup,\
 	com.composent.ai.mcp.examples.toolgroup.api,\
-	com.composent.ai.mcp.transport.uds
+	com.composent.ai.mcp.transport.uds,\
+	io.modelcontextprotocol.sdk.mcp-core,\
+	org.osgi.service.component

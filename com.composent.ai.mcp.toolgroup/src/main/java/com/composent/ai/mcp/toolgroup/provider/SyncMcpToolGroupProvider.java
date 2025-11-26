@@ -8,13 +8,13 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springaicommunity.mcp.McpPredicates;
 import org.springaicommunity.mcp.annotation.McpTool;
 import org.springaicommunity.mcp.annotation.McpToolGroup;
 import org.springaicommunity.mcp.method.tool.ReturnMode;
 import org.springaicommunity.mcp.method.tool.SyncMcpToolMethodCallback;
 import org.springaicommunity.mcp.method.tool.utils.ClassUtils;
 import org.springaicommunity.mcp.method.tool.utils.JsonSchemaGenerator;
-import org.springaicommunity.mcp.provider.ProvidrerUtils;
 import org.springaicommunity.mcp.provider.tool.AbstractMcpToolProvider;
 
 import io.modelcontextprotocol.server.McpServerFeatures.SyncToolSpecification;
@@ -97,7 +97,7 @@ public class SyncMcpToolGroupProvider extends AbstractMcpToolProvider {
 					Group toolGroup = doGetToolGroup(toolClass);
 					return Stream.of(doGetMethods(toolClass))
 							.filter(method -> method.isAnnotationPresent(McpTool.class))
-							.filter(ProvidrerUtils.isNotReactiveReturnType)
+							.filter(McpPredicates.filterReactiveReturnTypeMethod())
 							.sorted((m1, m2) -> m1.getName().compareTo(m2.getName())).map(mcpToolMethod -> {
 
 								McpTool toolJavaAnnotation = this.doGetMcpToolAnnotation(mcpToolMethod);
@@ -174,7 +174,6 @@ public class SyncMcpToolGroupProvider extends AbstractMcpToolProvider {
 										.build();
 
 								return toolSpec;
-
 							}).toList();
 				}).flatMap(List::stream).toList();
 			}).flatMap(List::stream).toList();

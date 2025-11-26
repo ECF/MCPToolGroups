@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springaicommunity.mcp.McpPredicates;
 import org.springaicommunity.mcp.annotation.McpTool;
 import org.springaicommunity.mcp.annotation.McpToolGroup;
 import org.springaicommunity.mcp.method.tool.AsyncStatelessMcpToolMethodCallback;
@@ -15,7 +16,6 @@ import org.springaicommunity.mcp.method.tool.ReactiveUtils;
 import org.springaicommunity.mcp.method.tool.ReturnMode;
 import org.springaicommunity.mcp.method.tool.utils.ClassUtils;
 import org.springaicommunity.mcp.method.tool.utils.JsonSchemaGenerator;
-import org.springaicommunity.mcp.provider.ProvidrerUtils;
 import org.springaicommunity.mcp.provider.tool.AbstractMcpToolProvider;
 
 import io.modelcontextprotocol.common.McpTransportContext;
@@ -84,7 +84,8 @@ public class AsyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider 
 			return Stream.of(doGetClasses(toolObject)).map(toolClass -> {
 				Group toolGroup = doGetToolGroup(toolClass);
 				return Stream.of(doGetMethods(toolClass)).filter(method -> method.isAnnotationPresent(McpTool.class))
-						.filter(ProvidrerUtils.isReactiveReturnType)
+						.filter(McpPredicates.filterNonReactiveReturnTypeMethod())
+						.filter(McpPredicates.filterMethodWithBidirectionalParameters())
 						.sorted((m1, m2) -> m1.getName().compareTo(m2.getName())).map(mcpToolMethod -> {
 
 							var toolJavaAnnotation = doGetMcpToolAnnotation(mcpToolMethod);
