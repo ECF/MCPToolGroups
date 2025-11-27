@@ -22,8 +22,12 @@ public class ToolGroupComponent implements ExampleToolGroup {
 
 	private static Logger logger = LoggerFactory.getLogger(ToolGroupComponent.class);
 
+	// This reference will wait for the SyncToolGroupServerComponent
+	// to be activated
 	@Reference
 	private SyncMcpToolGroupServer syncServer;
+	// This reference will wait for the AsyncToolGroupServerComponent
+	// to be activated
 	@Reference
 	private AsyncMcpToolGroupServer asyncServer;
 
