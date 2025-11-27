@@ -7,8 +7,8 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.composent.ai.mcp.toolgroup.server.SyncMcpDynamicToolGroupServer;
 import com.composent.ai.mcp.toolgroup.server.SyncMcpToolGroupServer;
+import com.composent.ai.mcp.toolgroup.server.impl.SyncMcpToolGroupServerImpl;
 import com.composent.ai.mcp.transport.uds.UDSMcpServerTransportConfig;
 
 import io.modelcontextprotocol.server.McpServer;
@@ -32,7 +32,7 @@ public class SyncToolGroupServerComponent implements SyncMcpToolGroupServer {
 
 	private ComponentInstance<McpServerTransportProvider> transportInstance;
 	private McpSyncServer server;
-	private final SyncMcpDynamicToolGroupServer toolGroupServer;
+	private final SyncMcpToolGroupServerImpl toolGroupServer;
 
 	@Activate
 	public SyncToolGroupServerComponent(
@@ -44,7 +44,7 @@ public class SyncToolGroupServerComponent implements SyncMcpToolGroupServer {
 				.serverInfo("example-sync-uds-transport-server", "1.0.0")
 				.capabilities(ServerCapabilities.builder().tools(true).build()).build();
 		// Create toolGroupServer given McpSyncServer
-		this.toolGroupServer = new SyncMcpDynamicToolGroupServer(server);
+		this.toolGroupServer = new SyncMcpToolGroupServerImpl(server);
 		logger.debug("sync toolgroup remote server activated");
 	}
 

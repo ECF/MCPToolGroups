@@ -1,27 +1,28 @@
-package com.composent.ai.mcp.toolgroup.server;
+package com.composent.ai.mcp.toolgroup.server.impl;
 
 import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.modelcontextprotocol.server.McpStatelessServerFeatures.SyncToolSpecification;
-import io.modelcontextprotocol.server.McpStatelessSyncServer;
+import com.composent.ai.mcp.toolgroup.server.SyncMcpToolGroupServer;
+
+import io.modelcontextprotocol.server.McpServerFeatures.SyncToolSpecification;
+import io.modelcontextprotocol.server.McpSyncServer;
 import io.modelcontextprotocol.spec.McpError;
 import io.modelcontextprotocol.util.Assert;
 
-public class SyncStatelessMcpDynamicToolGroupServer extends AbstractMcpDynamicToolGroupServer
-		implements SyncStatelessMcpToolGroupServer {
+public class SyncMcpToolGroupServerImpl extends AbstractMcpToolGroupServer implements SyncMcpToolGroupServer {
 
-	private static Logger logger = LoggerFactory.getLogger(SyncStatelessMcpDynamicToolGroupServer.class);
+	private static Logger logger = LoggerFactory.getLogger(SyncMcpToolGroupServerImpl.class);
 
-	protected final McpStatelessSyncServer server;
+	protected final McpSyncServer server;
 
-	public McpStatelessSyncServer getServer() {
+	public McpSyncServer getServer() {
 		return this.server;
 	}
 
-	public SyncStatelessMcpDynamicToolGroupServer(McpStatelessSyncServer server) {
+	public SyncMcpToolGroupServerImpl(McpSyncServer server) {
 		Objects.requireNonNull(server, "Server must not be null");
 		this.server = server;
 	}
@@ -29,12 +30,12 @@ public class SyncStatelessMcpDynamicToolGroupServer extends AbstractMcpDynamicTo
 	@Override
 	public SyncToolSpecification addTool(SyncToolSpecification toolSpec) {
 		Assert.notNull(toolSpec, "toolSpec must not be null");
-		McpStatelessSyncServer s = getServer();
+		McpSyncServer s = getServer();
 		Assert.notNull(s, "Server cannot be null");
 		try {
 			s.addTool(toolSpec);
 			if (logger.isDebugEnabled()) {
-				logger.debug("added tool specification={} to sync stateless server={}", toolSpec.tool().name(), s);
+				logger.debug("added tool specification={} to sync server={}", toolSpec.tool().name(), s);
 			}
 			return toolSpec;
 		} catch (McpError e) {
@@ -46,12 +47,12 @@ public class SyncStatelessMcpDynamicToolGroupServer extends AbstractMcpDynamicTo
 	@Override
 	public boolean removeTool(String fqToolName) {
 		Assert.notNull(fqToolName, "fqToolName must not be null");
-		McpStatelessSyncServer s = getServer();
+		McpSyncServer s = getServer();
 		Assert.notNull(s, "Server must not be null");
 		try {
 			s.removeTool(fqToolName);
 			if (logger.isDebugEnabled()) {
-				logger.debug("removed tool specification={} to sync stateless server={}", fqToolName, s);
+				logger.debug("removed tool specification={} to sync server={}", fqToolName, s);
 			}
 			return true;
 		} catch (McpError e) {

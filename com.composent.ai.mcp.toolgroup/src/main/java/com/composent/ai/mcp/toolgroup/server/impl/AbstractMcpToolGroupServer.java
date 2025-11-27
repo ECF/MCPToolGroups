@@ -1,4 +1,4 @@
-package com.composent.ai.mcp.toolgroup.server;
+package com.composent.ai.mcp.toolgroup.server.impl;
 
 import java.util.List;
 
@@ -9,9 +9,9 @@ import io.modelcontextprotocol.spec.McpError;
 import io.modelcontextprotocol.spec.McpSchema.Group;
 import io.modelcontextprotocol.spec.McpSchema.Tool;
 
-public class AbstractMcpDynamicToolGroupServer {
+public class AbstractMcpToolGroupServer {
 
-	private static Logger logger = LoggerFactory.getLogger(AbstractMcpDynamicToolGroupServer.class);
+	private static Logger logger = LoggerFactory.getLogger(AbstractMcpToolGroupServer.class);
 
 	protected void handleMcpError(String toolName, McpError error, boolean added) {
 		logger.error(String.format("Tool specification name=%s could not be %s to server=", toolName,

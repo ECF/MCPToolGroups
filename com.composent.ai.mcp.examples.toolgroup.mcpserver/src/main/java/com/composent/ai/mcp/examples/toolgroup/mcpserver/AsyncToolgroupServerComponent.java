@@ -12,8 +12,8 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.composent.ai.mcp.toolgroup.server.AsyncMcpDynamicToolGroupServer;
 import com.composent.ai.mcp.toolgroup.server.AsyncMcpToolGroupServer;
+import com.composent.ai.mcp.toolgroup.server.impl.AsyncMcpToolGroupServerImpl;
 import com.composent.ai.mcp.transport.uds.UDSMcpServerTransportConfig;
 
 import io.modelcontextprotocol.server.McpAsyncServer;
@@ -31,7 +31,7 @@ public class AsyncToolgroupServerComponent implements AsyncMcpToolGroupServer {
 	private final Path socketPath = Paths.get("").resolve("s.socket").toAbsolutePath();
 
 	private ComponentInstance<McpServerTransportProvider> transportInstance;
-	private AsyncMcpDynamicToolGroupServer toolGroupServer;
+	private AsyncMcpToolGroupServerImpl toolGroupServer;
 	private McpAsyncServer server;
 	
 	@Activate
@@ -44,7 +44,7 @@ public class AsyncToolgroupServerComponent implements AsyncMcpToolGroupServer {
 				.serverInfo("example-async-uds-transport-server", "1.0.0")
 				.capabilities(ServerCapabilities.builder().tools(true).build()).build();
 		// Create toolGroupServer given McpAsyncServer
-		this.toolGroupServer = new AsyncMcpDynamicToolGroupServer(server);
+		this.toolGroupServer = new AsyncMcpToolGroupServerImpl(server);
 		logger.debug("dynamic async toolgroup server started");
 	}
 

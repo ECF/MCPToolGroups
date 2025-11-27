@@ -11,7 +11,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 import com.composent.ai.mcp.examples.toolgroup.api.ExampleToolGroup;
-import com.composent.ai.mcp.toolgroup.server.SyncMcpDynamicToolGroupServer;
+import com.composent.ai.mcp.toolgroup.server.impl.SyncMcpToolGroupServerImpl;
 import com.composent.ai.mcp.transport.uds.UDSMcpServerTransportConfig;
 
 import io.modelcontextprotocol.server.McpServer;
@@ -40,7 +40,7 @@ public class RemoteToolGroupServerComponent {
 				.serverInfo("example-sync-uds-transport-server", "1.0.0")
 				.capabilities(ServerCapabilities.builder().tools(true).build()).build();
 		// Now add the tool groups from this using ExampleToolGroup.class
-		new SyncMcpDynamicToolGroupServer(server).addToolGroups(exampleToolGroup, ExampleToolGroup.class);
+		new SyncMcpToolGroupServerImpl(server).addToolGroups(exampleToolGroup, ExampleToolGroup.class);
 	}
 
 	@Deactivate

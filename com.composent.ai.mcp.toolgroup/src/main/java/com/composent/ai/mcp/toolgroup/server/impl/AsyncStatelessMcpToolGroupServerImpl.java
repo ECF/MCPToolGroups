@@ -1,19 +1,21 @@
-package com.composent.ai.mcp.toolgroup.server;
+package com.composent.ai.mcp.toolgroup.server.impl;
 
 import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.composent.ai.mcp.toolgroup.server.AsyncStatelessMcpToolGroupServer;
+
 import io.modelcontextprotocol.server.McpStatelessAsyncServer;
 import io.modelcontextprotocol.server.McpStatelessServerFeatures.AsyncToolSpecification;
 import io.modelcontextprotocol.spec.McpError;
 import io.modelcontextprotocol.util.Assert;
 
-public class AsyncStatelessMcpDynamicToolGroupServer extends AbstractMcpDynamicToolGroupServer
+public class AsyncStatelessMcpToolGroupServerImpl extends AbstractMcpToolGroupServer
 		implements AsyncStatelessMcpToolGroupServer {
 
-	private static Logger logger = LoggerFactory.getLogger(AsyncStatelessMcpDynamicToolGroupServer.class);
+	private static Logger logger = LoggerFactory.getLogger(AsyncStatelessMcpToolGroupServerImpl.class);
 
 	protected final McpStatelessAsyncServer server;
 
@@ -21,7 +23,7 @@ public class AsyncStatelessMcpDynamicToolGroupServer extends AbstractMcpDynamicT
 		return this.server;
 	}
 
-	public AsyncStatelessMcpDynamicToolGroupServer(McpStatelessAsyncServer server) {
+	public AsyncStatelessMcpToolGroupServerImpl(McpStatelessAsyncServer server) {
 		Objects.requireNonNull(server, "Server must not be null");
 		this.server = server;
 	}
