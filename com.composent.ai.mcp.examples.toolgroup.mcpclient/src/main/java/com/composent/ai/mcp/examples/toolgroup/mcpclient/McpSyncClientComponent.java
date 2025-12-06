@@ -4,7 +4,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
@@ -15,6 +14,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.composent.ai.mcp.common.McpEntityToNodeConverter;
 import com.composent.ai.mcp.transport.uds.UDSMcpClientTransportConfig;
 
 import io.modelcontextprotocol.client.McpClient;
@@ -54,6 +54,9 @@ public class McpSyncClientComponent {
 		}
 	}
 
+	@Reference
+	McpEntityToNodeConverter converter;
+
 	@Activate
 	void activate() throws Exception {
 		// Create client with transport
@@ -75,11 +78,11 @@ public class McpSyncClientComponent {
 				logger.debug("   group description: " + g.description());
 			});
 		});
-		// NEW: Get ToolNodes from Tools
-		List<ToolNode> toolNodes = ToolNode.deserialize(tools);
-		// Get a Set of all the topGroupNodes (root)
-		Set<GroupNode> topNodes = toolNodes.stream().map(tn -> tn.getRoots()).flatMap(List::stream).distinct()
-				.collect(Collectors.toSet());
+		
+		// NEW: Convert from Tools to ToolNodes
+		List<ToolNode> toolNodes = converter.convertToolToNode(tools);
+		// Convert to set of roots.  Will be empty if no root nodes
+		Set<GroupNode> topNodes = converter.toRoots(toolNodes);
 		// Show trees
 		topNodes.forEach(gn -> {
 			logger.debug("Tree=" + gn);
