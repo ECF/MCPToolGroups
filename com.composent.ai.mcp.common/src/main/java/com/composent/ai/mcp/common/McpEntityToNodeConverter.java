@@ -8,6 +8,7 @@ import io.modelcontextprotocol.common.GroupNode;
 import io.modelcontextprotocol.common.PromptNode;
 import io.modelcontextprotocol.common.ResourceNode;
 import io.modelcontextprotocol.common.ToolNode;
+import io.modelcontextprotocol.spec.McpSchema.Group;
 import io.modelcontextprotocol.spec.McpSchema.Prompt;
 import io.modelcontextprotocol.spec.McpSchema.Resource;
 import io.modelcontextprotocol.spec.McpSchema.Tool;
@@ -20,5 +21,8 @@ public interface McpEntityToNodeConverter {
 
 	List<ResourceNode> convertResourceToNode(List<Resource> resources);
 
-	Set<GroupNode> toRoots(List<? extends AbstractLeafNode> leafNodes);
+	Set<GroupNode> convertLeafsToRoots(List<? extends AbstractLeafNode> leafNodes);
+
+	List<GroupNode> convertGroupToNode(List<Group> groups);
+
 }

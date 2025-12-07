@@ -1,15 +1,12 @@
 package com.composent.ai.mcp.common.impl;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.osgi.service.component.annotations.Component;
 
-import com.composent.ai.mcp.common.McpEntityToNodeConverter;
+import com.composent.ai.mcp.common.McpNodeToEntityConverter;
 
-import io.modelcontextprotocol.common.AbstractLeafNode;
-import io.modelcontextprotocol.common.GroupNode;
 import io.modelcontextprotocol.common.PromptNode;
 import io.modelcontextprotocol.common.ResourceNode;
 import io.modelcontextprotocol.common.ToolNode;
@@ -18,27 +15,32 @@ import io.modelcontextprotocol.spec.McpSchema.Resource;
 import io.modelcontextprotocol.spec.McpSchema.Tool;
 
 @Component(immediate = true)
-public class McpNodeToEntityConverterImpl implements McpEntityToNodeConverter {
+public class McpNodeToEntityConverterImpl implements McpNodeToEntityConverter {
 
 	@Override
-	public List<ToolNode> convertToolToNode(List<Tool> tools) {
-		return ToolNode.deserialize(tools);
+	public List<Tool.Builder> convertNodeToTool(List<ToolNode> toolNodes) {
+		synchronized (this) {
+			return toolNodes.stream().map(tn -> {
+				return tn.serialize();
+			}).collect(Collectors.toList());
+		}
 	}
 
 	@Override
-	public List<PromptNode> convertPromptToNode(List<Prompt> prompts) {
-		return PromptNode.deserialize(prompts);
+	public List<Prompt> convertNodeToPrompt(List<PromptNode> promptNodes) {
+		synchronized (this) {
+			return promptNodes.stream().map(tn -> {
+				return tn.serialize();
+			}).collect(Collectors.toList());
+		}
 	}
 
 	@Override
-	public List<ResourceNode> convertResourceToNode(List<Resource> resources) {
-		return ResourceNode.deserialize(resources);
+	public List<Resource.Builder> convertNodeToResource(List<ResourceNode> resourceNodes) {
+		synchronized (this) {
+			return resourceNodes.stream().map(tn -> {
+				return tn.serialize();
+			}).distinct().collect(Collectors.toList());
+		}
 	}
-
-	public Set<GroupNode> toRoots(List<? extends AbstractLeafNode> leafNodes) {
-		return leafNodes.stream().map(n -> {
-			return n.getRoots();
-		}).flatMap(List::stream).collect(Collectors.toSet());
-	}
-
 }

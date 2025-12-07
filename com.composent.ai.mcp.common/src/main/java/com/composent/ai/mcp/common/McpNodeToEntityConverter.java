@@ -16,4 +16,5 @@ public interface McpNodeToEntityConverter {
 	List<Prompt> convertNodeToPrompt(List<PromptNode> promptNodes);
 
 	List<Resource.Builder> convertNodeToResource(List<ResourceNode> resourceNodes);
+
 }

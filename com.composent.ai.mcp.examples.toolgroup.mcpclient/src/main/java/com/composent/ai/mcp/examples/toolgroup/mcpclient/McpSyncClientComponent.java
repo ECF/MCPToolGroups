@@ -82,7 +82,7 @@ public class McpSyncClientComponent {
 		// NEW: Convert from Tools to ToolNodes
 		List<ToolNode> toolNodes = converter.convertToolToNode(tools);
 		// Convert to set of roots.  Will be empty if no root nodes
-		Set<GroupNode> topNodes = converter.toRoots(toolNodes);
+		Set<GroupNode> topNodes = converter.convertLeafsToRoots(toolNodes);
 		// Show trees
 		topNodes.forEach(gn -> {
 			logger.debug("Tree=" + gn);
