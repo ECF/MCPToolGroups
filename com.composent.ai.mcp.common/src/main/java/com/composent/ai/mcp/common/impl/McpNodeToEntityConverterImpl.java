@@ -21,7 +21,7 @@ public class McpNodeToEntityConverterImpl implements McpNodeToEntityConverter {
 	public List<Tool.Builder> convertNodeToTool(List<ToolNode> toolNodes) {
 		synchronized (this) {
 			return toolNodes.stream().map(tn -> {
-				return tn.serialize();
+				return tn.convert();
 			}).collect(Collectors.toList());
 		}
 	}
@@ -30,7 +30,7 @@ public class McpNodeToEntityConverterImpl implements McpNodeToEntityConverter {
 	public List<Prompt> convertNodeToPrompt(List<PromptNode> promptNodes) {
 		synchronized (this) {
 			return promptNodes.stream().map(tn -> {
-				return tn.serialize();
+				return tn.convert();
 			}).collect(Collectors.toList());
 		}
 	}
@@ -39,7 +39,7 @@ public class McpNodeToEntityConverterImpl implements McpNodeToEntityConverter {
 	public List<Resource.Builder> convertNodeToResource(List<ResourceNode> resourceNodes) {
 		synchronized (this) {
 			return resourceNodes.stream().map(tn -> {
-				return tn.serialize();
+				return tn.convert();
 			}).distinct().collect(Collectors.toList());
 		}
 	}
