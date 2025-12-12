@@ -20,10 +20,12 @@ import org.springaicommunity.mcp.provider.tool.AbstractMcpToolProvider;
 
 import io.modelcontextprotocol.common.McpTransportContext;
 import io.modelcontextprotocol.server.McpStatelessServerFeatures.AsyncToolSpecification;
+import io.modelcontextprotocol.server.McpStatelessServerFeatures.AsyncToolSpecification.Builder;
 import io.modelcontextprotocol.spec.McpSchema;
 import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
 import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
 import io.modelcontextprotocol.spec.McpSchema.Group;
+import io.modelcontextprotocol.spec.McpSchema.Tool;
 import io.modelcontextprotocol.util.Assert;
 import io.modelcontextprotocol.util.Utils;
 import reactor.core.publisher.Mono;
@@ -158,13 +160,13 @@ public class AsyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider 
 									: ReactiveUtils.isReactiveReturnTypeOfVoid(mcpToolMethod) ? ReturnMode.VOID
 											: ReturnMode.TEXT;
 
-							BiFunction<McpTransportContext, CallToolRequest, Mono<CallToolResult>> methodCallback = new AsyncStatelessMcpToolMethodCallback(
-									returnMode, mcpToolMethod, toolObject, this.doGetToolCallException());
+							BiFunction<McpTransportContext, CallToolRequest, Mono<CallToolResult>> methodCallback = doCreateMethodCallback(
+									returnMode, mcpToolMethod, toolObject);
 
-							AsyncToolSpecification toolSpec = AsyncToolSpecification.builder().tool(tool)
-									.callHandler(methodCallback).build();
+							AsyncToolSpecification.Builder toolSpecBuilder = doCreateToolSpecificationBuilder(tool,
+									methodCallback);
 
-							return toolSpec;
+							return toolSpecBuilder.build();
 						}).toList();
 			}).flatMap(List::stream).toList();
 		}).flatMap(List::stream).toList();
@@ -174,6 +176,16 @@ public class AsyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider 
 		}
 
 		return toolSpecs;
+	}
+
+	private Builder doCreateToolSpecificationBuilder(Tool tool,
+			BiFunction<McpTransportContext, CallToolRequest, Mono<CallToolResult>> methodCallback) {
+		return AsyncToolSpecification.builder().tool(tool).callHandler(methodCallback);
+	}
+
+	protected BiFunction<McpTransportContext, CallToolRequest, Mono<CallToolResult>> doCreateMethodCallback(
+			ReturnMode returnMode, Method mcpToolMethod, Object toolObject) {
+		return new AsyncStatelessMcpToolMethodCallback(returnMode, mcpToolMethod, toolObject, doGetToolCallException());
 	}
 
 	protected McpTool doGetMcpToolAnnotation(Method method) {

@@ -23,6 +23,7 @@ import io.modelcontextprotocol.spec.McpSchema;
 import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
 import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
 import io.modelcontextprotocol.spec.McpSchema.Group;
+import io.modelcontextprotocol.spec.McpSchema.Tool;
 import io.modelcontextprotocol.util.Assert;
 import io.modelcontextprotocol.util.Utils;
 
@@ -77,6 +78,16 @@ public class SyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider {
 		return (this.toolClasses.length == 0) ? new Class[] { toolObject.getClass() } : this.toolClasses;
 	}
 
+	protected SyncToolSpecification.Builder doCreateToolSpecificationBuilder(Tool tool,
+			BiFunction<McpTransportContext, CallToolRequest, CallToolResult> methodCallback) {
+		return SyncToolSpecification.builder().tool(tool).callHandler(methodCallback);
+	}
+
+	protected BiFunction<McpTransportContext, CallToolRequest, CallToolResult> doCreateMethodCallback(
+			ReturnMode returnMode, Method mcpToolMethod, Object toolObject) {
+		return new SyncStatelessMcpToolMethodCallback(returnMode, mcpToolMethod, toolObject, doGetToolCallException());
+	}
+
 	public List<SyncToolSpecification> getToolSpecifications() {
 		List<SyncToolSpecification> toolSpecs = this.toolObjects.stream().map(toolObject -> {
 			return Stream.of(doGetClasses(toolObject)).map(toolClass -> {
@@ -99,10 +110,8 @@ public class SyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider {
 
 							String inputSchema = JsonSchemaGenerator.generateForMethodInput(mcpToolMethod);
 
-							var toolBuilder = McpSchema.Tool.builder()
-								.name(toolName)
-								.description(toolDescrption)
-								.inputSchema(this.getJsonMapper(), inputSchema);
+							var toolBuilder = McpSchema.Tool.builder().name(toolName).description(toolDescrption)
+									.inputSchema(this.getJsonMapper(), inputSchema);
 
 							var title = toolJavaAnnotation.title();
 
@@ -136,7 +145,8 @@ public class SyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider {
 							Class<?> methodReturnType = mcpToolMethod.getReturnType();
 							if (toolJavaAnnotation.generateOutputSchema() && methodReturnType != null
 									&& methodReturnType != CallToolResult.class && methodReturnType != Void.class
-									&& methodReturnType != void.class && !ClassUtils.isPrimitiveOrWrapper(methodReturnType)
+									&& methodReturnType != void.class
+									&& !ClassUtils.isPrimitiveOrWrapper(methodReturnType)
 									&& !ClassUtils.isSimpleValueType(methodReturnType)) {
 
 								toolBuilder.outputSchema(this.getJsonMapper(),
@@ -154,12 +164,13 @@ public class SyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider {
 									: (methodReturnType == Void.TYPE || methodReturnType == void.class ? ReturnMode.VOID
 											: ReturnMode.TEXT);
 
-							BiFunction<McpTransportContext, CallToolRequest, CallToolResult> methodCallback = new SyncStatelessMcpToolMethodCallback(
-									returnMode, mcpToolMethod, toolObject, this.doGetToolCallException());
+							BiFunction<McpTransportContext, CallToolRequest, CallToolResult> methodCallback = doCreateMethodCallback(
+									returnMode, mcpToolMethod, toolObject);
 
-							var toolSpec = SyncToolSpecification.builder().tool(tool).callHandler(methodCallback).build();
+							SyncToolSpecification.Builder toolSpecBuilder = doCreateToolSpecificationBuilder(tool,
+									methodCallback);
 
-							return toolSpec;
+							return toolSpecBuilder.build();
 
 						}).toList();
 			}).flatMap(List::stream).toList();

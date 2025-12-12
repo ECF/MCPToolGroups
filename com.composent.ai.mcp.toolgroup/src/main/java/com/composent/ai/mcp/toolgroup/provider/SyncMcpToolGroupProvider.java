@@ -18,11 +18,13 @@ import org.springaicommunity.mcp.method.tool.utils.JsonSchemaGenerator;
 import org.springaicommunity.mcp.provider.tool.AbstractMcpToolProvider;
 
 import io.modelcontextprotocol.server.McpServerFeatures.SyncToolSpecification;
+import io.modelcontextprotocol.server.McpServerFeatures.SyncToolSpecification.Builder;
 import io.modelcontextprotocol.server.McpSyncServerExchange;
 import io.modelcontextprotocol.spec.McpSchema;
 import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
 import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
 import io.modelcontextprotocol.spec.McpSchema.Group;
+import io.modelcontextprotocol.spec.McpSchema.Tool;
 import io.modelcontextprotocol.util.Assert;
 import io.modelcontextprotocol.util.Utils;
 
@@ -81,6 +83,16 @@ public class SyncMcpToolGroupProvider extends AbstractMcpToolProvider {
 	protected Group doGetToolGroup(Class<?> clazz) {
 		McpToolGroup tgAnnotation = doGetMcpToolGroupAnnotation(clazz);
 		return tgAnnotation != null ? doGetToolGroup(tgAnnotation, clazz) : null;
+	}
+
+	protected BiFunction<McpSyncServerExchange, CallToolRequest, CallToolResult> doCreateMethodCallback(
+			ReturnMode returnMode, Method mcpToolMethod, Object toolObject) {
+		return new SyncMcpToolMethodCallback(returnMode, mcpToolMethod, toolObject, doGetToolCallException());
+	}
+
+	protected Builder doCreateToolSpecificationBuilder(Tool tool,
+			BiFunction<McpSyncServerExchange, CallToolRequest, CallToolResult> methodCallback) {
+		return SyncToolSpecification.builder().tool(tool).callHandler(methodCallback);
 	}
 
 	/**
@@ -167,13 +179,13 @@ public class SyncMcpToolGroupProvider extends AbstractMcpToolProvider {
 												? ReturnMode.VOID
 												: ReturnMode.TEXT);
 
-								BiFunction<McpSyncServerExchange, CallToolRequest, CallToolResult> methodCallback = new SyncMcpToolMethodCallback(
-										returnMode, mcpToolMethod, toolObject, this.doGetToolCallException());
+								BiFunction<McpSyncServerExchange, CallToolRequest, CallToolResult> methodCallback = doCreateMethodCallback(
+										returnMode, mcpToolMethod, toolObject);
 
-								var toolSpec = SyncToolSpecification.builder().tool(tool).callHandler(methodCallback)
-										.build();
+								SyncToolSpecification.Builder toolSpecBuilder = doCreateToolSpecificationBuilder(tool,
+										methodCallback);
 
-								return toolSpec;
+								return toolSpecBuilder.build();
 							}).toList();
 				}).flatMap(List::stream).toList();
 			}).flatMap(List::stream).toList();

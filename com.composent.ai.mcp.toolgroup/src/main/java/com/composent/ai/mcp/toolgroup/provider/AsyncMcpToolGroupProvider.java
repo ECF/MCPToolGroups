@@ -20,10 +20,12 @@ import org.springaicommunity.mcp.provider.tool.AbstractMcpToolProvider;
 
 import io.modelcontextprotocol.server.McpAsyncServerExchange;
 import io.modelcontextprotocol.server.McpServerFeatures.AsyncToolSpecification;
+import io.modelcontextprotocol.server.McpServerFeatures.AsyncToolSpecification.Builder;
 import io.modelcontextprotocol.spec.McpSchema;
 import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
 import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
 import io.modelcontextprotocol.spec.McpSchema.Group;
+import io.modelcontextprotocol.spec.McpSchema.Tool;
 import io.modelcontextprotocol.util.Assert;
 import io.modelcontextprotocol.util.Utils;
 import reactor.core.publisher.Mono;
@@ -77,6 +79,16 @@ public class AsyncMcpToolGroupProvider extends AbstractMcpToolProvider {
 	protected Group doGetToolGroup(Class<?> clazz) {
 		McpToolGroup tgAnnotation = doGetMcpToolGroupAnnotation(clazz);
 		return tgAnnotation != null ? doGetToolGroup(tgAnnotation, clazz) : null;
+	}
+
+	protected Builder doCreateToolSpecificationBuilder(Tool tool,
+			BiFunction<McpAsyncServerExchange, CallToolRequest, Mono<CallToolResult>> methodCallback) {
+		return AsyncToolSpecification.builder().tool(tool).callHandler(methodCallback);
+	}
+
+	protected BiFunction<McpAsyncServerExchange, CallToolRequest, Mono<CallToolResult>> doCreateToolMethodCallback(
+			ReturnMode returnMode, Method mcpToolMethod, Object toolObject) {
+		return new AsyncMcpToolMethodCallback(returnMode, mcpToolMethod, toolObject, doGetToolCallException());
 	}
 
 	public List<AsyncToolSpecification> getToolSpecifications() {
@@ -158,13 +170,13 @@ public class AsyncMcpToolGroupProvider extends AbstractMcpToolProvider {
 									: ReactiveUtils.isReactiveReturnTypeOfVoid(mcpToolMethod) ? ReturnMode.VOID
 											: ReturnMode.TEXT;
 
-							BiFunction<McpAsyncServerExchange, CallToolRequest, Mono<CallToolResult>> methodCallback = new AsyncMcpToolMethodCallback(
-									returnMode, mcpToolMethod, toolObject, this.doGetToolCallException());
+							BiFunction<McpAsyncServerExchange, CallToolRequest, Mono<CallToolResult>> methodCallback = doCreateToolMethodCallback(
+									returnMode, mcpToolMethod, toolObject);
 
-							AsyncToolSpecification toolSpec = AsyncToolSpecification.builder().tool(tool)
-									.callHandler(methodCallback).build();
+							AsyncToolSpecification.Builder toolSpecBuilder = doCreateToolSpecificationBuilder(tool,
+									methodCallback);
 
-							return toolSpec;
+							return toolSpecBuilder.build();
 
 						}).toList();
 			}).flatMap(List::stream).toList();
