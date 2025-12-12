@@ -25,7 +25,7 @@ import io.modelcontextprotocol.spec.McpSchema.Resource;
 import io.modelcontextprotocol.spec.McpSchema.Tool;
 
 @Component(immediate = true)
-public class McpEntityToNodeConverterImpl1 implements McpEntityToNodeConverter {
+public class McpEntityToNodeConverterImpl implements McpEntityToNodeConverter {
 
 	private static final Map<String, GroupNode> groupNodeCache = new HashMap<String, GroupNode>();
 
