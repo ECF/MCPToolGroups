@@ -36,7 +36,7 @@
 	wrapped.com.github.victools.jsonschema-generator;version='[4.38.0,4.38.1)';startlevel=1170,\
 	wrapped.com.github.victools.jsonschema-module-jackson;version='[4.38.0,4.38.1)';startlevel=1180,\
 	wrapped.com.github.victools.jsonschema-module-swagger-2;version='[4.38.0,4.38.1)';startlevel=1190,\
-	org.springaicommunity.mcp-annotations;version='[0.7.1,0.7.2)';startlevel=1200,\
+	org.springaicommunity.mcp-annotations;version='[0.8.0,0.8.1)';startlevel=1200,\
 	com.composent.ai.mcp.examples.toolgroup.api;version=snapshot;startlevel=1210,\
 	com.composent.ai.mcp.toolgroup;version=snapshot;startlevel=1220,\
 	org.apache.felix.gogo.runtime;version='[1.1.6,1.1.7)';startlevel=1230,\

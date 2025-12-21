@@ -16,7 +16,6 @@ import org.springaicommunity.mcp.method.tool.ReactiveUtils;
 import org.springaicommunity.mcp.method.tool.ReturnMode;
 import org.springaicommunity.mcp.method.tool.utils.ClassUtils;
 import org.springaicommunity.mcp.method.tool.utils.JsonSchemaGenerator;
-import org.springaicommunity.mcp.provider.tool.AbstractMcpToolProvider;
 
 import io.modelcontextprotocol.common.McpTransportContext;
 import io.modelcontextprotocol.server.McpStatelessServerFeatures.AsyncToolSpecification;
@@ -30,7 +29,7 @@ import io.modelcontextprotocol.util.Assert;
 import io.modelcontextprotocol.util.Utils;
 import reactor.core.publisher.Mono;
 
-public class AsyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider {
+public class AsyncStatelessMcpToolGroupProvider extends AbstractMcpToolGroupProvider {
 
 	protected static final Logger logger = LoggerFactory.getLogger(AsyncStatelessMcpToolGroupProvider.class);
 
@@ -84,7 +83,7 @@ public class AsyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider 
 	public List<AsyncToolSpecification> getToolSpecifications() {
 		List<AsyncToolSpecification> toolSpecs = this.toolObjects.stream().map(toolObject -> {
 			return Stream.of(doGetClasses(toolObject)).map(toolClass -> {
-				Group toolGroup = doGetToolGroup(toolClass);
+				Group staticToolGroup = doGetToolGroup(toolClass);
 				return Stream.of(doGetMethods(toolClass)).filter(method -> method.isAnnotationPresent(McpTool.class))
 						.filter(McpPredicates.filterNonReactiveReturnTypeMethod())
 						.filter(McpPredicates.filterMethodWithBidirectionalParameters())
@@ -96,8 +95,7 @@ public class AsyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider 
 									: mcpToolMethod.getName();
 
 							// Add on group fully qualified name to toolName
-							toolName = (toolGroup == null) ? toolName
-									: toolGroup.getFullyQualifiedName(".") + "." + toolName;
+							toolName = doQualifyToolName(toolName, staticToolGroup);
 
 							String toolDescrption = toolJavaAnnotation.description();
 
@@ -151,8 +149,7 @@ public class AsyncStatelessMcpToolGroupProvider extends AbstractMcpToolProvider 
 								});
 							}
 
-							// ToolGroup handling
-							toolBuilder.groups(List.of(toolGroup));
+							doAddToolGroups(toolBuilder, staticToolGroup);
 
 							var tool = toolBuilder.build();
 

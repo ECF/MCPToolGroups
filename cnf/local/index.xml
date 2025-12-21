@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="Local" increment="1765317247763">
+<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="Local" increment="1766284062138">
   <resource>
     <capability namespace="osgi.identity">
       <attribute name="license" value="https://www.apache.org/licenses/LICENSE-2.0.txt"/>
@@ -218,6 +218,310 @@
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=reactor.util.function)(version&gt;=3.7.0)(!(version&gt;=4.0.0)))"/>
       <attribute name="osgi.wiring.package" value="reactor.util.function"/>
+    </requirement>
+    <requirement namespace="osgi.ee">
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=17))"/>
+    </requirement>
+  </resource>
+  <resource>
+    <capability namespace="osgi.identity">
+      <attribute name="license" value="&quot;MIT License&quot;;link=&quot;http://www.opensource.org/licenses/mit-license.php&quot;"/>
+      <attribute name="osgi.identity" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="documentation" value="https://github.com/spring-ai-community/mcp-annotations"/>
+      <attribute name="description" value="This module enables developers to easily create and register methods for handling MCP operations using simple annotations"/>
+      <attribute name="type" value="osgi.bundle"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="-674549847,-1758820682" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.adapter"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="-636706890,1137809480,-1759872725,-1512561855" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.annotation"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="-1995691396,-12539693,885849007,-1162807163,-1736545633,-414172729,-950823822,2019684222,1977661912,-1271880374,245840808,-1296494738,-1732491391,-1736327630,576018285,-1201900892,583825787" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.context"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="-929729405,1392392921,1895597947,1806746947,1144850228,1837885513,1625361118,1248233731,-1926883870,-935458620,114628506,1974703775,881894312,292242530,374076511,1855694517,-43974598" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.changed.prompt"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="-1608563463,-5365600,649335808,1895597947,-1502753894,1797399405,1926983737,-1440682100" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.changed.resource"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="-1608563463,-47193526,289538710,1895597947,-1989395536,-348503785,-251448177,1706459510" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.changed.tool"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="-1608563463,314655316,380141644,1895597947,-1061202330,1482557089,993760965,1586450048" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.complete"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="-1608563463,1614379803,-1636465161,1895597947,355727645,664666379,-1084238434,-200563286" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.elicitation"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="-1608563463,1939444927,732384023,847906934,1895597947,-2004795855,-1692395563,-1900902896" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.logging"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="-1608563463,-24793261,-2072901011,2111625312,1895597947,69573255,1835495231,1824238054" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.progress"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="-1608563463,-2078317657,-785753109,1895597947,1206439697,1929506522,-233526382,1959408603" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.prompt"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="-1608563463,1735306466,1895597947,-1520717432,2095242486,1445378633,-144761515" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.resource"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="-1608563463,1278737203,-1450967028,1895597947,541225778,850164512,-368297434,1068661701,-898740301,-15065153" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.sampling"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="-1608563463,-1720522067,57072677,1895597947,2049265483,-814252192,609299404,-784350111" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.tool"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="-1616997378,-1635583978,-1450783429,957673020,-643031766,802646296,-964514029,987575101,413854025" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.tool.utils"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="1693941305,73079920,67115090,917115616,-2029030736,1078812459,-695340542,-1895049979,450367616,-656591085,720151011,2599333,-1449619846,-2046726991,-97435750,-1952931001,-1911066614,-1926269803,-1823107262" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.changed.prompt"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="879033413,982926372" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.changed.resource"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="312915163,1369800954" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.changed.tool"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="-1573285871,1032405936" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.complete"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="-2001713144,360864374,1175968073,464757333" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.elicitation"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="-1135875044,-208910533" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.logging"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="1881784562,-320859432,-925203567" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.progress"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="-1050041092,2127640125" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.prompt"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="-579244877,115950241,577133108,-1573325248" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.resource"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="911554013,-1020835765,-205732066,-916942806" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.sampling"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="2050054326,932768247" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.tool"/>
+      <attribute name="version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="bnd.hashes" value="2097427905,289095783,48478677,-1948804568,1803143476" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.bundle">
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.bundle" value="org.springaicommunity.mcp-annotations"/>
+    </capability>
+    <capability namespace="osgi.wiring.host">
+      <attribute name="bundle-version" value="0.8.0.SNAPSHOT" type="Version"/>
+      <attribute name="osgi.wiring.host" value="org.springaicommunity.mcp-annotations"/>
+    </capability>
+    <capability namespace="osgi.content">
+      <attribute name="size" value="380390" type="Long"/>
+      <attribute name="mime" value="application/vnd.osgi.bundle"/>
+      <attribute name="url" value="org.springaicommunity.mcp-annotations/org.springaicommunity.mcp-annotations-0.8.0.jar"/>
+      <attribute name="osgi.content" value="1C18E56A81F7BDF6C45791D0A8290157799CC2D8A63D763F4789CACA303D24ED"/>
+    </capability>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.annotation)(version&gt;=2.19.0)(!(version&gt;=3.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.annotation"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.core)(version&gt;=2.17.0)(!(version&gt;=3.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.core"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.core.type)(version&gt;=2.17.0)(!(version&gt;=3.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.core.type"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.databind)(version&gt;=2.17.0)(!(version&gt;=3.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.databind.cfg)(version&gt;=2.17.0)(!(version&gt;=3.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind.cfg"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.databind.json)(version&gt;=2.17.0)(!(version&gt;=3.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind.json"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.databind.node)(version&gt;=2.17.0)(!(version&gt;=3.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind.node"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.databind.type)(version&gt;=2.17.0)(!(version&gt;=3.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind.type"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.datatype.jsr310)(version&gt;=2.19.0)(!(version&gt;=3.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.datatype.jsr310"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=com.github.victools.jsonschema.generator)"/>
+      <attribute name="osgi.wiring.package" value="com.github.victools.jsonschema.generator"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=com.github.victools.jsonschema.module.jackson)"/>
+      <attribute name="osgi.wiring.package" value="com.github.victools.jsonschema.module.jackson"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=com.github.victools.jsonschema.module.swagger2)"/>
+      <attribute name="osgi.wiring.package" value="com.github.victools.jsonschema.module.swagger2"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=io.modelcontextprotocol.common)(version&gt;=0.18.0)(!(version&gt;=1.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="io.modelcontextprotocol.common"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=io.modelcontextprotocol.json)(version&gt;=0.18.0)(!(version&gt;=1.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="io.modelcontextprotocol.json"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=io.modelcontextprotocol.server)(version&gt;=0.18.0)(!(version&gt;=1.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="io.modelcontextprotocol.server"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=io.modelcontextprotocol.spec)(version&gt;=0.18.0)(!(version&gt;=1.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="io.modelcontextprotocol.spec"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=io.modelcontextprotocol.util)(version&gt;=0.18.0)(!(version&gt;=1.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="io.modelcontextprotocol.util"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=io.swagger.v3.oas.annotations.media)(version&gt;=2.2.0)(!(version&gt;=3.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="io.swagger.v3.oas.annotations.media"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.reactivestreams)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="org.reactivestreams"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.slf4j)(version&gt;=2.0.0)(!(version&gt;=3.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="org.slf4j"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=reactor.core.publisher)(version&gt;=3.7.0)(!(version&gt;=4.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="reactor.core.publisher"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=reactor.util.annotation)(version&gt;=3.7.0)(!(version&gt;=4.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="reactor.util.annotation"/>
     </requirement>
     <requirement namespace="osgi.ee">
       <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=17))"/>
@@ -705,310 +1009,6 @@
     <requirement namespace="osgi.service">
       <directive name="filter" value="(objectClass=io.modelcontextprotocol.json.McpJsonDefaults)"/>
       <directive name="effective" value="active"/>
-    </requirement>
-  </resource>
-  <resource>
-    <capability namespace="osgi.identity">
-      <attribute name="license" value="&quot;MIT License&quot;;link=&quot;http://www.opensource.org/licenses/mit-license.php&quot;"/>
-      <attribute name="osgi.identity" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="documentation" value="https://github.com/spring-ai-community/mcp-annotations"/>
-      <attribute name="description" value="This module enables developers to easily create and register methods for handling MCP operations using simple annotations"/>
-      <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="-674549847,-1758820682" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.adapter"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="-636706890,1137809480,-1759872725,-1512561855" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.annotation"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="-1995691396,-12539693,885849007,-1162807163,-1736545633,-414172729,-950823822,2019684222,1977661912,-1271880374,245840808,-1296494738,-1732491391,-1736327630,576018285,-1201900892,583825787" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.context"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="-929729405,1392392921,1895597947,1806746947,1144850228,1837885513,1625361118,1248233731,-1926883870,-935458620,114628506,1974703775,881894312,292242530,374076511,1855694517,-43974598" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.changed.prompt"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="-1608563463,-5365600,649335808,1895597947,-1502753894,1797399405,1926983737,-1440682100" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.changed.resource"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="-1608563463,-47193526,289538710,1895597947,-1989395536,-348503785,-251448177,1706459510" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.changed.tool"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="-1608563463,314655316,380141644,1895597947,-1061202330,1482557089,993760965,1586450048" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.complete"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="-1608563463,1614379803,-1636465161,1895597947,355727645,664666379,-1084238434,-200563286" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.elicitation"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="-1608563463,1939444927,732384023,847906934,1895597947,-2004795855,-1692395563,-1900902896" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.logging"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="-1608563463,-24793261,-2072901011,2111625312,1895597947,69573255,1835495231,1824238054" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.progress"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="-1608563463,-2078317657,-785753109,1895597947,1206439697,1929506522,-233526382,1959408603" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.prompt"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="-1608563463,1735306466,1895597947,-1520717432,2095242486,1445378633,-144761515" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.resource"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="-1608563463,1278737203,-1450967028,1895597947,541225778,850164512,-368297434,1068661701,-898740301,-15065153" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.sampling"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="-1608563463,-1720522067,57072677,1895597947,2049265483,-814252192,609299404,-784350111" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.tool"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="-1616997378,-1635583978,-1450783429,957673020,-643031766,802646296,-964514029,987575101,413854025" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.method.tool.utils"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="1693941305,73079920,67115090,917115616,-2029030736,1078812459,-695340542,-1895049979,450367616,-656591085,720151011,2599333,-1449619846,-2046726991,-97435750,-1952931001,-1911066614,-1926269803,-1823107262" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.changed.prompt"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="879033413,982926372" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.changed.resource"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="312915163,1369800954" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.changed.tool"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="-1573285871,1032405936" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.complete"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="-2001713144,360864374,1175968073,464757333" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.elicitation"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="-1135875044,-208910533" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.logging"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="1881784562,-320859432,-925203567" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.progress"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="-1050041092,2127640125" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.prompt"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="-579244877,115950241,577133108,-1573325248" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.resource"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="911554013,-1020835765,-205732066,-916942806" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.sampling"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="2050054326,932768247" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp-annotations"/>
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.tool"/>
-      <attribute name="version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="bnd.hashes" value="2097427905,289095783,48478677,-1948804568,1803143476" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.bundle">
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.bundle" value="org.springaicommunity.mcp-annotations"/>
-    </capability>
-    <capability namespace="osgi.wiring.host">
-      <attribute name="bundle-version" value="0.7.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.host" value="org.springaicommunity.mcp-annotations"/>
-    </capability>
-    <capability namespace="osgi.content">
-      <attribute name="size" value="381391" type="Long"/>
-      <attribute name="mime" value="application/vnd.osgi.bundle"/>
-      <attribute name="url" value="org.springaicommunity.mcp-annotations/org.springaicommunity.mcp-annotations-0.7.1.jar"/>
-      <attribute name="osgi.content" value="8BE8C693D7347B5F81132121BAA613FB61988A7A86D85677AB3CC7B2E4FD4330"/>
-    </capability>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.annotation)(version&gt;=2.19.0)(!(version&gt;=3.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.annotation"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.core)(version&gt;=2.17.0)(!(version&gt;=3.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.core"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.core.type)(version&gt;=2.17.0)(!(version&gt;=3.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.core.type"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.databind)(version&gt;=2.17.0)(!(version&gt;=3.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.databind.cfg)(version&gt;=2.17.0)(!(version&gt;=3.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind.cfg"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.databind.json)(version&gt;=2.17.0)(!(version&gt;=3.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind.json"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.databind.node)(version&gt;=2.17.0)(!(version&gt;=3.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind.node"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.databind.type)(version&gt;=2.17.0)(!(version&gt;=3.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind.type"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.datatype.jsr310)(version&gt;=2.19.0)(!(version&gt;=3.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.datatype.jsr310"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=com.github.victools.jsonschema.generator)"/>
-      <attribute name="osgi.wiring.package" value="com.github.victools.jsonschema.generator"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=com.github.victools.jsonschema.module.jackson)"/>
-      <attribute name="osgi.wiring.package" value="com.github.victools.jsonschema.module.jackson"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=com.github.victools.jsonschema.module.swagger2)"/>
-      <attribute name="osgi.wiring.package" value="com.github.victools.jsonschema.module.swagger2"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=io.modelcontextprotocol.common)(version&gt;=0.17.0)(!(version&gt;=1.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="io.modelcontextprotocol.common"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=io.modelcontextprotocol.json)(version&gt;=0.17.0)(!(version&gt;=1.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="io.modelcontextprotocol.json"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=io.modelcontextprotocol.server)(version&gt;=0.17.0)(!(version&gt;=1.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="io.modelcontextprotocol.server"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=io.modelcontextprotocol.spec)(version&gt;=0.17.0)(!(version&gt;=1.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="io.modelcontextprotocol.spec"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=io.modelcontextprotocol.util)(version&gt;=0.17.0)(!(version&gt;=1.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="io.modelcontextprotocol.util"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=io.swagger.v3.oas.annotations.media)(version&gt;=2.2.0)(!(version&gt;=3.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="io.swagger.v3.oas.annotations.media"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=org.reactivestreams)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="org.reactivestreams"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=org.slf4j)(version&gt;=2.0.0)(!(version&gt;=3.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="org.slf4j"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=reactor.core.publisher)(version&gt;=3.7.0)(!(version&gt;=4.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="reactor.core.publisher"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=reactor.util.annotation)(version&gt;=3.7.0)(!(version&gt;=4.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="reactor.util.annotation"/>
-    </requirement>
-    <requirement namespace="osgi.ee">
-      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=17))"/>
     </requirement>
   </resource>
   <resource>

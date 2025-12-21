@@ -15,7 +15,6 @@ import org.springaicommunity.mcp.method.tool.ReturnMode;
 import org.springaicommunity.mcp.method.tool.SyncMcpToolMethodCallback;
 import org.springaicommunity.mcp.method.tool.utils.ClassUtils;
 import org.springaicommunity.mcp.method.tool.utils.JsonSchemaGenerator;
-import org.springaicommunity.mcp.provider.tool.AbstractMcpToolProvider;
 
 import io.modelcontextprotocol.server.McpServerFeatures.SyncToolSpecification;
 import io.modelcontextprotocol.server.McpServerFeatures.SyncToolSpecification.Builder;
@@ -28,7 +27,7 @@ import io.modelcontextprotocol.spec.McpSchema.Tool;
 import io.modelcontextprotocol.util.Assert;
 import io.modelcontextprotocol.util.Utils;
 
-public class SyncMcpToolGroupProvider extends AbstractMcpToolProvider {
+public class SyncMcpToolGroupProvider extends AbstractMcpToolGroupProvider {
 
 	private static final Logger logger = LoggerFactory.getLogger(SyncMcpToolGroupProvider.class);
 
@@ -106,7 +105,7 @@ public class SyncMcpToolGroupProvider extends AbstractMcpToolProvider {
 		if (this.toolSpecifications == null) {
 			List<SyncToolSpecification> toolSpecs = this.toolObjects.stream().map(toolObject -> {
 				return Stream.of(doGetClasses(toolObject)).map(toolClass -> {
-					Group toolGroup = doGetToolGroup(toolClass);
+					Group staticToolGroup = doGetToolGroup(toolClass);
 					return Stream.of(doGetMethods(toolClass))
 							.filter(method -> method.isAnnotationPresent(McpTool.class))
 							.filter(McpPredicates.filterReactiveReturnTypeMethod())
@@ -117,8 +116,7 @@ public class SyncMcpToolGroupProvider extends AbstractMcpToolProvider {
 								String toolName = Utils.hasText(toolJavaAnnotation.name()) ? toolJavaAnnotation.name()
 										: mcpToolMethod.getName();
 								// Add on group fully qualified name to toolName
-								toolName = (toolGroup == null) ? toolName
-										: toolGroup.getFullyQualifiedName(".") + "." + toolName;
+								toolName = doQualifyToolName(toolName, staticToolGroup);
 
 								String toolDescription = toolJavaAnnotation.description();
 
@@ -167,8 +165,7 @@ public class SyncMcpToolGroupProvider extends AbstractMcpToolProvider {
 											JsonSchemaGenerator.generateFromType(mcpToolMethod.getGenericReturnType()));
 								}
 
-								// ToolGroup handling
-								toolBuilder.groups(List.of(toolGroup));
+								doAddToolGroups(toolBuilder, staticToolGroup);
 
 								var tool = toolBuilder.build();
 
