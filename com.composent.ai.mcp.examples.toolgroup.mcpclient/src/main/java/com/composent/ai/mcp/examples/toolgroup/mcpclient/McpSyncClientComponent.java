@@ -3,7 +3,7 @@ package com.composent.ai.mcp.examples.toolgroup.mcpclient;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
 
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
@@ -14,13 +14,14 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.composent.ai.mcp.common.McpEntityToNodeConverter;
 import com.composent.ai.mcp.transport.uds.UDSMcpClientTransportConfig;
 
 import io.modelcontextprotocol.client.McpClient;
 import io.modelcontextprotocol.client.McpSyncClient;
-import io.modelcontextprotocol.common.GroupNode;
-import io.modelcontextprotocol.common.ToolNode;
+import io.modelcontextprotocol.mcptools.common.BaseLeafNode;
+import io.modelcontextprotocol.mcptools.common.GroupNode;
+import io.modelcontextprotocol.mcptools.common.ToolNode;
+import io.modelcontextprotocol.mcptools.common.ToolNodeConverter;
 import io.modelcontextprotocol.spec.McpClientTransport;
 import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
 import io.modelcontextprotocol.spec.McpSchema.ClientCapabilities;
@@ -54,8 +55,18 @@ public class McpSyncClientComponent {
 		}
 	}
 
-	@Reference
-	McpEntityToNodeConverter converter;
+	ToolNodeConverter<Tool> toolNodeConverter = new org.springaicommunity.mcp.provider.SpringNodeConverter();
+
+	protected GroupNode findRootParent(GroupNode gn) {
+		GroupNode parent = gn.getParent();
+		return parent == null ? gn : findRootParent(gn);
+	}
+
+	protected <T extends BaseLeafNode> List<GroupNode> findRoots(T leafNode) {
+		return leafNode.getParentGroups().stream().map(gn -> {
+			return findRootParent(gn);
+		}).filter(Objects::nonNull).distinct().toList();
+	}
 
 	@Activate
 	void activate() throws Exception {
@@ -78,13 +89,16 @@ public class McpSyncClientComponent {
 				logger.debug("   group description: " + g.description());
 			});
 		});
-		
+
 		// NEW: Convert from Tools to ToolNodes
-		List<ToolNode> toolNodes = converter.convertToolToNode(tools);
-		// Convert to set of roots.  Will be empty if no root nodes
-		Set<GroupNode> topNodes = converter.convertLeafsToRoots(toolNodes);
+		List<ToolNode> toolNodes = toolNodeConverter.convertToToolNodes(tools);
+		// Convert to set of roots. Will be empty if no root nodes
+		List<GroupNode> roots = toolNodes.stream().map(tn -> {
+			return findRoots(tn);
+		}).flatMap(List::stream).distinct().toList();
+
 		// Show trees
-		topNodes.forEach(gn -> {
+		roots.forEach(gn -> {
 			logger.debug("Tree=" + gn);
 		});
 

@@ -2,12 +2,14 @@
 	org.osgi.service.component.annotations,\
 	io.modelcontextprotocol.sdk.mcp-core,\
 	slf4j.api,\
-	com.composent.ai.mcp.toolgroup,\
 	com.composent.ai.mcp.transport.uds,\
 	com.composent.ai.mcp.examples.toolgroup.api;version=snapshot,\
 	io.projectreactor.reactor-core,\
 	org.springaicommunity.mcp-annotations,\
-	org.osgi.service.component
+	org.osgi.service.component,\
+	org.springaicommunity.mcp.provider.toolgroup,\
+	io.modelcontextprotocol.mcptools.toolgroup,\
+	io.modelcontextprotocol.mcptools.common
 	
 Bundle-Version:             1.2.0.${tstamp}
 	

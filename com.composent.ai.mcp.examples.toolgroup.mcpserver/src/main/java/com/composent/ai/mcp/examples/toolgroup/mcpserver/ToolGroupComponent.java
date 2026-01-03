@@ -1,20 +1,13 @@
 package com.composent.ai.mcp.examples.toolgroup.mcpserver;
 
-import java.util.List;
-
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.composent.ai.mcp.examples.toolgroup.api.ExampleToolGroup;
-import com.composent.ai.mcp.toolgroup.server.AsyncMcpToolGroupServer;
-import com.composent.ai.mcp.toolgroup.server.SyncMcpToolGroupServer;
 
-import io.modelcontextprotocol.server.McpServerFeatures.AsyncToolSpecification;
-import io.modelcontextprotocol.server.McpServerFeatures.SyncToolSpecification;
 import reactor.core.publisher.Mono;
 
 @Component(immediate = true)
@@ -25,35 +18,18 @@ public class ToolGroupComponent implements ExampleToolGroup {
 	// This reference will wait for the SyncToolGroupServerComponent
 	// to be activated
 	@Reference
-	private SyncMcpToolGroupServer syncServer;
+	private SyncToolGroupServerComponent syncServer;
 	// This reference will wait for the AsyncToolGroupServerComponent
 	// to be activated
 	@Reference
-	private AsyncMcpToolGroupServer asyncServer;
-
-	// Instance created in activate
-	private List<SyncToolSpecification> syncSpecifications;
-
-	private List<AsyncToolSpecification> asyncSpecifications;
+	private AsyncToolgroupServerComponent asyncServer;
 
 	@Activate
 	void activate() {
 		// Add to syncServer
-		syncSpecifications = syncServer.addToolGroups(this, ExampleToolGroup.class);
+		syncServer.addToolGroups(this, ExampleToolGroup.class);
 		// Add to asyncServer
-		asyncSpecifications = asyncServer.addToolGroups(this, ExampleToolGroup.class);
-	}
-
-	@Deactivate
-	void deactivate() {
-		if (syncSpecifications != null) {
-			this.syncServer.removeTools(syncSpecifications);
-			syncSpecifications = null;
-		}
-		if (asyncSpecifications != null) {
-			this.asyncServer.removeTools(asyncSpecifications);
-			asyncSpecifications = null;
-		}
+		asyncServer.addToolGroups(this, ExampleToolGroup.class);
 	}
 
 	@Override

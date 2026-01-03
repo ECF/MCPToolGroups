@@ -6,4 +6,5 @@
 	io.modelcontextprotocol.sdk.mcp-core,\
 	org.osgi.service.component,\
 	org.osgi.annotation.bundle,\
-	com.composent.ai.mcp.common;version=snapshot
+	io.modelcontextprotocol.mcptools.common,\
+	org.springaicommunity.mcp.provider.toolgroup
