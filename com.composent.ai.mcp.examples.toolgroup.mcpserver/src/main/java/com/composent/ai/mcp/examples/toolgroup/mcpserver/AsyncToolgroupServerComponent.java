@@ -15,8 +15,10 @@ import org.springaicommunity.mcp.provider.toolgroup.server.AsyncToolGroupServer;
 
 import com.composent.ai.mcp.transport.uds.UDSMcpServerTransportConfig;
 
+import io.modelcontextprotocol.mcptools.toolgroup.server.ToolGroupServer;
 import io.modelcontextprotocol.server.McpAsyncServer;
 import io.modelcontextprotocol.server.McpServer;
+import io.modelcontextprotocol.server.McpServerFeatures.AsyncToolSpecification;
 import io.modelcontextprotocol.spec.McpSchema.ServerCapabilities;
 import io.modelcontextprotocol.spec.McpServerTransportProvider;
 
@@ -29,7 +31,7 @@ public class AsyncToolgroupServerComponent {
 	private final Path socketPath = Paths.get("").resolve("s.socket").toAbsolutePath();
 
 	private ComponentInstance<McpServerTransportProvider> transport;
-	private AsyncToolGroupServer toolGroupServer;
+	private ToolGroupServer<AsyncToolSpecification> toolGroupServer;
 
 	@Activate
 	public AsyncToolgroupServerComponent(
