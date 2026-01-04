@@ -1,5 +1,6 @@
 package com.composent.ai.mcp.examples.toolgroup.mcpserver;
 
+import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -15,6 +16,7 @@ import org.springaicommunity.mcp.provider.toolgroup.server.AsyncToolGroupServer;
 
 import com.composent.ai.mcp.transport.uds.UDSMcpServerTransportConfig;
 
+import io.modelcontextprotocol.mcptools.common.ToolNode;
 import io.modelcontextprotocol.mcptools.toolgroup.server.ToolGroupServer;
 import io.modelcontextprotocol.server.McpAsyncServer;
 import io.modelcontextprotocol.server.McpServer;
@@ -54,4 +56,10 @@ public class AsyncToolgroupServerComponent {
 	public void addToolGroups(Object inst, Class<?> clazz) {
 		this.toolGroupServer.addToolGroup(inst, clazz);
 	}
+	
+	public void addToolNode(ToolNode toolNode, Method toolMethod, Object instance) {
+		this.toolGroupServer.addToolNode(null, toolMethod, instance);
+	}
+
+
 }
