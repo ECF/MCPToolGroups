@@ -3,6 +3,7 @@ package com.composent.ai.mcp.examples.toolgroup.mcpserver;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Hashtable;
 
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
@@ -12,15 +13,11 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springaicommunity.mcp.provider.toolgroup.server.SyncToolGroupServer;
 
 import com.composent.ai.mcp.transport.uds.UDSMcpServerTransportConfig;
 
 import io.modelcontextprotocol.mcptools.common.ToolNode;
-import io.modelcontextprotocol.mcptools.toolgroup.server.ToolGroupServer;
-import io.modelcontextprotocol.server.McpServer;
-import io.modelcontextprotocol.server.McpSyncServer;
-import io.modelcontextprotocol.spec.McpSchema.ServerCapabilities;
+import io.modelcontextprotocol.mcptools.toolgroup.server.SyncToolGroupServer;
 import io.modelcontextprotocol.spec.McpServerTransportProvider;
 
 @Component(immediate = true, service = { SyncToolGroupServerComponent.class })
@@ -31,34 +28,35 @@ public class SyncToolGroupServerComponent {
 	private final Path socketPath = Paths.get("").resolve("s.socket").toAbsolutePath();
 
 	private final ComponentInstance<McpServerTransportProvider> transport;
-	private final ToolGroupServer toolGroupServer;
+	private final ComponentInstance<SyncToolGroupServer> toolGroupServer;
 
 	@Activate
 	public SyncToolGroupServerComponent(
-			@Reference(target = "(component.factory=UDSMcpServerTransportFactory)") ComponentFactory<McpServerTransportProvider> transportFactory) {
+			@Reference(target = "(component.factory=UDSMcpServerTransportFactory)") ComponentFactory<McpServerTransportProvider> transportFactory,
+			@Reference(target = "(component.factory=SpringSyncToolGroupServer)") ComponentFactory<SyncToolGroupServer> serverFactory) {
 		// Create transport
 		this.transport = new UDSMcpServerTransportConfig(socketPath).newInstanceFromFactory(transportFactory);
 		// Create sync server
-		McpSyncServer server = McpServer.sync(transport.getInstance())
-				.serverInfo("example-sync-uds-transport-server", "1.0.0")
-				.capabilities(ServerCapabilities.builder().tools(true).build()).build();
-		// Create toolGroupServer given McpSyncServer
-		this.toolGroupServer = new SyncToolGroupServer(server);
+		Hashtable<String, Object> props = new Hashtable<String, Object>();
+		props.put(SyncToolGroupServer.SERVER_NAME_PROP, "Scott's famous Sync Server");
+		props.put(SyncToolGroupServer.SERVER_VERSION_PROP, "1.0.1");
+		props.put(SyncToolGroupServer.SERVER_TRANSPORT_PROP, this.transport.getInstance());
+		this.toolGroupServer = serverFactory.newInstance(props);
 		logger.debug("sync toolgroup remote server activated");
 	}
 
 	@Deactivate
 	void deactivate() throws Exception {
-		this.toolGroupServer.close();
+		this.toolGroupServer.dispose();
 		this.transport.dispose();
 	}
 
 	public void addToolGroups(Object inst, Class<?> clazz) {
-		this.toolGroupServer.addToolGroup(inst, clazz);
+		this.toolGroupServer.getInstance().addToolGroup(inst, clazz);
 	}
 	
 	public void addToolNode(ToolNode toolNode, Method toolMethod, Object instance) {
-		this.toolGroupServer.addToolNode(null, toolMethod, instance);
+		this.toolGroupServer.getInstance().addToolNode(toolNode, toolMethod, instance);
 	}
 
 }

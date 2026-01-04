@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="Local" increment="1767501936160">
+<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="Local" increment="1767566647566">
   <resource>
     <capability namespace="osgi.identity">
       <attribute name="license" value="https://www.apache.org/licenses/LICENSE-2.0.txt"/>
@@ -79,12 +79,12 @@
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="org.springaicommunity.mcp.provider.toolgroup"/>
       <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" value="1.0.0.202601040130" type="Version"/>
+      <attribute name="version" value="1.0.0.202601042242" type="Version"/>
     </capability>
     <capability namespace="osgi.wiring.package">
       <directive name="uses" value="io.modelcontextprotocol.mcptools.common,io.modelcontextprotocol.mcptools.json,io.modelcontextprotocol.mcptools.toolgroup,io.modelcontextprotocol.spec"/>
       <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp.provider.toolgroup"/>
-      <attribute name="bundle-version" value="1.0.0.202601040130" type="Version"/>
+      <attribute name="bundle-version" value="1.0.0.202601042242" type="Version"/>
       <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider"/>
       <attribute name="version" value="2.0.0" type="Version"/>
       <attribute name="bnd.hashes" value="1535518421,999489461,21112903,-1826949492,-1969288048,1500487501,-971931613,1887997017,1820649170,-1981214575,63574620,2592443,-1954048316,-1330952168,-1923478059" type="List&lt;Long&gt;"/>
@@ -92,7 +92,7 @@
     <capability namespace="osgi.wiring.package">
       <directive name="uses" value="io.modelcontextprotocol.mcptools.common,io.modelcontextprotocol.mcptools.toolgroup,io.modelcontextprotocol.server,io.modelcontextprotocol.spec,org.springaicommunity.mcp.method.tool,reactor.core.publisher"/>
       <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp.provider.toolgroup"/>
-      <attribute name="bundle-version" value="1.0.0.202601040130" type="Version"/>
+      <attribute name="bundle-version" value="1.0.0.202601042242" type="Version"/>
       <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.toolgroup"/>
       <attribute name="version" value="2.0.0" type="Version"/>
       <attribute name="bnd.hashes" value="-1200856663,-1533722660,-377344675,-1923478059" type="List&lt;Long&gt;"/>
@@ -100,24 +100,40 @@
     <capability namespace="osgi.wiring.package">
       <directive name="uses" value="io.modelcontextprotocol.mcptools.common,io.modelcontextprotocol.mcptools.toolgroup,io.modelcontextprotocol.mcptools.toolgroup.server,io.modelcontextprotocol.server,io.modelcontextprotocol.spec,reactor.core.publisher"/>
       <attribute name="bundle-symbolic-name" value="org.springaicommunity.mcp.provider.toolgroup"/>
-      <attribute name="bundle-version" value="1.0.0.202601040130" type="Version"/>
+      <attribute name="bundle-version" value="1.0.0.202601042242" type="Version"/>
       <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.toolgroup.server"/>
       <attribute name="version" value="2.0.0" type="Version"/>
-      <attribute name="bnd.hashes" value="-190965509,-1514215442,542851503,-1923478059" type="List&lt;Long&gt;"/>
+      <attribute name="bnd.hashes" value="-190965509,-1704919653,259605090,-1923478059" type="List&lt;Long&gt;"/>
     </capability>
     <capability namespace="osgi.wiring.bundle">
-      <attribute name="bundle-version" value="1.0.0.202601040130" type="Version"/>
+      <attribute name="bundle-version" value="1.0.0.202601042242" type="Version"/>
       <attribute name="osgi.wiring.bundle" value="org.springaicommunity.mcp.provider.toolgroup"/>
     </capability>
     <capability namespace="osgi.wiring.host">
-      <attribute name="bundle-version" value="1.0.0.202601040130" type="Version"/>
+      <attribute name="bundle-version" value="1.0.0.202601042242" type="Version"/>
       <attribute name="osgi.wiring.host" value="org.springaicommunity.mcp.provider.toolgroup"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="size" value="48406" type="Long"/>
+      <attribute name="size" value="51547" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
       <attribute name="url" value="org.springaicommunity.mcp.provider.toolgroup/org.springaicommunity.mcp.provider.toolgroup-1.0.0.jar"/>
-      <attribute name="osgi.content" value="EA1559DFE7C7A273C868D3A187A407A4F79ED45B928C2F923D767C6025731815"/>
+      <attribute name="osgi.content" value="6976841F33CE161C44209DC1B57AFF4439FD498804EB7DBB751F3AE0C27451F0"/>
+    </capability>
+    <capability namespace="osgi.service">
+      <directive name="uses" value="io.modelcontextprotocol.mcptools.toolgroup.server"/>
+      <attribute name="objectClass" value="io.modelcontextprotocol.mcptools.toolgroup.server.AsyncToolGroupServer" type="List&lt;String&gt;"/>
+    </capability>
+    <capability namespace="osgi.service">
+      <directive name="uses" value="io.modelcontextprotocol.mcptools.toolgroup.server"/>
+      <attribute name="objectClass" value="io.modelcontextprotocol.mcptools.toolgroup.server.SyncToolGroupServer" type="List&lt;String&gt;"/>
+    </capability>
+    <capability namespace="osgi.service">
+      <attribute name="objectClass" value="org.osgi.service.component.ComponentFactory" type="List&lt;String&gt;"/>
+      <attribute name="component.factory" value="SpringAsyncToolGroupServer"/>
+    </capability>
+    <capability namespace="osgi.service">
+      <attribute name="objectClass" value="org.osgi.service.component.ComponentFactory" type="List&lt;String&gt;"/>
+      <attribute name="component.factory" value="SpringSyncToolGroupServer"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=io.modelcontextprotocol.json)(version&gt;=0.18.0)(!(version&gt;=1.0.0)))"/>
@@ -200,11 +216,18 @@
       <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.toolgroup"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=org.springaicommunity.mcp.provider.toolgroup.server)(version&gt;=2.0.0)(!(version&gt;=3.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="org.springaicommunity.mcp.provider.toolgroup.server"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=reactor.core.publisher)(version&gt;=3.7.0)(!(version&gt;=4.0.0)))"/>
       <attribute name="osgi.wiring.package" value="reactor.core.publisher"/>
     </requirement>
     <requirement namespace="osgi.ee">
       <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=17))"/>
+    </requirement>
+    <requirement namespace="osgi.extender">
+      <directive name="filter" value="(&amp;(osgi.extender=osgi.component)(version&gt;=1.5.0)(!(version&gt;=2.0.0)))"/>
     </requirement>
   </resource>
   <resource>
@@ -1327,12 +1350,12 @@
     <capability namespace="osgi.identity">
       <attribute name="osgi.identity" value="io.modelcontextprotocol.mcptools.toolgroup"/>
       <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" value="1.0.0.202601040442" type="Version"/>
+      <attribute name="version" value="1.0.0.202601042144" type="Version"/>
     </capability>
     <capability namespace="osgi.wiring.package">
       <directive name="uses" value="io.modelcontextprotocol.mcptools.annotation,io.modelcontextprotocol.mcptools.common,io.modelcontextprotocol.mcptools.json"/>
       <attribute name="bundle-symbolic-name" value="io.modelcontextprotocol.mcptools.toolgroup"/>
-      <attribute name="bundle-version" value="1.0.0.202601040442" type="Version"/>
+      <attribute name="bundle-version" value="1.0.0.202601042144" type="Version"/>
       <attribute name="osgi.wiring.package" value="io.modelcontextprotocol.mcptools.toolgroup"/>
       <attribute name="version" value="2.0.0" type="Version"/>
       <attribute name="bnd.hashes" value="788086735,1106658998,1345381421,1726222632,-337185071,-187969864,610882539,-1048010935,-1923478059" type="List&lt;Long&gt;"/>
@@ -1340,24 +1363,24 @@
     <capability namespace="osgi.wiring.package">
       <directive name="uses" value="io.modelcontextprotocol.mcptools.common,io.modelcontextprotocol.mcptools.toolgroup"/>
       <attribute name="bundle-symbolic-name" value="io.modelcontextprotocol.mcptools.toolgroup"/>
-      <attribute name="bundle-version" value="1.0.0.202601040442" type="Version"/>
+      <attribute name="bundle-version" value="1.0.0.202601042144" type="Version"/>
       <attribute name="osgi.wiring.package" value="io.modelcontextprotocol.mcptools.toolgroup.server"/>
       <attribute name="version" value="2.0.0" type="Version"/>
-      <attribute name="bnd.hashes" value="294116680,-1530692150,-1923478059" type="List&lt;Long&gt;"/>
+      <attribute name="bnd.hashes" value="294116680,-1514215442,542851503,-1530692150,-1923478059" type="List&lt;Long&gt;"/>
     </capability>
     <capability namespace="osgi.wiring.bundle">
-      <attribute name="bundle-version" value="1.0.0.202601040442" type="Version"/>
+      <attribute name="bundle-version" value="1.0.0.202601042144" type="Version"/>
       <attribute name="osgi.wiring.bundle" value="io.modelcontextprotocol.mcptools.toolgroup"/>
     </capability>
     <capability namespace="osgi.wiring.host">
-      <attribute name="bundle-version" value="1.0.0.202601040442" type="Version"/>
+      <attribute name="bundle-version" value="1.0.0.202601042144" type="Version"/>
       <attribute name="osgi.wiring.host" value="io.modelcontextprotocol.mcptools.toolgroup"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="size" value="30029" type="Long"/>
+      <attribute name="size" value="31960" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
       <attribute name="url" value="io.modelcontextprotocol.mcptools.toolgroup/io.modelcontextprotocol.mcptools.toolgroup-1.0.0.jar"/>
-      <attribute name="osgi.content" value="B5BF34D7FA9398A80272D1A0D7849CD822AAFB175600A25EA927ED358BA9B674"/>
+      <attribute name="osgi.content" value="C615FC7A1CFE8458118B2F3101F01B0D36B9C3122A4789A70D002D0A7204AD36"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
       <directive name="filter" value="(&amp;(osgi.wiring.package=io.modelcontextprotocol.mcptools.annotation)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))"/>
