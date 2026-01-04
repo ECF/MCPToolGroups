@@ -17,7 +17,6 @@ import com.composent.ai.mcp.transport.uds.UDSMcpServerTransportConfig;
 
 import io.modelcontextprotocol.mcptools.toolgroup.server.ToolGroupServer;
 import io.modelcontextprotocol.server.McpServer;
-import io.modelcontextprotocol.server.McpServerFeatures.SyncToolSpecification;
 import io.modelcontextprotocol.server.McpSyncServer;
 import io.modelcontextprotocol.spec.McpSchema.ServerCapabilities;
 import io.modelcontextprotocol.spec.McpServerTransportProvider;
@@ -30,7 +29,7 @@ public class SyncToolGroupServerComponent {
 	private final Path socketPath = Paths.get("").resolve("s.socket").toAbsolutePath();
 
 	private final ComponentInstance<McpServerTransportProvider> transport;
-	private final ToolGroupServer<SyncToolSpecification> toolGroupServer;
+	private final ToolGroupServer toolGroupServer;
 
 	@Activate
 	public SyncToolGroupServerComponent(
