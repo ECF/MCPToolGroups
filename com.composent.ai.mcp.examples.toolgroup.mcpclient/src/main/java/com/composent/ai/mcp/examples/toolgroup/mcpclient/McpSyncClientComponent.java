@@ -3,7 +3,6 @@ package com.composent.ai.mcp.examples.toolgroup.mcpclient;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
@@ -18,7 +17,6 @@ import com.composent.ai.mcp.transport.uds.UDSMcpClientTransportConfig;
 
 import io.modelcontextprotocol.client.McpClient;
 import io.modelcontextprotocol.client.McpSyncClient;
-import io.modelcontextprotocol.mcptools.common.BaseLeafNode;
 import io.modelcontextprotocol.mcptools.common.GroupNode;
 import io.modelcontextprotocol.mcptools.common.ToolNode;
 import io.modelcontextprotocol.mcptools.common.ToolNodeConverter;
@@ -43,6 +41,7 @@ public class McpSyncClientComponent {
 
 	private ComponentInstance<McpClientTransport> transportComponent;
 	private McpSyncClient client;
+	private ToolNodeConverter<Tool> toolNodeConverter = new org.springaicommunity.mcp.provider.SpringNodeConverter();
 
 	@Reference(target = "(component.factory=UDSMcpClientTransportFactory)")
 	void setTransportComponentFactory(ComponentFactory<McpClientTransport> factory) {
@@ -53,19 +52,6 @@ public class McpSyncClientComponent {
 		if (content instanceof TextContent) {
 			logger.debug(op + " result=" + ((TextContent) content).text());
 		}
-	}
-
-	ToolNodeConverter<Tool> toolNodeConverter = new org.springaicommunity.mcp.provider.SpringNodeConverter();
-
-	protected GroupNode findRootParent(GroupNode gn) {
-		GroupNode parent = gn.getParent();
-		return parent == null ? gn : findRootParent(gn);
-	}
-
-	protected <T extends BaseLeafNode> List<GroupNode> findRoots(T leafNode) {
-		return leafNode.getParentGroups().stream().map(gn -> {
-			return findRootParent(gn);
-		}).filter(Objects::nonNull).distinct().toList();
 	}
 
 	@Activate
@@ -94,7 +80,7 @@ public class McpSyncClientComponent {
 		List<ToolNode> toolNodes = toolNodeConverter.convertToToolNodes(tools);
 		// Convert to set of roots. Will be empty if no root nodes
 		List<GroupNode> roots = toolNodes.stream().map(tn -> {
-			return findRoots(tn);
+			return tn.getParentGroupRoots();
 		}).flatMap(List::stream).distinct().toList();
 
 		// Show trees
