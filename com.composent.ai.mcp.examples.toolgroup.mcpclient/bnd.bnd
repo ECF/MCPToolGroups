@@ -1,10 +1,8 @@
 -buildpath: \
 	org.osgi.service.component.annotations,\
-	com.composent.ai.mcp.transport.uds,\
 	slf4j.api,\
 	osgi.core,\
 	io.modelcontextprotocol.sdk.mcp-core,\
 	org.osgi.service.component,\
 	org.osgi.annotation.bundle,\
-	io.modelcontextprotocol.mcptools.common,\
-	org.springaicommunity.mcp.provider.toolgroup
+	org.openmcptools.common

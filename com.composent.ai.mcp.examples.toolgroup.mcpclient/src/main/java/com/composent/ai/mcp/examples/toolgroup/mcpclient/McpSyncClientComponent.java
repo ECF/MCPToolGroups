@@ -1,6 +1,7 @@
 package com.composent.ai.mcp.examples.toolgroup.mcpclient;
 
 import java.nio.file.Path;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -13,18 +14,12 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.composent.ai.mcp.transport.uds.UDSMcpClientTransportConfig;
-
 import io.modelcontextprotocol.client.McpClient;
 import io.modelcontextprotocol.client.McpSyncClient;
-import io.modelcontextprotocol.mcptools.common.GroupNode;
-import io.modelcontextprotocol.mcptools.common.ToolNode;
-import io.modelcontextprotocol.mcptools.common.ToolNodeConverter;
 import io.modelcontextprotocol.spec.McpClientTransport;
 import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
 import io.modelcontextprotocol.spec.McpSchema.ClientCapabilities;
 import io.modelcontextprotocol.spec.McpSchema.Content;
-import io.modelcontextprotocol.spec.McpSchema.Group;
 import io.modelcontextprotocol.spec.McpSchema.TextContent;
 import io.modelcontextprotocol.spec.McpSchema.Tool;
 
@@ -39,13 +34,15 @@ public class McpSyncClientComponent {
 			.resolve(System.getProperty("UNIXSOCKET_RELATIVEPATH")).resolve(System.getProperty("UNIXSOCKET_FILENAME"))
 			.toAbsolutePath();
 
-	private ComponentInstance<McpClientTransport> transportComponent;
+	private ComponentInstance<McpClientTransport> transport;
 	private McpSyncClient client;
-	private ToolNodeConverter<Tool> toolNodeConverter = new org.springaicommunity.mcp.provider.SpringNodeConverter();
 
 	@Reference(target = "(component.factory=UDSMcpClientTransportFactory)")
-	void setTransportComponentFactory(ComponentFactory<McpClientTransport> factory) {
-		this.transportComponent = new UDSMcpClientTransportConfig(socketPath).newInstanceFromFactory(factory);
+	void setTransportComponentFactory(ComponentFactory<McpClientTransport> transportFactory) {
+		// Create transport
+		Hashtable<String, Object> properties = new Hashtable<>();
+		properties.put("udsTargetSocketPath", socketPath);
+		this.transport = transportFactory.newInstance(properties);
 	}
 
 	void printTextContent(String op, Content content) {
@@ -57,8 +54,8 @@ public class McpSyncClientComponent {
 	@Activate
 	void activate() throws Exception {
 		// Create client with transport
-		client = McpClient.sync(this.transportComponent.getInstance())
-				.capabilities(ClientCapabilities.builder().build()).build();
+		client = McpClient.sync(this.transport.getInstance()).capabilities(ClientCapabilities.builder().build())
+				.build();
 		// initialize will connect to server
 		client.initialize();
 		logger.debug("uds sync client initialized");
@@ -68,24 +65,6 @@ public class McpSyncClientComponent {
 		// Show tools list on logger
 		tools.forEach(t -> {
 			logger.debug("uds sync client seeing tool=" + t.toString());
-			List<Group> groups = t.groups();
-			groups.forEach(g -> {
-				logger.debug("   group name: " + g.name());
-				logger.debug("   group parent: " + g.parent());
-				logger.debug("   group description: " + g.description());
-			});
-		});
-
-		// NEW: Convert from Tools to ToolNodes
-		List<ToolNode> toolNodes = toolNodeConverter.convertToToolNodes(tools);
-		// Convert to set of roots. Will be empty if no root nodes
-		List<GroupNode> roots = toolNodes.stream().map(tn -> {
-			return tn.getParentGroupRoots();
-		}).flatMap(List::stream).distinct().toList();
-
-		// Show trees
-		roots.forEach(gn -> {
-			logger.debug("Tree=" + gn);
 		});
 
 		String x = "5.1";

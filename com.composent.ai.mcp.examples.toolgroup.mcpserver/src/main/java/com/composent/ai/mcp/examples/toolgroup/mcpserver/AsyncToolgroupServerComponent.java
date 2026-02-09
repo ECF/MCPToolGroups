@@ -5,6 +5,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Hashtable;
 
+import org.openmcptools.common.model.Tool;
+import org.openmcptools.common.server.toolgroup.AsyncToolGroupServer;
+import org.openmcptools.common.server.toolgroup.SyncToolGroupServer;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
 import org.osgi.service.component.annotations.Activate;
@@ -14,11 +17,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.composent.ai.mcp.transport.uds.UDSMcpServerTransportConfig;
 
-import io.modelcontextprotocol.mcptools.common.ToolNode;
-import io.modelcontextprotocol.mcptools.toolgroup.server.AsyncToolGroupServer;
-import io.modelcontextprotocol.mcptools.toolgroup.server.SyncToolGroupServer;
 import io.modelcontextprotocol.spec.McpServerTransportProvider;
 
 @Component(immediate = true, service = { AsyncToolgroupServerComponent.class })
@@ -34,10 +33,16 @@ public class AsyncToolgroupServerComponent {
 
 	@Activate
 	public AsyncToolgroupServerComponent(
-			@Reference(target = "(component.factory=UDSMcpServerTransportFactory)") ComponentFactory<McpServerTransportProvider> transportFactory,
+			@Reference(target = "(component.factory=UDSMcpServerTransportProviderFactory)") ComponentFactory<McpServerTransportProvider> transportFactory,
 			@Reference(target = "(component.factory=SpringAsyncToolGroupServer)") ComponentFactory<AsyncToolGroupServer> serverFactory) {
+		// Make sure that socketPath is deleted
+		if (socketPath.toFile().exists()) {
+			socketPath.toFile().delete();
+		}
 		// Create transport
-		this.transport = new UDSMcpServerTransportConfig(socketPath).newInstanceFromFactory(transportFactory);
+		Hashtable<String, Object> properties = new Hashtable<>();
+		properties.put("udsTargetSocketPath", socketPath);
+		this.transport = transportFactory.newInstance(properties);
 		// Create sync server
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put(SyncToolGroupServer.SERVER_NAME_PROP, "Scott's famous "
@@ -58,8 +63,8 @@ public class AsyncToolgroupServerComponent {
 		this.toolGroupServer.getInstance().addToolGroup(inst, clazz);
 	}
 	
-	public void addToolNode(ToolNode toolNode, Method toolMethod, Object instance) {
-		this.toolGroupServer.getInstance().addToolNode(toolNode, toolMethod, instance);
+	public void addToolNode(Tool toolNode, Method toolMethod, Object instance) {
+		this.toolGroupServer.getInstance().addTool(toolNode, toolMethod, instance);
 	}
 
 }

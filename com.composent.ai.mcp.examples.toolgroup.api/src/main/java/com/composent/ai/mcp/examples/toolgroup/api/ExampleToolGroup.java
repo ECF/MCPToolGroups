@@ -1,10 +1,11 @@
 package com.composent.ai.mcp.examples.toolgroup.api;
 
-import reactor.core.publisher.Mono;
-import io.modelcontextprotocol.mcptools.annotation.McpTool;
-import io.modelcontextprotocol.mcptools.annotation.McpToolGroup;
+import org.openmcptools.annotation.McpArg;
+import org.openmcptools.annotation.McpTool;
+import org.openmcptools.annotation.McpToolGroup;
 
-import io.modelcontextprotocol.mcptools.annotation.McpArg;
+import reactor.core.publisher.Mono;
+
 @McpToolGroup(description="Arithmetic operations exposed as mcp tools")
 public interface ExampleToolGroup {
 

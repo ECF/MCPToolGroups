@@ -9,7 +9,10 @@
 	bnd.identity;id='org.apache.felix.gogo.runtime',\
 	bnd.identity;id='org.apache.felix.gogo.shell',\
 	bnd.identity;id='io.modelcontextprotocol.sdk.mcp-json-jackson2',\
-	bnd.identity;id='io.modelcontextprotocol.sdk.mcp-core'
+	bnd.identity;id='io.modelcontextprotocol.sdk.mcp-core',\
+	bnd.identity;id='org.openmcptools.extensions.groups',\
+	bnd.identity;id='org.openmcptools.common.impl.spring',\
+	bnd.identity;id='org.openmcptools.transport.uds.spring'
 
 -runfw: org.apache.felix.framework;version='[7.0.5,7.0.5]'
 -runee: JavaSE-17
@@ -35,26 +38,27 @@
 	osgi.promise;version='[8.1.0,8.1.1)';startlevel=1013,\
 	org.osgi.service.component;version='[1.5.1,1.5.2)';startlevel=1014,\
 	org.apache.felix.scr;version='[2.2.6,2.2.7)';startlevel=1015,\
-	org.eclipse.ecf.ai.mcp.transports;version='[1.0.1,1.0.2)';startlevel=1016,\
-	com.composent.ai.mcp.transport.uds;version='[2.0.1,2.0.2)';startlevel=1017,\
-	io.modelcontextprotocol.sdk.mcp-json-jackson2;version='[0.18.0,0.18.1)';startlevel=1017,\
-	io.modelcontextprotocol.mcptools.common;version='[1.0.0,1.0.1)';startlevel=1018,\
-	io.modelcontextprotocol.mcptools.json;version='[1.0.0,1.0.1)';startlevel=1019,\
-	io.modelcontextprotocol.mcptools.annotation;version='[1.0.0,1.0.1)';startlevel=1020,\
-	io.modelcontextprotocol.mcptools.toolgroup;version='[1.0.0,1.0.1)';startlevel=1021,\
-	com.fasterxml.jackson.core.jackson-core;version='[2.19.2,2.19.3)';startlevel=1022,\
-	com.fasterxml.jackson.core.jackson-databind;version='[2.19.2,2.19.3)';startlevel=1023,\
-	com.fasterxml.jackson.datatype.jackson-datatype-jsr310;version='[2.19.2,2.19.3)';startlevel=1024,\
-	io.swagger.core.v3.swagger-annotations.jakarta;version='[2.2.34,2.2.35)';startlevel=1025,\
-	wrapped.com.github.victools.jsonschema-generator;version='[4.38.0,4.38.1)';startlevel=1026,\
-	wrapped.com.github.victools.jsonschema-module-jackson;version='[4.38.0,4.38.1)';startlevel=1027,\
-	wrapped.com.github.victools.jsonschema-module-swagger-2;version='[4.38.0,4.38.1)';startlevel=1028,\
-	org.springaicommunity.mcp-annotations;version='[0.8.0,0.8.1)';startlevel=1029,\
-	org.springaicommunity.mcp.provider.toolgroup;version='[1.0.0,1.0.1)';startlevel=1030,\
-	com.composent.ai.mcp.examples.toolgroup.mcpclient;version=snapshot;startlevel=1031,\
-	com.ethlo.time.itu;version='[1.14.0,1.14.1)';startlevel=1032,\
-	org.yaml.snakeyaml;version='[2.4.0,2.4.1)';startlevel=1033,\
-	com.fasterxml.jackson.dataformat.jackson-dataformat-yaml;version='[2.19.2,2.19.3)';startlevel=1034,\
-	com.networknt.json-schema-validator;version='[2.0.0,2.0.1)';startlevel=1035,\
-	org.apache.felix.gogo.command;version='[1.1.2,1.1.3)';startlevel=1037,\
-	org.apache.felix.gogo.shell;version='[1.1.4,1.1.5)';startlevel=1038
+	com.composent.ai.mcp.examples.toolgroup.mcpclient;version=snapshot;startlevel=1016,\
+	com.fasterxml.jackson.core.jackson-core;version='[2.19.2,2.19.3)';startlevel=1017,\
+	com.fasterxml.jackson.core.jackson-databind;version='[2.19.2,2.19.3)';startlevel=1018,\
+	com.ethlo.time.itu;version='[1.14.0,1.14.1)';startlevel=1019,\
+	org.yaml.snakeyaml;version='[2.4.0,2.4.1)';startlevel=1020,\
+	com.fasterxml.jackson.dataformat.jackson-dataformat-yaml;version='[2.19.2,2.19.3)';startlevel=1021,\
+	com.networknt.json-schema-validator;version='[2.0.0,2.0.1)';startlevel=1022,\
+	io.modelcontextprotocol.sdk.mcp-json-jackson2;version='[0.18.0,0.18.1)';startlevel=1023,\
+	org.apache.felix.gogo.command;version='[1.1.2,1.1.3)';startlevel=1024,\
+	org.apache.felix.gogo.shell;version='[1.1.4,1.1.5)';startlevel=1025,\
+	org.openmcptools.common;version='[1.0.0,1.0.1)';startlevel=1026,\
+	org.openmcptools.annotation;version='[1.0.0,1.0.1)';startlevel=1027,\
+	org.openmcptools.common.server;version='[1.0.0,1.0.1)';startlevel=1028,\
+	org.openmcptools.extensions.groups;version='[1.0.0,1.0.1)';startlevel=1029,\
+	com.fasterxml.jackson.datatype.jackson-datatype-jsr310;version='[2.19.2,2.19.3)';startlevel=1030,\
+	io.swagger.core.v3.swagger-annotations.jakarta;version='[2.2.34,2.2.35)';startlevel=1031,\
+	wrapped.com.github.victools.jsonschema-generator;version='[4.38.0,4.38.1)';startlevel=1032,\
+	wrapped.com.github.victools.jsonschema-module-jackson;version='[4.38.0,4.38.1)';startlevel=1033,\
+	wrapped.com.github.victools.jsonschema-module-swagger-2;version='[4.38.0,4.38.1)';startlevel=1034,\
+	org.springaicommunity.mcp-annotations;version='[0.8.0,0.8.1)';startlevel=1035,\
+	org.openmcptools.common.impl.spring;version='[1.0.0,1.0.1)';startlevel=1036,\
+	org.eclipse.ecf.ai.mcp.transports;version='[1.0.1,1.0.2)';startlevel=1037,\
+	org.openmcptools.transport;version='[1.0.0,1.0.1)';startlevel=1038,\
+	org.openmcptools.transport.uds.spring;version='[1.0.0,1.0.1)';startlevel=1039

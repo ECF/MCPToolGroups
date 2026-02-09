@@ -14,11 +14,9 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.composent.ai.mcp.transport.uds.UDSMcpServerTransportConfig;
-
-import io.modelcontextprotocol.mcptools.common.ToolNode;
-import io.modelcontextprotocol.mcptools.toolgroup.server.SyncToolGroupServer;
 import io.modelcontextprotocol.spec.McpServerTransportProvider;
+import org.openmcptools.common.server.toolgroup.SyncToolGroupServer;
+import org.openmcptools.common.model.Tool;
 
 @Component(immediate = true, service = { SyncToolGroupServerComponent.class })
 public class SyncToolGroupServerComponent {
@@ -32,10 +30,16 @@ public class SyncToolGroupServerComponent {
 
 	@Activate
 	public SyncToolGroupServerComponent(
-			@Reference(target = "(component.factory=UDSMcpServerTransportFactory)") ComponentFactory<McpServerTransportProvider> transportFactory,
+			@Reference(target = "(component.factory=UDSMcpServerTransportProviderFactory)") ComponentFactory<McpServerTransportProvider> transportFactory,
 			@Reference(target = "(component.factory=SpringSyncToolGroupServer)") ComponentFactory<SyncToolGroupServer> serverFactory) {
+		// Make sure that socketPath is deleted
+		if (socketPath.toFile().exists()) {
+			socketPath.toFile().delete();
+		}
 		// Create transport
-		this.transport = new UDSMcpServerTransportConfig(socketPath).newInstanceFromFactory(transportFactory);
+		Hashtable<String, Object> properties = new Hashtable<>();
+		properties.put("udsTargetSocketPath", socketPath);
+		this.transport = transportFactory.newInstance(properties);
 		// Create sync server
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put(SyncToolGroupServer.SERVER_NAME_PROP, "Scott's famous Sync Server");
@@ -55,8 +59,8 @@ public class SyncToolGroupServerComponent {
 		this.toolGroupServer.getInstance().addToolGroup(inst, clazz);
 	}
 	
-	public void addToolNode(ToolNode toolNode, Method toolMethod, Object instance) {
-		this.toolGroupServer.getInstance().addToolNode(toolNode, toolMethod, instance);
+	public void addToolNode(Tool toolNode, Method toolMethod, Object instance) {
+		this.toolGroupServer.getInstance().addTool(toolNode, toolMethod, instance);
 	}
 
 }

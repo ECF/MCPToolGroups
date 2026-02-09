@@ -11,10 +11,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
-import com.composent.ai.mcp.transport.uds.UDSMcpServerTransportConfig;
-
-import io.modelcontextprotocol.mcptools.toolgroup.server.SyncToolGroupServer;
 import io.modelcontextprotocol.spec.McpServerTransportProvider;
+import org.openmcptools.common.server.toolgroup.SyncToolGroupServer;
 
 @Component(immediate = true)
 public class RemoteToolGroupServerComponent {
@@ -29,8 +27,14 @@ public class RemoteToolGroupServerComponent {
 	public RemoteToolGroupServerComponent(
 			@Reference(target = "(component.factory=UDSMcpServerTransportFactory)") ComponentFactory<McpServerTransportProvider> transportFactory,
 			@Reference(target = "(component.factory=SpringSyncToolGroupServer)") ComponentFactory<SyncToolGroupServer> serverFactory) {
+		// Make sure that socketPath is deleted
+		if (socketPath.toFile().exists()) {
+			socketPath.toFile().delete();
+		}
 		// Create transport
-		this.transport = new UDSMcpServerTransportConfig(socketPath).newInstanceFromFactory(transportFactory);
+		Hashtable<String, Object> properties = new Hashtable<>();
+		properties.put("udsTargetSocketPath", socketPath);
+		this.transport = transportFactory.newInstance(properties);
 		// Create sync server
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put(SyncToolGroupServer.SERVER_NAME_PROP, "Scott's famous Sync Server");
