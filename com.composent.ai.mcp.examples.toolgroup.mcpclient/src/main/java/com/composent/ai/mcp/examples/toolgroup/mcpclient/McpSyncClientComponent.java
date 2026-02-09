@@ -5,6 +5,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import org.openmcptools.common.model.Group;
+import org.openmcptools.common.model.ToolConverter;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
 import org.osgi.service.component.annotations.Activate;
@@ -37,6 +39,9 @@ public class McpSyncClientComponent {
 	private ComponentInstance<McpClientTransport> transport;
 	private McpSyncClient client;
 
+	@Reference
+	ToolConverter<Tool> toolNodeConverter;
+
 	@Reference(target = "(component.factory=UDSMcpClientTransportFactory)")
 	void setTransportComponentFactory(ComponentFactory<McpClientTransport> transportFactory) {
 		// Create transport
@@ -51,22 +56,16 @@ public class McpSyncClientComponent {
 		}
 	}
 
-	@Activate
-	void activate() throws Exception {
+	void createAndInitializeClient() {
 		// Create client with transport
 		client = McpClient.sync(this.transport.getInstance()).capabilities(ClientCapabilities.builder().build())
 				.build();
 		// initialize will connect to server
 		client.initialize();
 		logger.debug("uds sync client initialized");
+	}
 
-		// test list tools from server
-		List<Tool> tools = client.listTools().tools();
-		// Show tools list on logger
-		tools.forEach(t -> {
-			logger.debug("uds sync client seeing tool=" + t.toString());
-		});
-
+	void testAddAndMultiplyTools() {
 		String x = "5.1";
 		String y = "6.32";
 		// Call add(5.1,6.32)
@@ -79,6 +78,31 @@ public class McpSyncClientComponent {
 		client.callTool(
 				new CallToolRequest(String.format(ARITHMETIC_TOOLGROUP_NAME, "multiply"), Map.of("x", x1, "y", y1)))
 				.content().forEach(content -> printTextContent("multiply(" + x1 + "," + y1 + ")", content));
+	}
+
+	@Activate
+	void activate() throws Exception {
+		createAndInitializeClient();
+		// list tools from server
+		List<io.modelcontextprotocol.spec.McpSchema.Tool> sdkTools = client.listTools().tools();
+		// Show raw tools list
+		sdkTools.forEach(t -> {
+			logger.debug("uds sync client seeing tool=" + t.toString());
+		});
+
+		// Convert from McpSchem.Tool to common API Tool
+		List<org.openmcptools.common.model.Tool> tools = toolNodeConverter.convertToTools(sdkTools);
+		// Get Group parent roots.
+		List<Group> roots = tools.stream().map(tn -> {
+			return tn.getParentGroupRoots();
+		}).flatMap(List::stream).distinct().toList();
+
+		// Show Group roots and entire tree
+		roots.forEach(gn -> {
+			logger.debug("Tree=" + gn);
+		});
+
+		testAddAndMultiplyTools();
 	}
 
 	@Deactivate
