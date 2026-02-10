@@ -63,7 +63,7 @@ public class AsyncToolgroupServerComponent {
 		this.toolGroupServer.getInstance().addToolGroup(inst, clazz);
 	}
 	
-	public void addToolNode(Tool toolNode, Method toolMethod, Object instance) {
+	public void addTool(Tool toolNode, Method toolMethod, Object instance) {
 		this.toolGroupServer.getInstance().addTool(toolNode, toolMethod, instance);
 	}
 

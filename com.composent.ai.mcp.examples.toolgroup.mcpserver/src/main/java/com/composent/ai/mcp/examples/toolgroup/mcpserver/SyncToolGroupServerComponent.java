@@ -59,8 +59,8 @@ public class SyncToolGroupServerComponent {
 		this.toolGroupServer.getInstance().addToolGroup(inst, clazz);
 	}
 	
-	public void addToolNode(Tool toolNode, Method toolMethod, Object instance) {
-		this.toolGroupServer.getInstance().addTool(toolNode, toolMethod, instance);
+	public void addTool(Tool tool, Method toolMethod, Object instance) {
+		this.toolGroupServer.getInstance().addTool(tool, toolMethod, instance);
 	}
 
 }
