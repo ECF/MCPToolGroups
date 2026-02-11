@@ -25,7 +25,9 @@ public interface ExampleToolGroup {
 			@McpToolParam(description = "y is the second argument") double y);
 }
 ```
-Each method is annotated with the @McpTool and @McpToolParam annotations from the [mcp_annotations_java](ttps://github.com/OpenMCPTools/mcp_annotations_java)) project. There are both synchronous mcp server methods (add, multiply) and asynchronous mcp server methods (asyncAdd and asyncMultiply).
+Each method is annotated with the @McpTool and @McpToolParam annotations from the [mcp_annotations_java](https://github.com/OpenMCPTools/mcp_annotations_java) project. There are both synchronous mcp server methods (add, multiply) and asynchronous mcp server methods (asyncAdd and asyncMultiply).
+
+Notice also the use of @McpToolGroup annotation for the [ExampleToolGroup class](https://github.com/ECF/MCPToolGroups/blob/main/com.composent.ai.mcp.examples.toolgroup.api/src/main/java/com/composent/ai/mcp/examples/toolgroup/api/ExampleToolGroup.java) along with the classes' [parent package](https://github.com/ECF/MCPToolGroups/blob/main/com.composent.ai.mcp.examples.toolgroup.api/src/main/java/com/composent/ai/mcp/examples/toolgroup/package-info.java).  This shows the static creation of a hierarchical relationship between the top-level toolgroup (package), and a child toolgroup (class) with two tools (add and multiply).
  
 [Here is an OSGi component implementing the ExampleToolGroup interface](/com.composent.ai.mcp.examples.toolgroup.mcpserver/src/main/java/com/composent/ai/mcp/examples/toolgroup/mcpserver/ToolGroupComponent.java).
 
