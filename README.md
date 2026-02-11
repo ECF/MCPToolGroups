@@ -25,7 +25,7 @@ public interface ExampleToolGroup {
 			@McpToolParam(description = "y is the second argument") double y);
 }
 ```
-Each method is annotated with the @McpTool and @McpToolParam annotations from the [mcp_annotations_java]([https://github.com/spring-ai-community/mcp-annotations](https://github.com/OpenMCPTools/mcp_annotations_java)) project. There are both sync methods (add, multiply) and async methods (asyncAdd and asyncMultiply).
+Each method is annotated with the @McpTool and @McpToolParam annotations from the [mcp_annotations_java](ttps://github.com/OpenMCPTools/mcp_annotations_java)) project. There are both synchronous mcp server methods (add, multiply) and asynchronous mcp server methods (asyncAdd and asyncMultiply).
  
 [Here is an OSGi component implementing the ExampleToolGroup interface](/com.composent.ai.mcp.examples.toolgroup.mcpserver/src/main/java/com/composent/ai/mcp/examples/toolgroup/mcpserver/ToolGroupComponent.java).
 
