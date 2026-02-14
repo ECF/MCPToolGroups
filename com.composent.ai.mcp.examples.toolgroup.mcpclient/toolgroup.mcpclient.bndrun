@@ -38,20 +38,20 @@
 	osgi.promise;version='[8.1.0,8.1.1)';startlevel=1013,\
 	org.osgi.service.component;version='[1.5.1,1.5.2)';startlevel=1014,\
 	org.apache.felix.scr;version='[2.2.6,2.2.7)';startlevel=1015,\
-	com.composent.ai.mcp.examples.toolgroup.mcpclient;version=snapshot;startlevel=1016,\
-	com.fasterxml.jackson.core.jackson-core;version='[2.19.2,2.19.3)';startlevel=1017,\
-	com.fasterxml.jackson.core.jackson-databind;version='[2.19.2,2.19.3)';startlevel=1018,\
-	com.ethlo.time.itu;version='[1.14.0,1.14.1)';startlevel=1019,\
-	org.yaml.snakeyaml;version='[2.4.0,2.4.1)';startlevel=1020,\
-	com.fasterxml.jackson.dataformat.jackson-dataformat-yaml;version='[2.19.2,2.19.3)';startlevel=1021,\
-	com.networknt.json-schema-validator;version='[2.0.0,2.0.1)';startlevel=1022,\
-	io.modelcontextprotocol.sdk.mcp-json-jackson2;version='[0.18.0,0.18.1)';startlevel=1023,\
-	org.apache.felix.gogo.command;version='[1.1.2,1.1.3)';startlevel=1024,\
-	org.apache.felix.gogo.shell;version='[1.1.4,1.1.5)';startlevel=1025,\
-	org.openmcptools.common;version='[1.0.0,1.0.1)';startlevel=1026,\
+	org.openmcptools.common;version='[1.0.0,1.0.1)';startlevel=1016,\
+	com.composent.ai.mcp.examples.toolgroup.mcpclient;version=snapshot;startlevel=1017,\
+	com.fasterxml.jackson.core.jackson-core;version='[2.19.2,2.19.3)';startlevel=1018,\
+	com.fasterxml.jackson.core.jackson-databind;version='[2.19.2,2.19.3)';startlevel=1019,\
+	com.ethlo.time.itu;version='[1.14.0,1.14.1)';startlevel=1020,\
+	org.yaml.snakeyaml;version='[2.4.0,2.4.1)';startlevel=1021,\
+	com.fasterxml.jackson.dataformat.jackson-dataformat-yaml;version='[2.19.2,2.19.3)';startlevel=1022,\
+	com.networknt.json-schema-validator;version='[2.0.0,2.0.1)';startlevel=1023,\
+	io.modelcontextprotocol.sdk.mcp-json-jackson2;version='[0.18.0,0.18.1)';startlevel=1024,\
+	org.apache.felix.gogo.command;version='[1.1.2,1.1.3)';startlevel=1025,\
+	org.apache.felix.gogo.shell;version='[1.1.4,1.1.5)';startlevel=1026,\
 	org.openmcptools.annotation;version='[1.0.0,1.0.1)';startlevel=1027,\
 	org.openmcptools.common.server;version='[1.0.0,1.0.1)';startlevel=1028,\
-	org.openmcptools.extensions.groups;version='[1.0.0,1.0.1)';startlevel=1029,\
+	org.openmcptools.extensions.groups;version='[1.0.1,1.0.2)';startlevel=1029,\
 	com.fasterxml.jackson.datatype.jackson-datatype-jsr310;version='[2.19.2,2.19.3)';startlevel=1030,\
 	io.swagger.core.v3.swagger-annotations.jakarta;version='[2.2.34,2.2.35)';startlevel=1031,\
 	wrapped.com.github.victools.jsonschema-generator;version='[4.38.0,4.38.1)';startlevel=1032,\

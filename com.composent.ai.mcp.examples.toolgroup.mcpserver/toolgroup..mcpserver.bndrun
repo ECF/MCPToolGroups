@@ -49,7 +49,7 @@
 	io.modelcontextprotocol.sdk.mcp-json-jackson2;version='[0.18.0,0.18.1)';startlevel=1280,\
 	org.apache.felix.gogo.command;version='[1.1.2,1.1.3)';startlevel=1290,\
 	org.apache.felix.gogo.shell;version='[1.1.4,1.1.5)';startlevel=1300,\
-	org.openmcptools.extensions.groups;version='[1.0.0,1.0.1)';startlevel=1310,\
+	org.openmcptools.extensions.groups;version='[1.0.1,1.0.2)';startlevel=1310,\
 	com.fasterxml.jackson.datatype.jackson-datatype-jsr310;version='[2.19.2,2.19.3)';startlevel=1320,\
 	io.swagger.core.v3.swagger-annotations.jakarta;version='[2.2.34,2.2.35)';startlevel=1330,\
 	wrapped.com.github.victools.jsonschema-generator;version='[4.38.0,4.38.1)';startlevel=1340,\
