@@ -7,7 +7,6 @@ import java.util.Hashtable;
 import org.openmcptools.common.server.toolgroup.SyncToolGroupServer;
 import org.openmcptools.common.server.toolgroup.impl.spring.McpSyncToolGroupServer;
 import org.openmcptools.transport.uds.spring.UDSMcpTransportConfig;
-import org.openmcptools.transport.uds.spring.UDSServerTransport;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
 import org.osgi.service.component.annotations.Activate;
@@ -31,8 +30,7 @@ public class SyncToolGroupServerComponent {
 
 	@Activate
 	public SyncToolGroupServerComponent(
-			@Reference(target = "(component.factory=" + UDSServerTransport.SDK_TRANSPORT_FACTORY_NAME
-					+ ")") ComponentFactory<McpServerTransportProvider> transportFactory,
+			@Reference(target = UDSMcpTransportConfig.SERVER_CF_TARGET) ComponentFactory<McpServerTransportProvider> transportFactory,
 			@Reference(target = "(component.factory=SpringSyncToolGroupServer)") ComponentFactory<SyncToolGroupServer<McpSyncToolGroupServer>> serverFactory) {
 		// Make sure that socketPath is deleted
 		if (socketPath.toFile().exists()) {

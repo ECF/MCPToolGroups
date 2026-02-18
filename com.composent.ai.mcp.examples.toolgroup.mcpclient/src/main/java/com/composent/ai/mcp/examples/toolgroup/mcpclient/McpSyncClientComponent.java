@@ -9,7 +9,6 @@ import org.openmcptools.common.client.toolgroup.impl.spring.McpSyncToolGroupClie
 import org.openmcptools.common.model.Group;
 import org.openmcptools.common.model.Tool;
 import org.openmcptools.common.toolgroup.client.SyncToolGroupClient;
-import org.openmcptools.transport.uds.spring.UDSClientTransport;
 import org.openmcptools.transport.uds.spring.UDSMcpTransportConfig;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
@@ -37,13 +36,10 @@ public class McpSyncClientComponent {
 			.toAbsolutePath();
 
 	private ComponentInstance<SyncToolGroupClient<McpSyncToolGroupClient>> toolGroupClient;
-	private McpSyncToolGroupClient client;
 
 	@Activate
 	public McpSyncClientComponent(
-			@Reference(target = "(component.factory=" + UDSClientTransport.SDK_TRANSPORT_FACTORY_NAME
-					+ ")") ComponentFactory<McpClientTransport> transportFactory,
-
+			@Reference(target = UDSMcpTransportConfig.CLIENT_CF_TARGET) ComponentFactory<McpClientTransport> transportFactory,
 			@Reference(target = "(component.factory=SpringSyncToolGroupClient)") ComponentFactory<SyncToolGroupClient<McpSyncToolGroupClient>> clientFactory) {
 		// Create transport
 		ComponentInstance<McpClientTransport> transport = transportFactory
@@ -52,8 +48,6 @@ public class McpSyncClientComponent {
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put(SyncToolGroupClient.CLIENT_TRANSPORT_PROP, transport.getInstance());
 		toolGroupClient = clientFactory.newInstance(props);
-
-		client = toolGroupClient.getInstance().getClient();
 	}
 
 	void printTextContent(String op, Content content) {
@@ -63,11 +57,13 @@ public class McpSyncClientComponent {
 	}
 
 	void testAddAndMultiplyTools() {
+		McpSyncToolGroupClient client = toolGroupClient.getInstance().getClient();
+
 		String x = "5.1";
 		String y = "6.32";
+
 		// Call add(5.1,6.32)
-		toolGroupClient.getInstance().getClient()
-				.callTool(new CallToolRequest(String.format(ARITHMETIC_TOOLGROUP_NAME, "add"), Map.of("x", x, "y", y)))
+		client.callTool(new CallToolRequest(String.format(ARITHMETIC_TOOLGROUP_NAME, "add"), Map.of("x", x, "y", y)))
 				.content().forEach(content -> printTextContent("add(" + x + "," + y + ")", content));
 
 		String x1 = "10.71";
@@ -83,21 +79,19 @@ public class McpSyncClientComponent {
 		// initialize will connect to server
 		toolGroupClient.getInstance().initialize();
 		logger.debug("uds sync client initialized");
+		SyncToolGroupClient<McpSyncToolGroupClient> syncToolGroupClient = toolGroupClient.getInstance();
 		// list tools from server
-		List<Tool> sdkTools = toolGroupClient.getInstance().getTools();
+		List<Tool> sdkTools = syncToolGroupClient.getTools();
 		// Show raw tools list
 		sdkTools.forEach(t -> {
 			logger.debug("tool=" + t.toString());
 		});
-
 		// Get Group parent roots.
-		List<Group> roots = toolGroupClient.getInstance().getGroupRoots();
-
+		List<Group> roots = syncToolGroupClient.getGroupRoots();
 		// Show Group roots and entire tree
 		roots.forEach(gn -> {
 			logger.debug("Tree=" + gn);
 		});
-
 		// testAddAndMultiplyTools();
 	}
 
@@ -106,7 +100,6 @@ public class McpSyncClientComponent {
 		if (this.toolGroupClient != null) {
 			this.toolGroupClient.dispose();
 			this.toolGroupClient = null;
-			this.client = null;
 			logger.debug("uds sync client closed");
 		}
 	}
