@@ -13,6 +13,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import io.modelcontextprotocol.spec.McpServerTransportProvider;
 import org.openmcptools.common.server.toolgroup.SyncToolGroupServer;
+import org.openmcptools.common.server.toolgroup.impl.spring.McpSyncToolGroupServer;
 
 @Component(immediate = true)
 public class RemoteToolGroupServerComponent {
@@ -21,12 +22,12 @@ public class RemoteToolGroupServerComponent {
 	private final Path socketPath = Paths.get("").resolve("rs.socket").toAbsolutePath();
 
 	private final ComponentInstance<McpServerTransportProvider> transport;
-	private final ComponentInstance<SyncToolGroupServer> toolGroupServer;
+	private final ComponentInstance<SyncToolGroupServer<McpSyncToolGroupServer>> toolGroupServer;
 
 	@Activate
 	public RemoteToolGroupServerComponent(
 			@Reference(target = "(component.factory=UDSMcpServerTransportFactory)") ComponentFactory<McpServerTransportProvider> transportFactory,
-			@Reference(target = "(component.factory=SpringSyncToolGroupServer)") ComponentFactory<SyncToolGroupServer> serverFactory) {
+			@Reference(target = "(component.factory=SpringSyncToolGroupServer)") ComponentFactory<SyncToolGroupServer<McpSyncToolGroupServer>> serverFactory) {
 		// Make sure that socketPath is deleted
 		if (socketPath.toFile().exists()) {
 			socketPath.toFile().delete();

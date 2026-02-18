@@ -1,13 +1,14 @@
 package com.composent.ai.mcp.examples.toolgroup.mcpserver;
 
-import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Hashtable;
 
-import org.openmcptools.common.model.Tool;
-import org.openmcptools.common.server.toolgroup.AsyncToolGroupServer;
 import org.openmcptools.common.server.toolgroup.SyncToolGroupServer;
+import org.openmcptools.common.server.toolgroup.ToolGroupServer;
+import org.openmcptools.common.server.toolgroup.impl.spring.McpAsyncToolGroupServer;
+import org.openmcptools.transport.uds.spring.UDSMcpTransportConfig;
+import org.openmcptools.transport.uds.spring.UDSServerTransport;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
 import org.osgi.service.component.annotations.Activate;
@@ -16,7 +17,6 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 import io.modelcontextprotocol.spec.McpServerTransportProvider;
 
@@ -29,24 +29,22 @@ public class AsyncToolgroupServerComponent {
 	private final Path socketPath = Paths.get("").resolve("s.socket").toAbsolutePath();
 
 	private final ComponentInstance<McpServerTransportProvider> transport;
-	private final ComponentInstance<AsyncToolGroupServer> toolGroupServer;
+	private final ComponentInstance<ToolGroupServer<McpAsyncToolGroupServer>> toolGroupServer;
 
 	@Activate
 	public AsyncToolgroupServerComponent(
-			@Reference(target = "(component.factory=UDSMcpServerTransportProviderFactory)") ComponentFactory<McpServerTransportProvider> transportFactory,
-			@Reference(target = "(component.factory=SpringAsyncToolGroupServer)") ComponentFactory<AsyncToolGroupServer> serverFactory) {
+			@Reference(target = "(component.factory=" + UDSServerTransport.SDK_TRANSPORT_FACTORY_NAME
+					+ ")") ComponentFactory<McpServerTransportProvider> transportFactory,
+			@Reference(target = "(component.factory=SpringAsyncToolGroupServer)") ComponentFactory<ToolGroupServer<McpAsyncToolGroupServer>> serverFactory) {
 		// Make sure that socketPath is deleted
 		if (socketPath.toFile().exists()) {
 			socketPath.toFile().delete();
 		}
 		// Create transport
-		Hashtable<String, Object> properties = new Hashtable<>();
-		properties.put("udsTargetSocketPath", socketPath);
-		this.transport = transportFactory.newInstance(properties);
+		this.transport = transportFactory.newInstance(new UDSMcpTransportConfig(socketPath).asProperties());
 		// Create sync server
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put(SyncToolGroupServer.SERVER_NAME_PROP, "Scott's famous "
-				+ "async Server");
+		props.put(SyncToolGroupServer.SERVER_NAME_PROP, "Scott's famous " + "async Server");
 		props.put(SyncToolGroupServer.SERVER_VERSION_PROP, "1.0.1");
 		props.put(SyncToolGroupServer.SERVER_TRANSPORT_PROP, this.transport.getInstance());
 		this.toolGroupServer = serverFactory.newInstance(props);
@@ -61,10 +59,6 @@ public class AsyncToolgroupServerComponent {
 
 	public void addToolGroups(Object inst, Class<?> clazz) {
 		this.toolGroupServer.getInstance().addToolGroup(inst, clazz);
-	}
-	
-	public void addTool(Tool toolNode, Method toolMethod, Object instance) {
-		this.toolGroupServer.getInstance().addTool(toolNode, toolMethod, instance);
 	}
 
 }

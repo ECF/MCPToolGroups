@@ -3,4 +3,5 @@
 	com.composent.ai.mcp.examples.toolgroup.api,\
 	io.modelcontextprotocol.sdk.mcp-core,\
 	org.osgi.service.component,\
-	org.openmcptools.common.server
+	org.openmcptools.common.server,\
+	org.openmcptools.common.impl.spring

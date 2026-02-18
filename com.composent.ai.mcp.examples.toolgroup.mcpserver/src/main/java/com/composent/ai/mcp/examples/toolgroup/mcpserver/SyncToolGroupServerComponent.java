@@ -1,10 +1,13 @@
 package com.composent.ai.mcp.examples.toolgroup.mcpserver;
 
-import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Hashtable;
 
+import org.openmcptools.common.server.toolgroup.SyncToolGroupServer;
+import org.openmcptools.common.server.toolgroup.impl.spring.McpSyncToolGroupServer;
+import org.openmcptools.transport.uds.spring.UDSMcpTransportConfig;
+import org.openmcptools.transport.uds.spring.UDSServerTransport;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
 import org.osgi.service.component.annotations.Activate;
@@ -15,8 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.modelcontextprotocol.spec.McpServerTransportProvider;
-import org.openmcptools.common.server.toolgroup.SyncToolGroupServer;
-import org.openmcptools.common.model.Tool;
 
 @Component(immediate = true, service = { SyncToolGroupServerComponent.class })
 public class SyncToolGroupServerComponent {
@@ -26,20 +27,19 @@ public class SyncToolGroupServerComponent {
 	private final Path socketPath = Paths.get("").resolve("s.socket").toAbsolutePath();
 
 	private final ComponentInstance<McpServerTransportProvider> transport;
-	private final ComponentInstance<SyncToolGroupServer> toolGroupServer;
+	private final ComponentInstance<SyncToolGroupServer<McpSyncToolGroupServer>> toolGroupServer;
 
 	@Activate
 	public SyncToolGroupServerComponent(
-			@Reference(target = "(component.factory=UDSMcpServerTransportProviderFactory)") ComponentFactory<McpServerTransportProvider> transportFactory,
-			@Reference(target = "(component.factory=SpringSyncToolGroupServer)") ComponentFactory<SyncToolGroupServer> serverFactory) {
+			@Reference(target = "(component.factory=" + UDSServerTransport.SDK_TRANSPORT_FACTORY_NAME
+					+ ")") ComponentFactory<McpServerTransportProvider> transportFactory,
+			@Reference(target = "(component.factory=SpringSyncToolGroupServer)") ComponentFactory<SyncToolGroupServer<McpSyncToolGroupServer>> serverFactory) {
 		// Make sure that socketPath is deleted
 		if (socketPath.toFile().exists()) {
 			socketPath.toFile().delete();
 		}
 		// Create transport
-		Hashtable<String, Object> properties = new Hashtable<>();
-		properties.put("udsTargetSocketPath", socketPath);
-		this.transport = transportFactory.newInstance(properties);
+		this.transport = transportFactory.newInstance(new UDSMcpTransportConfig(socketPath).asProperties());
 		// Create sync server
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put(SyncToolGroupServer.SERVER_NAME_PROP, "Scott's famous Sync Server");
@@ -57,10 +57,6 @@ public class SyncToolGroupServerComponent {
 
 	public void addToolGroups(Object inst, Class<?> clazz) {
 		this.toolGroupServer.getInstance().addToolGroup(inst, clazz);
-	}
-	
-	public void addTool(Tool tool, Method toolMethod, Object instance) {
-		this.toolGroupServer.getInstance().addTool(tool, toolMethod, instance);
 	}
 
 }

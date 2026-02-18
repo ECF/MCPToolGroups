@@ -22,7 +22,7 @@
 	io.projectreactor.reactor-core;version='[3.7.0,3.7.1)';startlevel=1010,\
 	org.openmcptools.annotation;version='[1.0.0,1.0.1)';startlevel=1020,\
 	com.composent.ai.mcp.examples.toolgroup.api;version=snapshot;startlevel=1030,\
-	com.fasterxml.jackson.core.jackson-annotations;version='[2.19.2,2.19.3)';startlevel=1040,\
+	com.fasterxml.jackson.core.jackson-annotations;version='[2.21.0,2.21.1)';startlevel=1040,\
 	org.objectweb.asm;version='[9.8.0,9.8.1)';startlevel=1050,\
 	org.objectweb.asm.tree;version='[9.5.0,9.5.1)';startlevel=1060,\
 	org.objectweb.asm.commons;version='[9.5.0,9.5.1)';startlevel=1070,\
@@ -37,26 +37,29 @@
 	org.osgi.service.component;version='[1.5.1,1.5.2)';startlevel=1160,\
 	org.apache.felix.scr;version='[2.2.6,2.2.7)';startlevel=1170,\
 	org.openmcptools.common;version='[1.0.0,1.0.1)';startlevel=1180,\
-	org.openmcptools.common.server;version='[1.0.0,1.0.1)';startlevel=1190,\
-	com.composent.ai.mcp.examples.toolgroup.mcpserver;version=snapshot;startlevel=1200,\
-	com.fasterxml.classmate;version='[1.7.0,1.7.1)';startlevel=1210,\
-	com.fasterxml.jackson.core.jackson-core;version='[2.19.2,2.19.3)';startlevel=1220,\
-	com.fasterxml.jackson.core.jackson-databind;version='[2.19.2,2.19.3)';startlevel=1230,\
-	com.ethlo.time.itu;version='[1.14.0,1.14.1)';startlevel=1240,\
-	org.yaml.snakeyaml;version='[2.4.0,2.4.1)';startlevel=1250,\
-	com.fasterxml.jackson.dataformat.jackson-dataformat-yaml;version='[2.19.2,2.19.3)';startlevel=1260,\
-	com.networknt.json-schema-validator;version='[2.0.0,2.0.1)';startlevel=1270,\
-	io.modelcontextprotocol.sdk.mcp-json-jackson2;version='[0.18.0,0.18.1)';startlevel=1280,\
-	org.apache.felix.gogo.command;version='[1.1.2,1.1.3)';startlevel=1290,\
-	org.apache.felix.gogo.shell;version='[1.1.4,1.1.5)';startlevel=1300,\
-	org.openmcptools.extensions.groups;version='[1.0.1,1.0.2)';startlevel=1310,\
-	com.fasterxml.jackson.datatype.jackson-datatype-jsr310;version='[2.19.2,2.19.3)';startlevel=1320,\
-	io.swagger.core.v3.swagger-annotations.jakarta;version='[2.2.34,2.2.35)';startlevel=1330,\
-	wrapped.com.github.victools.jsonschema-generator;version='[4.38.0,4.38.1)';startlevel=1340,\
-	wrapped.com.github.victools.jsonschema-module-jackson;version='[4.38.0,4.38.1)';startlevel=1350,\
-	wrapped.com.github.victools.jsonschema-module-swagger-2;version='[4.38.0,4.38.1)';startlevel=1360,\
-	org.springaicommunity.mcp-annotations;version='[0.8.0,0.8.1)';startlevel=1370,\
-	org.openmcptools.common.impl.spring;version='[1.0.0,1.0.1)';startlevel=1380,\
-	org.eclipse.ecf.ai.mcp.transports;version='[1.0.1,1.0.2)';startlevel=1390,\
-	org.openmcptools.transport;version='[1.0.0,1.0.1)';startlevel=1400,\
-	org.openmcptools.transport.uds.spring;version='[1.0.0,1.0.1)';startlevel=1410
+	org.openmcptools.common.client;version='[1.0.0,1.0.1)';startlevel=1190,\
+	org.openmcptools.common.server;version='[1.0.0,1.0.1)';startlevel=1200,\
+	org.openmcptools.extensions.groups;version='[1.0.1,1.0.2)';startlevel=1210,\
+	org.openmcptools.extensions.update;version='[1.0.0,1.0.1)';startlevel=1220,\
+	com.fasterxml.jackson.core.jackson-core;version='[2.21.0,2.21.1)';startlevel=1230,\
+	com.fasterxml.jackson.core.jackson-databind;version='[2.21.0,2.21.1)';startlevel=1240,\
+	com.fasterxml.jackson.datatype.jackson-datatype-jsr310;version='[2.20.2,2.20.3)';startlevel=1250,\
+	io.swagger.core.v3.swagger-annotations.jakarta;version='[2.2.34,2.2.35)';startlevel=1260,\
+	com.fasterxml.classmate;version='[1.7.0,1.7.1)';startlevel=1270,\
+	wrapped.com.github.victools.jsonschema-generator;version='[4.38.0,4.38.1)';startlevel=1280,\
+	wrapped.com.github.victools.jsonschema-module-jackson;version='[4.38.0,4.38.1)';startlevel=1290,\
+	wrapped.com.github.victools.jsonschema-module-swagger-2;version='[4.38.0,4.38.1)';startlevel=1300,\
+	org.springaicommunity.mcp-annotations;version='[0.8.0,0.8.1)';startlevel=1310,\
+	org.openmcptools.common.impl.spring;version='[1.0.0,1.0.1)';startlevel=1320,\
+	com.composent.ai.mcp.examples.toolgroup.mcpserver;version=snapshot;startlevel=1330,\
+	com.ethlo.time.itu;version='[1.14.0,1.14.1)';startlevel=1340,\
+	org.yaml.snakeyaml;version='[2.4.0,2.4.1)';startlevel=1350,\
+	com.fasterxml.jackson.dataformat.jackson-dataformat-yaml;version='[2.21.0,2.21.1)';startlevel=1360,\
+	com.networknt.json-schema-validator;version='[2.0.0,2.0.1)';startlevel=1370,\
+	io.modelcontextprotocol.sdk.mcp-json-jackson2;version='[0.18.0,0.18.1)';startlevel=1380,\
+	org.apache.felix.gogo.command;version='[1.1.2,1.1.3)';startlevel=1390,\
+	org.apache.felix.gogo.shell;version='[1.1.4,1.1.5)';startlevel=1400,\
+	org.eclipse.ecf.ai.mcp.transports;version='[1.0.1,1.0.2)';startlevel=1410,\
+	org.openmcptools.transport;version='[1.0.0,1.0.1)';startlevel=1420,\
+	org.openmcptools.transport.uds.spring;version='[1.0.0,1.0.1)';startlevel=1430
+-runfw: org.apache.felix.framework;version='[7.0.5,7.0.5]'
