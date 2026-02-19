@@ -51,15 +51,15 @@
 	wrapped.com.github.victools.jsonschema-module-swagger-2;version='[4.38.0,4.38.1)';startlevel=1300,\
 	org.springaicommunity.mcp-annotations;version='[0.8.0,0.8.1)';startlevel=1310,\
 	org.openmcptools.common.impl.spring;version='[1.0.0,1.0.1)';startlevel=1320,\
-	com.composent.ai.mcp.examples.toolgroup.mcpserver;version=snapshot;startlevel=1330,\
-	com.ethlo.time.itu;version='[1.14.0,1.14.1)';startlevel=1340,\
-	org.yaml.snakeyaml;version='[2.4.0,2.4.1)';startlevel=1350,\
-	com.fasterxml.jackson.dataformat.jackson-dataformat-yaml;version='[2.21.0,2.21.1)';startlevel=1360,\
-	com.networknt.json-schema-validator;version='[2.0.0,2.0.1)';startlevel=1370,\
-	io.modelcontextprotocol.sdk.mcp-json-jackson2;version='[0.18.0,0.18.1)';startlevel=1380,\
-	org.apache.felix.gogo.command;version='[1.1.2,1.1.3)';startlevel=1390,\
-	org.apache.felix.gogo.shell;version='[1.1.4,1.1.5)';startlevel=1400,\
-	org.eclipse.ecf.ai.mcp.transports;version='[1.0.1,1.0.2)';startlevel=1410,\
-	org.openmcptools.transport;version='[1.0.0,1.0.1)';startlevel=1420,\
-	org.openmcptools.transport.uds.spring;version='[1.0.0,1.0.1)';startlevel=1430
+	org.eclipse.ecf.ai.mcp.transports;version='[1.0.1,1.0.2)';startlevel=1330,\
+	org.openmcptools.transport;version='[1.0.0,1.0.1)';startlevel=1340,\
+	org.openmcptools.transport.uds.spring;version='[1.0.0,1.0.1)';startlevel=1350,\
+	com.composent.ai.mcp.examples.toolgroup.mcpserver;version=snapshot;startlevel=1360,\
+	com.ethlo.time.itu;version='[1.14.0,1.14.1)';startlevel=1370,\
+	org.yaml.snakeyaml;version='[2.4.0,2.4.1)';startlevel=1380,\
+	com.fasterxml.jackson.dataformat.jackson-dataformat-yaml;version='[2.21.0,2.21.1)';startlevel=1390,\
+	com.networknt.json-schema-validator;version='[2.0.0,2.0.1)';startlevel=1400,\
+	io.modelcontextprotocol.sdk.mcp-json-jackson2;version='[0.18.0,0.18.1)';startlevel=1410,\
+	org.apache.felix.gogo.command;version='[1.1.2,1.1.3)';startlevel=1420,\
+	org.apache.felix.gogo.shell;version='[1.1.4,1.1.5)';startlevel=1430
 -runfw: org.apache.felix.framework;version='[7.0.5,7.0.5]'

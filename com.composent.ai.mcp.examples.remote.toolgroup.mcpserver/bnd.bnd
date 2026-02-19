@@ -4,4 +4,5 @@
 	io.modelcontextprotocol.sdk.mcp-core,\
 	org.osgi.service.component,\
 	org.openmcptools.common.server,\
-	org.openmcptools.common.impl.spring
+	org.openmcptools.common.impl.spring,\
+	org.openmcptools.transport.uds.spring

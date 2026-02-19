@@ -44,9 +44,9 @@ public class McpSyncClientComponent {
 		// Create transport
 		ComponentInstance<McpClientTransport> transport = transportFactory
 				.newInstance(new UDSMcpTransportConfig(socketPath).asProperties());
-
+		// Create client
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put(SyncToolGroupClient.CLIENT_TRANSPORT_PROP, transport.getInstance());
+		props.put(SyncToolGroupClient.CLIENT_TRANSPORT, transport.getInstance());
 		toolGroupClient = clientFactory.newInstance(props);
 	}
 
@@ -79,7 +79,7 @@ public class McpSyncClientComponent {
 		// initialize will connect to server
 		toolGroupClient.getInstance().initialize();
 		logger.debug("uds sync client initialized");
-		SyncToolGroupClient<McpSyncToolGroupClient> syncToolGroupClient = toolGroupClient.getInstance();
+		SyncToolGroupClient<?> syncToolGroupClient = toolGroupClient.getInstance();
 		// list tools from server
 		List<Tool> sdkTools = syncToolGroupClient.getTools();
 		// Show raw tools list

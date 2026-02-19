@@ -2,11 +2,9 @@ package com.composent.ai.mcp.examples.toolgroup.mcpserver;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Hashtable;
 
-import org.openmcptools.common.server.toolgroup.SyncToolGroupServer;
-import org.openmcptools.common.server.toolgroup.ToolGroupServer;
-import org.openmcptools.common.server.toolgroup.impl.spring.McpAsyncToolGroupServer;
+import org.openmcptools.common.server.toolgroup.AsyncToolGroupServer;
+import org.openmcptools.common.server.toolgroup.impl.spring.SpringAsyncToolGroupServerConfig;
 import org.openmcptools.transport.uds.spring.UDSMcpTransportConfig;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
@@ -28,24 +26,22 @@ public class AsyncToolgroupServerComponent {
 	private final Path socketPath = Paths.get("").resolve("s.socket").toAbsolutePath();
 
 	private final ComponentInstance<McpServerTransportProvider> transport;
-	private final ComponentInstance<ToolGroupServer<McpAsyncToolGroupServer>> toolGroupServer;
+	private final ComponentInstance<AsyncToolGroupServer<?>> toolGroupServer;
 
 	@Activate
 	public AsyncToolgroupServerComponent(
 			@Reference(target = UDSMcpTransportConfig.SERVER_CF_TARGET) ComponentFactory<McpServerTransportProvider> transportFactory,
-			@Reference(target = "(component.factory=SpringAsyncToolGroupServer)") ComponentFactory<ToolGroupServer<McpAsyncToolGroupServer>> serverFactory) {
+			@Reference(target = SpringAsyncToolGroupServerConfig.SERVER_CF_TARGET) ComponentFactory<AsyncToolGroupServer<?>> serverFactory) {
 		// Make sure that socketPath is deleted
 		if (socketPath.toFile().exists()) {
 			socketPath.toFile().delete();
 		}
 		// Create transport
 		this.transport = transportFactory.newInstance(new UDSMcpTransportConfig(socketPath).asProperties());
-		// Create sync server
-		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put(SyncToolGroupServer.SERVER_NAME_PROP, "Scott's famous " + "async Server");
-		props.put(SyncToolGroupServer.SERVER_VERSION_PROP, "1.0.1");
-		props.put(SyncToolGroupServer.SERVER_TRANSPORT_PROP, this.transport.getInstance());
-		this.toolGroupServer = serverFactory.newInstance(props);
+		// Create async server
+		this.toolGroupServer = serverFactory
+				.newInstance(new SpringAsyncToolGroupServerConfig("Scott's famous " + "async Server", "0.0.1",
+						transport.getInstance()).asProperties());
 		logger.debug("sync toolgroup remote server activated");
 	}
 

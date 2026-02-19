@@ -2,10 +2,9 @@ package com.composent.ai.mcp.examples.toolgroup.mcpserver;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Hashtable;
 
 import org.openmcptools.common.server.toolgroup.SyncToolGroupServer;
-import org.openmcptools.common.server.toolgroup.impl.spring.McpSyncToolGroupServer;
+import org.openmcptools.common.server.toolgroup.impl.spring.SpringSyncToolGroupServerConfig;
 import org.openmcptools.transport.uds.spring.UDSMcpTransportConfig;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
@@ -26,12 +25,12 @@ public class SyncToolGroupServerComponent {
 	private final Path socketPath = Paths.get("").resolve("s.socket").toAbsolutePath();
 
 	private final ComponentInstance<McpServerTransportProvider> transport;
-	private final ComponentInstance<SyncToolGroupServer<McpSyncToolGroupServer>> toolGroupServer;
+	private final ComponentInstance<SyncToolGroupServer<?>> toolGroupServer;
 
 	@Activate
 	public SyncToolGroupServerComponent(
 			@Reference(target = UDSMcpTransportConfig.SERVER_CF_TARGET) ComponentFactory<McpServerTransportProvider> transportFactory,
-			@Reference(target = "(component.factory=SpringSyncToolGroupServer)") ComponentFactory<SyncToolGroupServer<McpSyncToolGroupServer>> serverFactory) {
+			@Reference(target = SpringSyncToolGroupServerConfig.SERVER_CF_TARGET) ComponentFactory<SyncToolGroupServer<?>> serverFactory) {
 		// Make sure that socketPath is deleted
 		if (socketPath.toFile().exists()) {
 			socketPath.toFile().delete();
@@ -39,12 +38,10 @@ public class SyncToolGroupServerComponent {
 		// Create transport
 		this.transport = transportFactory.newInstance(new UDSMcpTransportConfig(socketPath).asProperties());
 		// Create sync server
-		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put(SyncToolGroupServer.SERVER_NAME_PROP, "Scott's famous Sync Server");
-		props.put(SyncToolGroupServer.SERVER_VERSION_PROP, "1.0.1");
-		props.put(SyncToolGroupServer.SERVER_TRANSPORT_PROP, this.transport.getInstance());
-		this.toolGroupServer = serverFactory.newInstance(props);
-		logger.debug("sync toolgroup remote server activated");
+		this.toolGroupServer = serverFactory
+				.newInstance(new SpringSyncToolGroupServerConfig("Scott's famous " + "async Server", "0.0.1",
+						transport.getInstance()).asProperties());
+		logger.debug("sync toolgroup server activated");
 	}
 
 	@Deactivate
