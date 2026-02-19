@@ -6,7 +6,7 @@ import org.openmcptools.annotation.McpToolGroup;
 
 import reactor.core.publisher.Mono;
 
-@McpToolGroup(description="Arithmetic operations exposed as mcp tools")
+@McpToolGroup(description = "Arithmetic operations exposed as mcp tools")
 public interface ExampleToolGroup {
 
 	@McpTool(description = "computes the sum of the two double precision input arguments a and b")
@@ -24,6 +24,5 @@ public interface ExampleToolGroup {
 	@McpTool(description = "return asynchronously the product of the two given double precision arguments named a and b")
 	Mono<Double> asyncMultiply(@McpArg(description = "x is the first argument") double x,
 			@McpArg(description = "y is the second argument") double y);
-
 
 }

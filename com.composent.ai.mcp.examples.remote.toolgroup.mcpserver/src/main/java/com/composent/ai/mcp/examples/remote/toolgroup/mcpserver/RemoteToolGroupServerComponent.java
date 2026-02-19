@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.openmcptools.common.server.toolgroup.SyncToolGroupServer;
-import org.openmcptools.common.server.toolgroup.impl.spring.SpringSyncToolGroupServerConfig;
+import org.openmcptools.common.server.toolgroup.impl.spring.SyncToolGroupServerConfig;
 import org.openmcptools.transport.uds.spring.UDSMcpTransportConfig;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
@@ -27,7 +27,7 @@ public class RemoteToolGroupServerComponent {
 	@Activate
 	public RemoteToolGroupServerComponent(
 			@Reference(target = UDSMcpTransportConfig.SERVER_CF_TARGET) ComponentFactory<McpServerTransportProvider> transportFactory,
-			@Reference(target = SpringSyncToolGroupServerConfig.SERVER_CF_TARGET) ComponentFactory<SyncToolGroupServer<?>> serverFactory) {
+			@Reference(target = SyncToolGroupServerConfig.SERVER_CF_TARGET) ComponentFactory<SyncToolGroupServer<?>> serverFactory) {
 		// Make sure that socketPath is deleted
 		if (socketPath.toFile().exists()) {
 			socketPath.toFile().delete();
@@ -35,9 +35,9 @@ public class RemoteToolGroupServerComponent {
 		// Create transport
 		this.transport = transportFactory.newInstance(new UDSMcpTransportConfig(socketPath).asProperties());
 		// Create sync server
-		this.toolGroupServer = serverFactory
-				.newInstance(new SpringSyncToolGroupServerConfig("Famous " + "remote sync server", "0.0.1",
-						transport.getInstance()).asProperties());
+		this.toolGroupServer = serverFactory.newInstance(
+				new SyncToolGroupServerConfig("Famous " + "remote sync server", "0.0.1", transport.getInstance())
+						.asProperties());
 	}
 
 	@Deactivate

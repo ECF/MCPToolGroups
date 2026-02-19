@@ -4,8 +4,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.openmcptools.common.server.toolgroup.SyncToolGroupServer;
-import org.openmcptools.common.server.toolgroup.impl.spring.SpringSyncToolGroupServerConfig;
 import org.openmcptools.transport.uds.spring.UDSMcpTransportConfig;
+import org.openmcptools.common.server.toolgroup.impl.spring.SyncToolGroupServerConfig;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
 import org.osgi.service.component.annotations.Activate;
@@ -30,7 +30,7 @@ public class SyncToolGroupServerComponent {
 	@Activate
 	public SyncToolGroupServerComponent(
 			@Reference(target = UDSMcpTransportConfig.SERVER_CF_TARGET) ComponentFactory<McpServerTransportProvider> transportFactory,
-			@Reference(target = SpringSyncToolGroupServerConfig.SERVER_CF_TARGET) ComponentFactory<SyncToolGroupServer<?>> serverFactory) {
+			@Reference(target = SyncToolGroupServerConfig.SERVER_CF_TARGET) ComponentFactory<SyncToolGroupServer<?>> serverFactory) {
 		// Make sure that socketPath is deleted
 		if (socketPath.toFile().exists()) {
 			socketPath.toFile().delete();
@@ -38,9 +38,9 @@ public class SyncToolGroupServerComponent {
 		// Create transport
 		this.transport = transportFactory.newInstance(new UDSMcpTransportConfig(socketPath).asProperties());
 		// Create sync server
-		this.toolGroupServer = serverFactory
-				.newInstance(new SpringSyncToolGroupServerConfig("Dynamic sync toolgroups server", "0.0.1",
-						transport.getInstance()).asProperties());
+		this.toolGroupServer = serverFactory.newInstance(
+				new SyncToolGroupServerConfig("Dynamic sync toolgroups server", "0.0.1", transport.getInstance())
+						.asProperties());
 		logger.debug("sync toolgroup server activated");
 	}
 

@@ -8,7 +8,8 @@ import com.composent.ai.mcp.examples.toolgroup.api.ExampleToolGroup;
 
 import reactor.core.publisher.Mono;
 
-@Component(immediate=true, property = { "service.exported.interfaces=*", "service.exported.configs=ecf.generic.server" })
+@Component(immediate = true, property = { "service.exported.interfaces=*",
+		"service.exported.configs=ecf.generic.server" })
 public class RemoteToolGroupImplComponent implements ExampleToolGroup {
 
 	private static Logger logger = LoggerFactory.getLogger(RemoteToolGroupImplComponent.class);

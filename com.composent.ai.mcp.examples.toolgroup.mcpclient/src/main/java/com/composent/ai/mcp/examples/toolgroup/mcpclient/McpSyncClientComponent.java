@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.openmcptools.common.client.toolgroup.impl.spring.McpSyncToolGroupClient;
+import org.openmcptools.common.client.toolgroup.impl.spring.SyncToolGroupClientConfig;
 import org.openmcptools.common.model.Group;
 import org.openmcptools.common.model.Tool;
 import org.openmcptools.common.toolgroup.client.SyncToolGroupClient;
+
 import org.openmcptools.transport.uds.spring.UDSMcpTransportConfig;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
@@ -40,7 +42,7 @@ public class McpSyncClientComponent {
 	@Activate
 	public McpSyncClientComponent(
 			@Reference(target = UDSMcpTransportConfig.CLIENT_CF_TARGET) ComponentFactory<McpClientTransport> transportFactory,
-			@Reference(target = "(component.factory=SpringSyncToolGroupClient)") ComponentFactory<SyncToolGroupClient<McpSyncToolGroupClient>> clientFactory) {
+			@Reference(target = SyncToolGroupClientConfig.CLIENT_CF_TARGET) ComponentFactory<SyncToolGroupClient<McpSyncToolGroupClient>> clientFactory) {
 		// Create transport
 		ComponentInstance<McpClientTransport> transport = transportFactory
 				.newInstance(new UDSMcpTransportConfig(socketPath).asProperties());
