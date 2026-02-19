@@ -1,7 +1,6 @@
 package com.composent.ai.mcp.examples.toolgroup.mcpclient;
 
 import java.nio.file.Path;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +9,6 @@ import org.openmcptools.common.client.toolgroup.impl.spring.SyncToolGroupClientC
 import org.openmcptools.common.model.Group;
 import org.openmcptools.common.model.Tool;
 import org.openmcptools.common.toolgroup.client.SyncToolGroupClient;
-
 import org.openmcptools.transport.uds.spring.UDSMcpTransportConfig;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
@@ -47,9 +45,7 @@ public class McpSyncClientComponent {
 		ComponentInstance<McpClientTransport> transport = transportFactory
 				.newInstance(new UDSMcpTransportConfig(socketPath).asProperties());
 		// Create client
-		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put(SyncToolGroupClient.CLIENT_TRANSPORT, transport.getInstance());
-		toolGroupClient = clientFactory.newInstance(props);
+		toolGroupClient = clientFactory.newInstance(new SyncToolGroupClientConfig(transport.getInstance()).asProperties());
 	}
 
 	void printTextContent(String op, Content content) {
