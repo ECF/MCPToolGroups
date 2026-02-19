@@ -39,7 +39,7 @@ public class SyncToolGroupServerComponent {
 		this.transport = transportFactory.newInstance(new UDSMcpTransportConfig(socketPath).asProperties());
 		// Create sync server
 		this.toolGroupServer = serverFactory
-				.newInstance(new SpringSyncToolGroupServerConfig("Scott's famous " + "async Server", "0.0.1",
+				.newInstance(new SpringSyncToolGroupServerConfig("Dynamic sync toolgroups server", "0.0.1",
 						transport.getInstance()).asProperties());
 		logger.debug("sync toolgroup server activated");
 	}

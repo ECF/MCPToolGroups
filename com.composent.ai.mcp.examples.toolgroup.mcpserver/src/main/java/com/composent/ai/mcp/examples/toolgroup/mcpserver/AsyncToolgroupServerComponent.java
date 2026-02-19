@@ -40,7 +40,7 @@ public class AsyncToolgroupServerComponent {
 		this.transport = transportFactory.newInstance(new UDSMcpTransportConfig(socketPath).asProperties());
 		// Create async server
 		this.toolGroupServer = serverFactory
-				.newInstance(new SpringAsyncToolGroupServerConfig("Scott's famous " + "async Server", "0.0.1",
+				.newInstance(new SpringAsyncToolGroupServerConfig("Dynamic async toolgroup server", "0.0.1",
 						transport.getInstance()).asProperties());
 		logger.debug("sync toolgroup remote server activated");
 	}
