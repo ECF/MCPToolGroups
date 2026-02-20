@@ -8,4 +8,5 @@
 	org.openmcptools.common,\
 	org.openmcptools.common.impl.spring,\
 	org.openmcptools.common.client,\
-	org.openmcptools.transport.uds.spring
+	org.openmcptools.transport.uds.spring,\
+	org.openmcptools.transport.uds

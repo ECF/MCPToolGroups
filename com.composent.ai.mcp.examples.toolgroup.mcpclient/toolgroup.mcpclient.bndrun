@@ -43,7 +43,7 @@
 	org.openmcptools.annotation;version='[1.0.0,1.0.1)';startlevel=1018,\
 	org.openmcptools.common.server;version='[1.0.0,1.0.1)';startlevel=1019,\
 	org.openmcptools.extensions.groups;version='[1.0.1,1.0.2)';startlevel=1020,\
-	org.openmcptools.extensions.update;version='[1.0.0,1.0.1)';startlevel=1021,\
+	org.openmcptools.extensions.update;version='[1.0.1,1.0.2)';startlevel=1021,\
 	com.fasterxml.jackson.core.jackson-core;version='[2.21.0,2.21.1)';startlevel=1022,\
 	com.fasterxml.jackson.core.jackson-databind;version='[2.21.0,2.21.1)';startlevel=1023,\
 	com.fasterxml.jackson.datatype.jackson-datatype-jsr310;version='[2.20.2,2.20.3)';startlevel=1024,\
@@ -54,13 +54,14 @@
 	org.springaicommunity.mcp-annotations;version='[0.8.0,0.8.1)';startlevel=1029,\
 	org.openmcptools.common.impl.spring;version='[1.0.0,1.0.1)';startlevel=1030,\
 	org.eclipse.ecf.ai.mcp.transports;version='[1.0.1,1.0.2)';startlevel=1031,\
-	org.openmcptools.transport;version='[1.0.0,1.0.1)';startlevel=1032,\
-	org.openmcptools.transport.uds.spring;version='[1.0.0,1.0.1)';startlevel=1033,\
-	com.composent.ai.mcp.examples.toolgroup.mcpclient;version=snapshot;startlevel=1034,\
-	com.ethlo.time.itu;version='[1.14.0,1.14.1)';startlevel=1035,\
-	org.yaml.snakeyaml;version='[2.4.0,2.4.1)';startlevel=1036,\
-	com.fasterxml.jackson.dataformat.jackson-dataformat-yaml;version='[2.21.0,2.21.1)';startlevel=1037,\
-	com.networknt.json-schema-validator;version='[2.0.0,2.0.1)';startlevel=1038,\
-	io.modelcontextprotocol.sdk.mcp-json-jackson2;version='[0.18.0,0.18.1)';startlevel=1039,\
-	org.apache.felix.gogo.command;version='[1.1.2,1.1.3)';startlevel=1040,\
-	org.apache.felix.gogo.shell;version='[1.1.4,1.1.5)';startlevel=1041
+	org.openmcptools.transport;version='[1.0.1,1.0.2)';startlevel=1032,\
+	org.openmcptools.transport.uds;version='[1.0.1,1.0.2)';startlevel=1033,\
+	org.openmcptools.transport.uds.spring;version='[1.0.0,1.0.1)';startlevel=1034,\
+	com.composent.ai.mcp.examples.toolgroup.mcpclient;version=snapshot;startlevel=1035,\
+	com.ethlo.time.itu;version='[1.14.0,1.14.1)';startlevel=1036,\
+	org.yaml.snakeyaml;version='[2.4.0,2.4.1)';startlevel=1037,\
+	com.fasterxml.jackson.dataformat.jackson-dataformat-yaml;version='[2.21.0,2.21.1)';startlevel=1038,\
+	com.networknt.json-schema-validator;version='[2.0.0,2.0.1)';startlevel=1039,\
+	io.modelcontextprotocol.sdk.mcp-json-jackson2;version='[0.18.0,0.18.1)';startlevel=1040,\
+	org.apache.felix.gogo.command;version='[1.1.2,1.1.3)';startlevel=1041,\
+	org.apache.felix.gogo.shell;version='[1.1.4,1.1.5)';startlevel=1042

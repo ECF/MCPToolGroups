@@ -5,7 +5,7 @@ import java.nio.file.Paths;
 
 import org.openmcptools.common.server.toolgroup.AsyncToolGroupServer;
 import org.openmcptools.common.server.toolgroup.impl.spring.AsyncToolGroupServerConfig;
-import org.openmcptools.transport.uds.spring.UDSMcpTransportConfig;
+import org.openmcptools.transport.uds.spring.UDSMcpServerTransportConfig;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
 import org.osgi.service.component.annotations.Activate;
@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.modelcontextprotocol.spec.McpServerTransportProvider;
-
+	
 @Component(immediate = true, service = { AsyncToolgroupServerComponent.class })
 public class AsyncToolgroupServerComponent {
 
@@ -30,14 +30,14 @@ public class AsyncToolgroupServerComponent {
 
 	@Activate
 	public AsyncToolgroupServerComponent(
-			@Reference(target = UDSMcpTransportConfig.SERVER_CF_TARGET) ComponentFactory<McpServerTransportProvider> transportFactory,
+			@Reference(target = UDSMcpServerTransportConfig.SERVER_CF_TARGET) ComponentFactory<McpServerTransportProvider> transportFactory,
 			@Reference(target = AsyncToolGroupServerConfig.SERVER_CF_TARGET) ComponentFactory<AsyncToolGroupServer<?>> serverFactory) {
 		// Make sure that socketPath is deleted
 		if (socketPath.toFile().exists()) {
 			socketPath.toFile().delete();
 		}
 		// Create transport
-		this.transport = transportFactory.newInstance(new UDSMcpTransportConfig(socketPath).asProperties());
+		this.transport = transportFactory.newInstance(new UDSMcpServerTransportConfig(socketPath).asProperties());
 		// Create async server
 		this.toolGroupServer = serverFactory.newInstance(
 				new AsyncToolGroupServerConfig("Dynamic async toolgroup server", "0.0.1", transport.getInstance())

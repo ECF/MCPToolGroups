@@ -8,7 +8,6 @@
 	org.openmcptools.common,\
 	io.projectreactor.reactor-core,\
 	org.openmcptools.common.impl.spring,\
-	org.openmcptools.common.client,\
 	org.openmcptools.transport.uds.spring
 	
 Bundle-Version: 1.3.0.${tstamp}
