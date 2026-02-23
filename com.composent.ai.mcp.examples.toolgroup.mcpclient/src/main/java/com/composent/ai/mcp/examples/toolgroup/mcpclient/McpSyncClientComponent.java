@@ -3,10 +3,10 @@ package com.composent.ai.mcp.examples.toolgroup.mcpclient;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.openmcptools.common.client.toolgroup.impl.spring.SyncToolGroupClientConfig;
 import org.openmcptools.common.model.Tool;
 import org.openmcptools.common.toolgroup.client.SyncToolGroupClient;
 import org.openmcptools.common.toolgroup.client.ToolGroupClientListener;
+import org.openmcptools.common.toolgroup.client.impl.spring.SyncToolGroupClientConfig;
 import org.openmcptools.transport.uds.spring.UDSMcpClientTransportConfig;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;

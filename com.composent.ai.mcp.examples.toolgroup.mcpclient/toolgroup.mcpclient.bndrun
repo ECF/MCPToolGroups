@@ -38,10 +38,10 @@
 	osgi.promise;version='[8.1.0,8.1.1)';startlevel=1013,\
 	org.osgi.service.component;version='[1.5.1,1.5.2)';startlevel=1014,\
 	org.apache.felix.scr;version='[2.2.6,2.2.7)';startlevel=1015,\
-	org.openmcptools.common;version='[1.0.1,1.0.2)';startlevel=1016,\
-	org.openmcptools.common.client;version='[1.0.1,1.0.2)';startlevel=1017,\
+	org.openmcptools.common;version='[2.0.0,2.0.1)';startlevel=1016,\
+	org.openmcptools.common.client;version='[2.0.0,2.0.1)';startlevel=1017,\
 	org.openmcptools.annotation;version='[1.0.0,1.0.1)';startlevel=1018,\
-	org.openmcptools.common.server;version='[1.0.1,1.0.2)';startlevel=1019,\
+	org.openmcptools.common.server;version='[2.0.0,2.0.1)';startlevel=1019,\
 	org.openmcptools.extensions.groups;version='[1.0.1,1.0.2)';startlevel=1020,\
 	org.openmcptools.extensions.update;version='[1.0.1,1.0.2)';startlevel=1021,\
 	com.fasterxml.jackson.core.jackson-core;version='[2.21.0,2.21.1)';startlevel=1022,\
@@ -52,7 +52,7 @@
 	wrapped.com.github.victools.jsonschema-module-jackson;version='[4.38.0,4.38.1)';startlevel=1027,\
 	wrapped.com.github.victools.jsonschema-module-swagger-2;version='[4.38.0,4.38.1)';startlevel=1028,\
 	org.springaicommunity.mcp-annotations;version='[0.8.0,0.8.1)';startlevel=1029,\
-	org.openmcptools.common.impl.spring;version='[1.0.1,1.0.2)';startlevel=1030,\
+	org.openmcptools.common.impl.spring;version='[2.0.0,2.0.1)';startlevel=1030,\
 	org.eclipse.ecf.ai.mcp.transports;version='[1.0.1,1.0.2)';startlevel=1031,\
 	org.openmcptools.transport;version='[1.0.1,1.0.2)';startlevel=1032,\
 	org.openmcptools.transport.uds;version='[1.0.1,1.0.2)';startlevel=1033,\

@@ -3,8 +3,8 @@ package com.composent.ai.mcp.examples.toolgroup.mcpserver;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.openmcptools.common.server.toolgroup.AsyncToolGroupServer;
-import org.openmcptools.common.server.toolgroup.impl.spring.AsyncToolGroupServerConfig;
+import org.openmcptools.common.toolgroup.server.AsyncToolGroupServer;
+import org.openmcptools.common.toolgroup.server.impl.spring.AsyncToolGroupServerConfig;
 import org.openmcptools.transport.uds.spring.UDSMcpServerTransportConfig;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
