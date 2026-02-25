@@ -11,24 +11,24 @@ import com.composent.ai.mcp.examples.toolgroup.api.ExampleToolGroup;
 import reactor.core.publisher.Mono;
 
 @Component(enabled = false, immediate = true)
-public class ToolGroupComponent implements ExampleToolGroup {
+public class ExampleToolGroupImpl implements ExampleToolGroup {
 
-	private static Logger logger = LoggerFactory.getLogger(ToolGroupComponent.class);
+	private static Logger logger = LoggerFactory.getLogger(ExampleToolGroupImpl.class);
 
-	// This reference will wait for the SyncToolGroupServerComponent
+	// This reference will wait for the SyncToolGroupServerImpl
 	// to be activated
 	@Reference
-	private SyncToolGroupServerComponent syncServer;
+	private SyncToolGroupServerImpl syncServer;
 	// This reference will wait for the AsyncToolGroupServerComponent
 	// to be activated
 	@Reference
-	private AsyncToolgroupServerComponent asyncServer;
+	private AsyncToolGroupServerImpl asyncServer;
 
 	@Activate
 	void activate() {
-		// Add to syncServer
+		// Add ExampleToolGroup sync methods for sync server 
 		syncServer.addToolGroups(this, ExampleToolGroup.class);
-		// Add to asyncServer
+		// Add ExampleToolGroup async methods for async server
 		asyncServer.addToolGroups(this, ExampleToolGroup.class);
 	}
 

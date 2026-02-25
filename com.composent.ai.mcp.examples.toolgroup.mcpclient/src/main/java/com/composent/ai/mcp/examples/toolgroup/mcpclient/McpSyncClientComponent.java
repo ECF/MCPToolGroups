@@ -44,11 +44,11 @@ public class McpSyncClientComponent {
 			public <ClientType> void handleClientUpdateEvent(ClientType client, EventType eventType, List<Tool> tools) {
 				if (eventType.equals(EventType.ADD_TOOLS)) {
 					tools.forEach(t -> {
-						logger.debug("Client "+client+" added tools=" + tools);
+						logger.debug("Added tools=" + t + ";roots=" + t.getParentGroupRoots());
 					});
 				} else 	if (eventType.equals(EventType.REMOVE_TOOLS)) {
 					tools.forEach(t -> {
-						logger.debug("Client "+client+" removed tools=" + tools);
+						logger.debug("Removed tool=" + t + ";roots=" + t.getParentGroupRoots());
 					});
 				}
 			}

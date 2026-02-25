@@ -2,8 +2,11 @@ package com.composent.ai.mcp.examples.toolgroup.mcpserver;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
+import org.openmcptools.common.model.Tool;
 import org.openmcptools.common.toolgroup.server.SyncToolGroupServer;
+import org.openmcptools.common.toolgroup.server.ToolImpl;
 import org.openmcptools.common.toolgroup.server.impl.spring.SyncToolGroupServerConfig;
 import org.openmcptools.transport.uds.spring.UDSMcpServerTransportConfig;
 import org.osgi.service.component.ComponentFactory;
@@ -17,10 +20,10 @@ import org.slf4j.LoggerFactory;
 
 import io.modelcontextprotocol.spec.McpServerTransportProvider;
 
-@Component(immediate = true, service = { SyncToolGroupServerComponent.class })
-public class SyncToolGroupServerComponent {
+@Component(immediate = true, service = { SyncToolGroupServerImpl.class })
+public class SyncToolGroupServerImpl {
 
-	private static Logger logger = LoggerFactory.getLogger(SyncToolGroupServerComponent.class);
+	private static Logger logger = LoggerFactory.getLogger(SyncToolGroupServerImpl.class);
 	// file named to be used for client <-> server communication
 	private final Path socketPath = Paths.get("").resolve("s.socket").toAbsolutePath();
 
@@ -28,7 +31,7 @@ public class SyncToolGroupServerComponent {
 	private final ComponentInstance<SyncToolGroupServer<?>> toolGroupServer;
 
 	@Activate
-	public SyncToolGroupServerComponent(
+	public SyncToolGroupServerImpl(
 			@Reference(target = UDSMcpServerTransportConfig.SERVER_CF_TARGET) ComponentFactory<McpServerTransportProvider> transportFactory,
 			@Reference(target = SyncToolGroupServerConfig.SERVER_CF_TARGET) ComponentFactory<SyncToolGroupServer<?>> serverFactory) {
 		// Make sure that socketPath is deleted
@@ -50,8 +53,15 @@ public class SyncToolGroupServerComponent {
 		this.transport.dispose();
 	}
 
-	public void addToolGroups(Object inst, Class<?> clazz) {
-		this.toolGroupServer.getInstance().addToolGroup(inst, clazz);
+	public List<Tool> addToolGroups(Object inst, Class<?> clazz) {
+		return this.toolGroupServer.getInstance().addToolGroup(inst, clazz);
+	}
+	
+	public List<Tool> addToolImpl(List<ToolImpl> toolImpls) {
+		return this.toolGroupServer.getInstance().addToolImpls(toolImpls);
 	}
 
+	public List<Tool> removeTools(List<String> toolNames) {
+		return this.toolGroupServer.getInstance().removeTools(toolNames);
+	}
 }

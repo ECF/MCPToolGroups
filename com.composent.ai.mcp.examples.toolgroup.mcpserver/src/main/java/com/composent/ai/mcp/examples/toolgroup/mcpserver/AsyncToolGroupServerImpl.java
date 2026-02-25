@@ -17,10 +17,10 @@ import org.slf4j.LoggerFactory;
 
 import io.modelcontextprotocol.spec.McpServerTransportProvider;
 	
-@Component(immediate = true, service = { AsyncToolgroupServerComponent.class })
-public class AsyncToolgroupServerComponent {
+@Component(immediate = true, service = { AsyncToolGroupServerImpl.class })
+public class AsyncToolGroupServerImpl {
 
-	private static Logger logger = LoggerFactory.getLogger(AsyncToolgroupServerComponent.class);
+	private static Logger logger = LoggerFactory.getLogger(AsyncToolGroupServerImpl.class);
 
 	// file named to be used for client <-> server communication
 	private final Path socketPath = Paths.get("").resolve("s.socket").toAbsolutePath();
@@ -29,7 +29,7 @@ public class AsyncToolgroupServerComponent {
 	private final ComponentInstance<AsyncToolGroupServer<?>> toolGroupServer;
 
 	@Activate
-	public AsyncToolgroupServerComponent(
+	public AsyncToolGroupServerImpl(
 			@Reference(target = UDSMcpServerTransportConfig.SERVER_CF_TARGET) ComponentFactory<McpServerTransportProvider> transportFactory,
 			@Reference(target = AsyncToolGroupServerConfig.SERVER_CF_TARGET) ComponentFactory<AsyncToolGroupServer<?>> serverFactory) {
 		// Make sure that socketPath is deleted
