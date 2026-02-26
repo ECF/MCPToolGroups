@@ -2,8 +2,11 @@ package com.composent.ai.mcp.examples.toolgroup.mcpserver;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
+import org.openmcptools.common.model.Tool;
 import org.openmcptools.common.toolgroup.server.AsyncToolGroupServer;
+import org.openmcptools.common.toolgroup.server.ToolImpl;
 import org.openmcptools.common.toolgroup.server.impl.spring.AsyncToolGroupServerConfig;
 import org.openmcptools.transport.uds.spring.UDSMcpServerTransportConfig;
 import org.osgi.service.component.ComponentFactory;
@@ -51,8 +54,20 @@ public class AsyncToolGroupServerImpl {
 		this.transport.dispose();
 	}
 
-	public void addToolGroups(Object inst, Class<?> clazz) {
-		this.toolGroupServer.getInstance().addToolGroup(inst, clazz);
+	public List<Tool> addToolGroups(Object inst, Class<?> clazz) {
+		return this.toolGroupServer.getInstance().addToolGroup(inst, clazz);
+	}
+	
+	public List<Tool> addToolImpl(List<ToolImpl> toolImpls) {
+		return this.toolGroupServer.getInstance().addToolImpls(toolImpls);
+	}
+
+	public List<Tool> removeTools(List<String> toolNames) {
+		return this.toolGroupServer.getInstance().removeTools(toolNames);
+	}
+	
+	public Tool removeTool(String toolName) {
+		return this.toolGroupServer.getInstance().removeTool(toolName);
 	}
 
 }

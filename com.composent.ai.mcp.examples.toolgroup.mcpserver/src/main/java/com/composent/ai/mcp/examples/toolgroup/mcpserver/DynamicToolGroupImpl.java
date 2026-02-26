@@ -1,7 +1,5 @@
 package com.composent.ai.mcp.examples.toolgroup.mcpserver;
 
-import java.util.List;
-
 import org.openmcptools.common.model.Group;
 import org.openmcptools.common.model.Tool;
 import org.openmcptools.common.toolgroup.server.ToolImpl;
@@ -21,7 +19,7 @@ public class DynamicToolGroupImpl {
 	private SyncToolGroupServerImpl syncServer;
 
 	// Created and set in activate
-	private List<Tool> tools;
+	private Tool tool;
 	
 	@Activate
 	void activate() {
@@ -33,7 +31,7 @@ public class DynamicToolGroupImpl {
 		t.addParentGroup(group);
 		// Create ToolImpl
 		try {
-			this.tools = syncServer.addToolImpl(List.of(new ToolImpl(t, this, getClass(), "helloWorld", null)));
+			this.tool = syncServer.addToolImpl(new ToolImpl(t, this, getClass(), "helloWorld", null));
 		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
 		}
@@ -42,9 +40,9 @@ public class DynamicToolGroupImpl {
 
 	@Deactivate
 	void deactivate() {
-		if (tools != null) {
-			this.syncServer.removeTools(tools.stream().map(Tool::getFullyQualifiedName).toList()).forEach(t -> logger.debug("Removed tool=" + t + ";root=" + t.getParentGroupRoots()));
-			tools = null;
+		if (tool != null) {
+			this.syncServer.removeTool(tool.getFullyQualifiedName());
+			this.tool = null;
 		}
 	}
 

@@ -10,7 +10,7 @@ import com.composent.ai.mcp.examples.toolgroup.api.ExampleToolGroup;
 
 import reactor.core.publisher.Mono;
 
-@Component(enabled = false, immediate = true)
+@Component(immediate = true)
 public class ExampleToolGroupImpl implements ExampleToolGroup {
 
 	private static Logger logger = LoggerFactory.getLogger(ExampleToolGroupImpl.class);

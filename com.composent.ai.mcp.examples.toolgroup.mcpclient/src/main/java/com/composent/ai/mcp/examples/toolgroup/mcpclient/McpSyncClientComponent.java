@@ -28,12 +28,12 @@ public class McpSyncClientComponent {
 			.resolve(System.getProperty("UNIXSOCKET_RELATIVEPATH")).resolve(System.getProperty("UNIXSOCKET_FILENAME"))
 			.toAbsolutePath();
 
-	private ComponentInstance<SyncToolGroupClient<?>> toolGroupClient;
+	private ComponentInstance<SyncToolGroupClient> toolGroupClient;
 
 	@Activate
 	public McpSyncClientComponent(
 			@Reference(target = UDSMcpClientTransportConfig.CLIENT_CF_TARGET) ComponentFactory<McpClientTransport> transportFactory,
-			@Reference(target = SyncToolGroupClientConfig.CLIENT_CF_TARGET) ComponentFactory<SyncToolGroupClient<?>> clientFactory) {
+			@Reference(target = SyncToolGroupClientConfig.CLIENT_CF_TARGET) ComponentFactory<SyncToolGroupClient> clientFactory) {
 		// Create transport
 		ComponentInstance<McpClientTransport> transport = transportFactory
 				.newInstance(new UDSMcpClientTransportConfig(socketPath).asProperties());
@@ -41,7 +41,7 @@ public class McpSyncClientComponent {
 		SyncToolGroupClientConfig clientConfig = new SyncToolGroupClientConfig(transport.getInstance());
 		clientConfig.addToolGroupClientListener(new ToolGroupClientListener() {
 			@Override
-			public <ClientType> void handleClientUpdateEvent(ClientType client, EventType eventType, List<Tool> tools) {
+			public void handleClientUpdateEvent(EventType eventType, List<Tool> tools) {
 				if (eventType.equals(EventType.ADD_TOOLS)) {
 					tools.forEach(t -> {
 						logger.debug("Added tools=" + t + ";roots=" + t.getParentGroupRoots());

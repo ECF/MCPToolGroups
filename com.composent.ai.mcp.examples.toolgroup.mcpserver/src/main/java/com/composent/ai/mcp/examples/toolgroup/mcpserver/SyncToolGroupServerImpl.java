@@ -57,11 +57,15 @@ public class SyncToolGroupServerImpl {
 		return this.toolGroupServer.getInstance().addToolGroup(inst, clazz);
 	}
 	
-	public List<Tool> addToolImpl(List<ToolImpl> toolImpls) {
-		return this.toolGroupServer.getInstance().addToolImpls(toolImpls);
+	public Tool addToolImpl(ToolImpl toolImpl) {
+		return this.toolGroupServer.getInstance().addToolImpl(toolImpl);
 	}
 
 	public List<Tool> removeTools(List<String> toolNames) {
 		return this.toolGroupServer.getInstance().removeTools(toolNames);
+	}
+	
+	public Tool removeTool(String toolName) {
+		return this.toolGroupServer.getInstance().removeTool(toolName);
 	}
 }
