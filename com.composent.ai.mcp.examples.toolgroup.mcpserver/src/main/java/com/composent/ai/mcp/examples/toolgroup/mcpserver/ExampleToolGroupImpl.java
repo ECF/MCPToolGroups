@@ -26,7 +26,7 @@ public class ExampleToolGroupImpl implements ExampleToolGroup {
 
 	@Activate
 	void activate() {
-		// Add ExampleToolGroup sync methods for sync server 
+		// Add ExampleToolGroup sync methods for sync server
 		syncServer.addToolGroups(this, ExampleToolGroup.class);
 		// Add ExampleToolGroup async methods for async server
 		asyncServer.addToolGroups(this, ExampleToolGroup.class);

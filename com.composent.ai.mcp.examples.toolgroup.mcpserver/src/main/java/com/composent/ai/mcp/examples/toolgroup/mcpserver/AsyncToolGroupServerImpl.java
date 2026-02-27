@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.modelcontextprotocol.spec.McpServerTransportProvider;
-	
+
 @Component(immediate = true, service = { AsyncToolGroupServerImpl.class })
 public class AsyncToolGroupServerImpl {
 
@@ -57,7 +57,7 @@ public class AsyncToolGroupServerImpl {
 	public List<Tool> addToolGroups(Object inst, Class<?> clazz) {
 		return this.toolGroupServer.getInstance().addToolGroup(inst, clazz);
 	}
-	
+
 	public List<Tool> addToolImpl(List<ToolImpl> toolImpls) {
 		return this.toolGroupServer.getInstance().addToolImpls(toolImpls);
 	}
@@ -65,7 +65,7 @@ public class AsyncToolGroupServerImpl {
 	public List<Tool> removeTools(List<String> toolNames) {
 		return this.toolGroupServer.getInstance().removeTools(toolNames);
 	}
-	
+
 	public Tool removeTool(String toolName) {
 		return this.toolGroupServer.getInstance().removeTool(toolName);
 	}

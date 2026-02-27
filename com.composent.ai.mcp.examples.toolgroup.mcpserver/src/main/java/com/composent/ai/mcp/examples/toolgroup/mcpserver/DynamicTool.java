@@ -11,31 +11,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component(immediate = true)
-public class DynamicToolGroupImpl {
+public class DynamicTool {
 
-	private static Logger logger = LoggerFactory.getLogger(DynamicToolGroupImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(DynamicTool.class);
 
 	@Reference
 	private SyncToolGroupServerImpl syncServer;
 
 	// Created and set in activate
 	private Tool tool;
-	
+
 	@Activate
 	void activate() {
-		// Build toolgroup dynamically via model API
-		Group group = new Group("com.composent.ai.mcp.examples.dynamic");
-		group.setDescription("Extra special dynamic group");
-		Tool t = new Tool("helloWorldTool");
-		t.setDescription("tool description");
-		t.addParentGroup(group);
-		// Create ToolImpl
+		// Build tool
+		Tool t = Tool.builder("helloWorldTool").description("my hello world tool").addParent(Group
+				.builder("com.composent.ai.mcp.examples.dynamic").description("Extra special dynamic group").build())
+				.build();
 		try {
+			// Add to server
 			this.tool = syncServer.addToolImpl(new ToolImpl(t, this, getClass(), "helloWorld", null));
 		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	@Deactivate
@@ -50,5 +48,5 @@ public class DynamicToolGroupImpl {
 		logger.debug("Hello world called.  Returning");
 		return "Hello World";
 	}
-	
+
 }

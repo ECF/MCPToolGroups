@@ -56,7 +56,7 @@ public class SyncToolGroupServerImpl {
 	public List<Tool> addToolGroups(Object inst, Class<?> clazz) {
 		return this.toolGroupServer.getInstance().addToolGroup(inst, clazz);
 	}
-	
+
 	public Tool addToolImpl(ToolImpl toolImpl) {
 		return this.toolGroupServer.getInstance().addToolImpl(toolImpl);
 	}
@@ -64,7 +64,7 @@ public class SyncToolGroupServerImpl {
 	public List<Tool> removeTools(List<String> toolNames) {
 		return this.toolGroupServer.getInstance().removeTools(toolNames);
 	}
-	
+
 	public Tool removeTool(String toolName) {
 		return this.toolGroupServer.getInstance().removeTool(toolName);
 	}
