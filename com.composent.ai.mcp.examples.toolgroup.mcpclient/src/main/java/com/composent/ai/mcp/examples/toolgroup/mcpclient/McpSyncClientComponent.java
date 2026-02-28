@@ -2,8 +2,11 @@ package com.composent.ai.mcp.examples.toolgroup.mcpclient;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
+import org.openmcptools.common.client.CallToolRequest;
 import org.openmcptools.common.model.Tool;
+import org.openmcptools.common.model.content.TextContent;
 import org.openmcptools.common.toolgroup.client.SyncToolGroupClient;
 import org.openmcptools.common.toolgroup.client.ToolGroupClientListener;
 import org.openmcptools.common.toolgroup.client.impl.spring.SyncToolGroupClientConfig;
@@ -22,6 +25,10 @@ import io.modelcontextprotocol.spec.McpClientTransport;
 @Component(immediate = true)
 public class McpSyncClientComponent {
 
+	private static final String ARITHMETIC_TOOLGROUP_NAME = com.composent.ai.mcp.examples.toolgroup.api.ExampleToolGroup.class.getName() + ".%s";
+	private static final String ADD_TOOL_NAME = String.format(ARITHMETIC_TOOLGROUP_NAME, "add");
+	private static final String MULTIPLY_TOOL_NAME = String.format(ARITHMETIC_TOOLGROUP_NAME, "multiply");
+	
 	private static Logger logger = LoggerFactory.getLogger(McpSyncClientComponent.class);
 
 	private final Path socketPath = Path.of("").toAbsolutePath().getParent()
@@ -37,8 +44,12 @@ public class McpSyncClientComponent {
 		// Create transport
 		ComponentInstance<McpClientTransport> transport = transportFactory
 				.newInstance(new UDSMcpClientTransportConfig(socketPath).asProperties());
-		// Create client
+		// Create client config
 		SyncToolGroupClientConfig clientConfig = new SyncToolGroupClientConfig(transport.getInstance());
+		// This sets up a tool group client listener in the client config.
+		// This listener is notified when update notifications are received 
+		// from the server.  This is for testing the update extension for 
+		// dynamically updating tools
 		clientConfig.addToolGroupClientListener(new ToolGroupClientListener() {
 			@Override
 			public void handleClientUpdateEvent(EventType eventType, List<Tool> tools) {
@@ -53,6 +64,7 @@ public class McpSyncClientComponent {
 				}
 			}
 		});
+		// Create the toolGroupClient instance using the config
 		toolGroupClient = clientFactory.newInstance(clientConfig.asProperties());
 	}
 
@@ -61,6 +73,30 @@ public class McpSyncClientComponent {
 		// initialize will connect to server
 		toolGroupClient.getInstance().initialize();
 		logger.debug("uds sync client initialized");
+		// Test some tool calling
+		testAddAndMultiplyTools();
+	}
+
+	void testAddAndMultiplyTools() {
+		SyncToolGroupClient client = toolGroupClient.getInstance();
+
+		String x = "5.1";
+		String y = "6.32";
+
+		// Call add(5.1,6.32)
+		client.callTool(new CallToolRequest(ADD_TOOL_NAME, Map.of("x", x, "y", y)))
+				.getContent().forEach(content -> {
+					logger.debug("add(" + x + "," + y + ")" + " result=" + ((TextContent) content).getText());
+				});
+
+		String x1 = "10.71";
+		String y1 = "23.86";
+		// Call multiply(10.71,23.86)
+		client.callTool(
+				new CallToolRequest(MULTIPLY_TOOL_NAME, Map.of("x", x1, "y", y1)))
+				.getContent().forEach(content -> {
+					logger.debug("multiply(" + x1 + "," + y1 + ")" + " result=" + ((TextContent) content).getText());
+				});
 	}
 
 	@Deactivate
