@@ -4,11 +4,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.openmcptools.transport.server.MCPServerTransportProvider;
+
+import org.openmcptools.transport.uds.spring.UDSMcpServerTransportConfig;
+
 import org.openmcptools.common.model.Tool;
 import org.openmcptools.common.toolgroup.server.AsyncToolGroupServer;
 import org.openmcptools.common.toolgroup.server.ToolImpl;
-import org.openmcptools.common.toolgroup.server.impl.spring.AsyncToolGroupServerConfig;
-import org.openmcptools.transport.uds.spring.UDSMcpServerTransportConfig;
+
+import org.openmcptools.common.toolgroup.server.impl.spring.AsyncMCPToolGroupServerConfig;
+
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
 import org.osgi.service.component.annotations.Activate;
@@ -18,8 +23,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.modelcontextprotocol.spec.McpServerTransportProvider;
-
 @Component(immediate = true, service = { AsyncToolGroupServerImpl.class })
 public class AsyncToolGroupServerImpl {
 
@@ -28,13 +31,15 @@ public class AsyncToolGroupServerImpl {
 	// file named to be used for client <-> server communication
 	private final Path socketPath = Paths.get("").resolve("s.socket").toAbsolutePath();
 
-	private final ComponentInstance<McpServerTransportProvider> transport;
+	@SuppressWarnings("rawtypes")
+	private final ComponentInstance<MCPServerTransportProvider> transport;
 	private final ComponentInstance<AsyncToolGroupServer<?>> toolGroupServer;
 
+	@SuppressWarnings("unchecked")
 	@Activate
 	public AsyncToolGroupServerImpl(
-			@Reference(target = UDSMcpServerTransportConfig.SERVER_CF_TARGET) ComponentFactory<McpServerTransportProvider> transportFactory,
-			@Reference(target = AsyncToolGroupServerConfig.SERVER_CF_TARGET) ComponentFactory<AsyncToolGroupServer<?>> serverFactory) {
+			@SuppressWarnings("rawtypes") @Reference(target = UDSMcpServerTransportConfig.SERVER_CF_TARGET) ComponentFactory<MCPServerTransportProvider> transportFactory,
+			@Reference(target = AsyncMCPToolGroupServerConfig.SERVER_CF_TARGET) ComponentFactory<AsyncToolGroupServer<?>> serverFactory) {
 		// Make sure that socketPath is deleted
 		if (socketPath.toFile().exists()) {
 			socketPath.toFile().delete();
@@ -43,7 +48,7 @@ public class AsyncToolGroupServerImpl {
 		this.transport = transportFactory.newInstance(new UDSMcpServerTransportConfig(socketPath).asProperties());
 		// Create async server
 		this.toolGroupServer = serverFactory.newInstance(
-				new AsyncToolGroupServerConfig("Dynamic async toolgroup server", "0.0.1", transport.getInstance())
+				new AsyncMCPToolGroupServerConfig("Dynamic async toolgroup server", "0.0.1", transport.getInstance())
 						.asProperties());
 		logger.debug("sync toolgroup remote server activated");
 	}

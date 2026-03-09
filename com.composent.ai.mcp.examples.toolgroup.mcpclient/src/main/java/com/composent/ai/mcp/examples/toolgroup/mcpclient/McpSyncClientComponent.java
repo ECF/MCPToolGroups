@@ -4,13 +4,15 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
+import org.openmcptools.transport.client.MCPClientTransport;
+import org.openmcptools.transport.uds.spring.UDSMcpClientTransportConfig;
+
 import org.openmcptools.common.client.CallToolRequest;
 import org.openmcptools.common.model.Tool;
 import org.openmcptools.common.model.content.TextContent;
 import org.openmcptools.common.toolgroup.client.SyncToolGroupClient;
 import org.openmcptools.common.toolgroup.client.ToolGroupClientListener;
-import org.openmcptools.common.toolgroup.client.impl.spring.SyncToolGroupClientConfig;
-import org.openmcptools.transport.uds.spring.UDSMcpClientTransportConfig;
+import org.openmcptools.common.toolgroup.client.impl.spring.SyncMCPToolGroupClientConfig;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
 import org.osgi.service.component.annotations.Activate;
@@ -19,8 +21,6 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import io.modelcontextprotocol.spec.McpClientTransport;
 
 @Component(immediate = true)
 public class McpSyncClientComponent {
@@ -39,13 +39,14 @@ public class McpSyncClientComponent {
 
 	@Activate
 	public McpSyncClientComponent(
-			@Reference(target = UDSMcpClientTransportConfig.CLIENT_CF_TARGET) ComponentFactory<McpClientTransport> transportFactory,
-			@Reference(target = SyncToolGroupClientConfig.CLIENT_CF_TARGET) ComponentFactory<SyncToolGroupClient> clientFactory) {
+			@SuppressWarnings("rawtypes") @Reference(target = UDSMcpClientTransportConfig.CLIENT_CF_TARGET) ComponentFactory<MCPClientTransport> transportFactory,
+			@Reference(target = SyncMCPToolGroupClientConfig.CLIENT_CF_TARGET) ComponentFactory<SyncToolGroupClient> clientFactory) {
 		// Create transport
-		ComponentInstance<McpClientTransport> transport = transportFactory
+		@SuppressWarnings("rawtypes")
+		ComponentInstance<MCPClientTransport> transport = transportFactory
 				.newInstance(new UDSMcpClientTransportConfig(socketPath).asProperties());
 		// Create client config
-		SyncToolGroupClientConfig clientConfig = new SyncToolGroupClientConfig(transport.getInstance());
+		SyncMCPToolGroupClientConfig clientConfig = new SyncMCPToolGroupClientConfig(transport.getInstance());
 		// This sets up a tool group client listener in the client config.
 		// This listener is notified when update notifications are received 
 		// from the server.  This is for testing the update extension for 

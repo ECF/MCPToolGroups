@@ -10,4 +10,5 @@
 	org.openmcptools.common.client,\
 	org.openmcptools.transport.uds.spring,\
 	org.openmcptools.transport.uds,\
-	com.composent.ai.mcp.examples.toolgroup.api
+	com.composent.ai.mcp.examples.toolgroup.api,\
+	org.openmcptools.transport
