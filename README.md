@@ -79,7 +79,7 @@ public class ToolGroupComponent implements ExampleToolGroup {
 
 }
 ```
-The ExampleToolGroup tools are processed and added to the appropriate (sync or async) server with this line:
+The ExampleToolGroup tools are processed and added to the appropriate (sync or async) server at runtime with this line:
 ```java
 		syncServer.addToolGroups(this, ExampleToolGroup.class);
 ```
