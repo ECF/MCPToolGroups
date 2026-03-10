@@ -8,7 +8,7 @@ import org.openmcptools.common.model.Tool;
 import org.openmcptools.common.toolgroup.server.SyncToolGroupServer;
 import org.openmcptools.common.toolgroup.server.ToolImpl;
 import org.openmcptools.transport.server.MCPServerTransportProvider;
-import org.openmcptools.transport.uds.spring.UDSMcpServerTransportConfig;
+import org.openmcptools.transport.uds.spring.UDSServerTransportConfig;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
 import org.osgi.service.component.annotations.Activate;
@@ -33,14 +33,14 @@ public class SyncToolGroupServerImpl {
 	@SuppressWarnings("unchecked")
 	@Activate
 	public SyncToolGroupServerImpl(
-			@SuppressWarnings("rawtypes") @Reference(target = UDSMcpServerTransportConfig.SERVER_CF_TARGET) ComponentFactory<MCPServerTransportProvider> transportFactory,
+			@SuppressWarnings("rawtypes") @Reference(target = UDSServerTransportConfig.SERVER_CF_TARGET) ComponentFactory<MCPServerTransportProvider> transportFactory,
 			@Reference(target = SyncMCPToolGroupServerConfig.SERVER_CF_TARGET) ComponentFactory<SyncToolGroupServer<?>> serverFactory) {
 		// Make sure that socketPath is deleted
 		if (socketPath.toFile().exists()) {
 			socketPath.toFile().delete();
 		}
 		// Create transport
-		this.transport = transportFactory.newInstance(new UDSMcpServerTransportConfig(socketPath).asProperties());
+		this.transport = transportFactory.newInstance(new UDSServerTransportConfig(socketPath).asProperties());
 		// Create sync server
 		this.toolGroupServer = serverFactory.newInstance(
 				new SyncMCPToolGroupServerConfig("Dynamic sync toolgroups server", "0.0.1", transport.getInstance())

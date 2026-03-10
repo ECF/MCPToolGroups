@@ -31,7 +31,7 @@
 	org.osgi.service.component;version='[1.5.1,1.5.2)';startlevel=1006,\
 	org.apache.felix.scr;version='[2.2.6,2.2.7)';startlevel=1007,\
 	org.openmcptools.common;version='[2.3.0,2.3.1)';startlevel=1008,\
-	org.openmcptools.transport;version='[2.0.0,2.0.1)';startlevel=1009,\
+	org.openmcptools.transport;version='[3.0.0,3.0.1)';startlevel=1009,\
 	org.objectweb.asm;version='[9.8.0,9.8.1)';startlevel=1010,\
 	org.objectweb.asm.tree;version='[9.5.0,9.5.1)';startlevel=1011,\
 	org.objectweb.asm.commons;version='[9.5.0,9.5.1)';startlevel=1012,\
@@ -46,23 +46,24 @@
 	org.openmcptools.common.server;version='[3.0.0,3.0.1)';startlevel=1021,\
 	org.openmcptools.extensions.groups;version='[1.0.1,1.0.2)';startlevel=1022,\
 	org.openmcptools.extensions.update;version='[1.0.1,1.0.2)';startlevel=1023,\
-	com.fasterxml.jackson.core.jackson-core;version='[2.21.0,2.21.1)';startlevel=1024,\
-	com.fasterxml.jackson.core.jackson-databind;version='[2.21.0,2.21.1)';startlevel=1025,\
-	com.fasterxml.jackson.datatype.jackson-datatype-jsr310;version='[2.20.2,2.20.3)';startlevel=1026,\
-	io.swagger.core.v3.swagger-annotations.jakarta;version='[2.2.34,2.2.35)';startlevel=1027,\
-	wrapped.com.github.victools.jsonschema-generator;version='[4.38.0,4.38.1)';startlevel=1028,\
-	wrapped.com.github.victools.jsonschema-module-jackson;version='[4.38.0,4.38.1)';startlevel=1029,\
-	wrapped.com.github.victools.jsonschema-module-swagger-2;version='[4.38.0,4.38.1)';startlevel=1030,\
-	org.springaicommunity.mcp-annotations;version='[0.8.0,0.8.1)';startlevel=1031,\
-	org.openmcptools.common.impl.spring;version='[2.2.0,2.2.1)';startlevel=1032,\
-	org.eclipse.ecf.ai.mcp.transports;version='[1.0.1,1.0.2)';startlevel=1033,\
-	org.openmcptools.transport.uds;version='[2.0.0,2.0.1)';startlevel=1034,\
-	org.openmcptools.transport.uds.spring;version='[2.0.0,2.0.1)';startlevel=1035,\
-	com.composent.ai.mcp.examples.toolgroup.mcpclient;version=snapshot;startlevel=1036,\
-	com.ethlo.time.itu;version='[1.14.0,1.14.1)';startlevel=1037,\
-	org.yaml.snakeyaml;version='[2.4.0,2.4.1)';startlevel=1038,\
-	com.fasterxml.jackson.dataformat.jackson-dataformat-yaml;version='[2.21.0,2.21.1)';startlevel=1039,\
-	com.networknt.json-schema-validator;version='[2.0.0,2.0.1)';startlevel=1040,\
-	io.modelcontextprotocol.sdk.mcp-json-jackson2;version='[0.18.0,0.18.1)';startlevel=1041,\
-	org.apache.felix.gogo.command;version='[1.1.2,1.1.3)';startlevel=1042,\
-	org.apache.felix.gogo.shell;version='[1.1.4,1.1.5)';startlevel=1043
+	org.openmcptools.transport.spring;version='[3.0.0,3.0.1)';startlevel=1024,\
+	com.fasterxml.jackson.core.jackson-core;version='[2.21.0,2.21.1)';startlevel=1025,\
+	com.fasterxml.jackson.core.jackson-databind;version='[2.21.0,2.21.1)';startlevel=1026,\
+	com.fasterxml.jackson.datatype.jackson-datatype-jsr310;version='[2.20.2,2.20.3)';startlevel=1027,\
+	io.swagger.core.v3.swagger-annotations.jakarta;version='[2.2.34,2.2.35)';startlevel=1028,\
+	wrapped.com.github.victools.jsonschema-generator;version='[4.38.0,4.38.1)';startlevel=1029,\
+	wrapped.com.github.victools.jsonschema-module-jackson;version='[4.38.0,4.38.1)';startlevel=1030,\
+	wrapped.com.github.victools.jsonschema-module-swagger-2;version='[4.38.0,4.38.1)';startlevel=1031,\
+	org.springaicommunity.mcp-annotations;version='[0.8.0,0.8.1)';startlevel=1032,\
+	org.openmcptools.common.impl.spring;version='[2.2.0,2.2.1)';startlevel=1033,\
+	org.eclipse.ecf.ai.mcp.transports;version='[1.0.1,1.0.2)';startlevel=1034,\
+	org.openmcptools.transport.uds;version='[3.0.0,3.0.1)';startlevel=1035,\
+	org.openmcptools.transport.uds.spring;version='[3.0.0,3.0.1)';startlevel=1036,\
+	com.composent.ai.mcp.examples.toolgroup.mcpclient;version=snapshot;startlevel=1037,\
+	com.ethlo.time.itu;version='[1.14.0,1.14.1)';startlevel=1038,\
+	org.yaml.snakeyaml;version='[2.4.0,2.4.1)';startlevel=1039,\
+	com.fasterxml.jackson.dataformat.jackson-dataformat-yaml;version='[2.21.0,2.21.1)';startlevel=1040,\
+	com.networknt.json-schema-validator;version='[2.0.0,2.0.1)';startlevel=1041,\
+	io.modelcontextprotocol.sdk.mcp-json-jackson2;version='[0.18.0,0.18.1)';startlevel=1042,\
+	org.apache.felix.gogo.command;version='[1.1.2,1.1.3)';startlevel=1043,\
+	org.apache.felix.gogo.shell;version='[1.1.4,1.1.5)';startlevel=1044

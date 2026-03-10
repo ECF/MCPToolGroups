@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openmcptools.transport.client.MCPClientTransport;
-import org.openmcptools.transport.uds.spring.UDSMcpClientTransportConfig;
+import org.openmcptools.transport.uds.spring.UDSClientTransportConfig;
 
 import org.openmcptools.common.client.CallToolRequest;
 import org.openmcptools.common.model.Tool;
@@ -39,12 +39,12 @@ public class McpSyncClientComponent {
 
 	@Activate
 	public McpSyncClientComponent(
-			@SuppressWarnings("rawtypes") @Reference(target = UDSMcpClientTransportConfig.CLIENT_CF_TARGET) ComponentFactory<MCPClientTransport> transportFactory,
+			@SuppressWarnings("rawtypes") @Reference(target = UDSClientTransportConfig.CLIENT_CF_TARGET) ComponentFactory<MCPClientTransport> transportFactory,
 			@Reference(target = SyncMCPToolGroupClientConfig.CLIENT_CF_TARGET) ComponentFactory<SyncToolGroupClient> clientFactory) {
 		// Create transport
 		@SuppressWarnings("rawtypes")
 		ComponentInstance<MCPClientTransport> transport = transportFactory
-				.newInstance(new UDSMcpClientTransportConfig(socketPath).asProperties());
+				.newInstance(new UDSClientTransportConfig(socketPath).asProperties());
 		// Create client config
 		SyncMCPToolGroupClientConfig clientConfig = new SyncMCPToolGroupClientConfig(transport.getInstance());
 		// This sets up a tool group client listener in the client config.

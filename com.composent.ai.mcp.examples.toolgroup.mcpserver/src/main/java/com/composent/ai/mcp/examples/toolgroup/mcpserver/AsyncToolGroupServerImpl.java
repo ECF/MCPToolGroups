@@ -5,9 +5,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import org.openmcptools.transport.server.MCPServerTransportProvider;
-
-import org.openmcptools.transport.uds.spring.UDSMcpServerTransportConfig;
-
+import org.openmcptools.transport.uds.spring.UDSServerTransportConfig;
 import org.openmcptools.common.model.Tool;
 import org.openmcptools.common.toolgroup.server.AsyncToolGroupServer;
 import org.openmcptools.common.toolgroup.server.ToolImpl;
@@ -38,14 +36,14 @@ public class AsyncToolGroupServerImpl {
 	@SuppressWarnings("unchecked")
 	@Activate
 	public AsyncToolGroupServerImpl(
-			@SuppressWarnings("rawtypes") @Reference(target = UDSMcpServerTransportConfig.SERVER_CF_TARGET) ComponentFactory<MCPServerTransportProvider> transportFactory,
+			@SuppressWarnings("rawtypes") @Reference(target = UDSServerTransportConfig.SERVER_CF_TARGET) ComponentFactory<MCPServerTransportProvider> transportFactory,
 			@Reference(target = AsyncMCPToolGroupServerConfig.SERVER_CF_TARGET) ComponentFactory<AsyncToolGroupServer<?>> serverFactory) {
 		// Make sure that socketPath is deleted
 		if (socketPath.toFile().exists()) {
 			socketPath.toFile().delete();
 		}
 		// Create transport
-		this.transport = transportFactory.newInstance(new UDSMcpServerTransportConfig(socketPath).asProperties());
+		this.transport = transportFactory.newInstance(new UDSServerTransportConfig(socketPath).asProperties());
 		// Create async server
 		this.toolGroupServer = serverFactory.newInstance(
 				new AsyncMCPToolGroupServerConfig("Dynamic async toolgroup server", "0.0.1", transport.getInstance())
