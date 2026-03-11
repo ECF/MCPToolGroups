@@ -23,7 +23,7 @@ public class DynamicTool {
 
 	@Activate
 	void activate() {
-		// Build tool
+		// Build tool dynamically, with at least one parent group
 		Tool t = Tool.builder("helloWorldTool").description("my hello world tool").addParent(Group
 				.builder("com.composent.ai.mcp.examples.dynamic").description("Extra special dynamic group").build())
 				.build();

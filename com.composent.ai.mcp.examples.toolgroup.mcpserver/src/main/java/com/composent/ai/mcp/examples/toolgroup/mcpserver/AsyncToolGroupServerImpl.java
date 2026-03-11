@@ -4,14 +4,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.openmcptools.transport.server.MCPServerTransportProvider;
-import org.openmcptools.transport.uds.spring.UDSServerTransportConfig;
 import org.openmcptools.common.model.Tool;
 import org.openmcptools.common.toolgroup.server.AsyncToolGroupServer;
 import org.openmcptools.common.toolgroup.server.ToolImpl;
-
+//  and async tool group server config
 import org.openmcptools.common.toolgroup.server.impl.spring.AsyncMCPToolGroupServerConfig;
-
+import org.openmcptools.transport.server.MCPServerTransportProvider;
+//Spring impl configs for uds transport component
+import org.openmcptools.transport.uds.spring.UDSServerTransportConfig;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
 import org.osgi.service.component.annotations.Activate;
@@ -29,9 +29,13 @@ public class AsyncToolGroupServerImpl {
 	// file named to be used for client <-> server communication
 	private final Path socketPath = Paths.get("").resolve("s.socket").toAbsolutePath();
 
-	@SuppressWarnings("rawtypes")
-	private final ComponentInstance<MCPServerTransportProvider> transport;
-	private final ComponentInstance<AsyncToolGroupServer<?>> toolGroupServer;
+	private final ComponentInstance<AsyncToolGroupServer<?>> serverComponent;
+
+	void deleteSocketPathIfExists() {
+		if (socketPath.toFile().exists()) {
+			socketPath.toFile().delete();
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	@Activate
@@ -39,38 +43,35 @@ public class AsyncToolGroupServerImpl {
 			@SuppressWarnings("rawtypes") @Reference(target = UDSServerTransportConfig.SERVER_CF_TARGET) ComponentFactory<MCPServerTransportProvider> transportFactory,
 			@Reference(target = AsyncMCPToolGroupServerConfig.SERVER_CF_TARGET) ComponentFactory<AsyncToolGroupServer<?>> serverFactory) {
 		// Make sure that socketPath is deleted
-		if (socketPath.toFile().exists()) {
-			socketPath.toFile().delete();
-		}
-		// Create transport
-		this.transport = transportFactory.newInstance(new UDSServerTransportConfig(socketPath).asProperties());
-		// Create async server
-		this.toolGroupServer = serverFactory.newInstance(
-				new AsyncMCPToolGroupServerConfig("Dynamic async toolgroup server", "0.0.1", transport.getInstance())
-						.asProperties());
+		deleteSocketPathIfExists();
+		// Create transport and then sync server
+		this.serverComponent = serverFactory.newInstance(new AsyncMCPToolGroupServerConfig(
+				"Dynamic async toolgroup server", "0.0.1",
+				transportFactory.newInstance(new UDSServerTransportConfig(socketPath).asProperties()).getInstance())
+				.asProperties());
 		logger.debug("sync toolgroup remote server activated");
 	}
 
 	@Deactivate
 	void deactivate() throws Exception {
-		this.toolGroupServer.dispose();
-		this.transport.dispose();
+		this.serverComponent.dispose();
+		deleteSocketPathIfExists();
 	}
 
 	public List<Tool> addToolGroups(Object inst, Class<?> clazz) {
-		return this.toolGroupServer.getInstance().addToolGroup(inst, clazz);
+		return this.serverComponent.getInstance().addToolGroup(inst, clazz);
 	}
 
 	public List<Tool> addToolImpl(List<ToolImpl> toolImpls) {
-		return this.toolGroupServer.getInstance().addToolImpls(toolImpls);
+		return this.serverComponent.getInstance().addToolImpls(toolImpls);
 	}
 
 	public List<Tool> removeTools(List<String> toolNames) {
-		return this.toolGroupServer.getInstance().removeTools(toolNames);
+		return this.serverComponent.getInstance().removeTools(toolNames);
 	}
 
 	public Tool removeTool(String toolName) {
-		return this.toolGroupServer.getInstance().removeTool(toolName);
+		return this.serverComponent.getInstance().removeTool(toolName);
 	}
 
 }
