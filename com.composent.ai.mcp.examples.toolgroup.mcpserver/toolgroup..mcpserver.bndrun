@@ -26,7 +26,7 @@
 	osgi.promise;version='[8.1.0,8.1.1)';startlevel=1050,\
 	org.osgi.service.component;version='[1.5.1,1.5.2)';startlevel=1060,\
 	org.apache.felix.scr;version='[2.2.6,2.2.7)';startlevel=1070,\
-	org.openmcptools.common;version='[2.3.0,2.3.1)';startlevel=1080,\
+	org.openmcptools.common;version='[3.0.0,3.0.1)';startlevel=1080,\
 	com.fasterxml.jackson.core.jackson-annotations;version='[2.21.0,2.21.1)';startlevel=1090,\
 	org.objectweb.asm;version='[9.8.0,9.8.1)';startlevel=1100,\
 	org.objectweb.asm.tree;version='[9.5.0,9.5.1)';startlevel=1110,\
@@ -38,7 +38,7 @@
 	slf4j.simple;version='[2.0.9,2.0.10)';startlevel=1170,\
 	io.modelcontextprotocol.sdk.mcp-core;version='[0.18.0,0.18.1)';startlevel=1180,\
 	org.openmcptools.transport;version='[3.0.0,3.0.1)';startlevel=1190,\
-	org.openmcptools.common.client;version='[2.2.0,2.2.1)';startlevel=1200,\
+	org.openmcptools.common.client;version='[3.0.0,3.0.1)';startlevel=1200,\
 	org.openmcptools.common.server;version='[3.0.0,3.0.1)';startlevel=1210,\
 	org.openmcptools.extensions.groups;version='[1.0.1,1.0.2)';startlevel=1220,\
 	org.openmcptools.extensions.update;version='[1.0.1,1.0.2)';startlevel=1230,\
@@ -52,7 +52,7 @@
 	wrapped.com.github.victools.jsonschema-module-jackson;version='[4.38.0,4.38.1)';startlevel=1310,\
 	wrapped.com.github.victools.jsonschema-module-swagger-2;version='[4.38.0,4.38.1)';startlevel=1320,\
 	org.springaicommunity.mcp-annotations;version='[0.8.0,0.8.1)';startlevel=1330,\
-	org.openmcptools.common.impl.spring;version='[2.2.0,2.2.1)';startlevel=1340,\
+	org.openmcptools.common.impl.spring;version='[3.0.0,3.0.1)';startlevel=1340,\
 	org.eclipse.ecf.ai.mcp.transports;version='[1.0.1,1.0.2)';startlevel=1350,\
 	org.openmcptools.transport.uds;version='[3.0.0,3.0.1)';startlevel=1360,\
 	org.openmcptools.transport.uds.spring;version='[3.0.0,3.0.1)';startlevel=1370,\

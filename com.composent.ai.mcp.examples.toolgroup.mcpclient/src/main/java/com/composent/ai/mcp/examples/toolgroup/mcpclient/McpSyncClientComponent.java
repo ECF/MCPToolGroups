@@ -8,8 +8,8 @@ import org.openmcptools.transport.client.MCPClientTransport;
 import org.openmcptools.transport.uds.spring.UDSClientTransportConfig;
 
 import org.openmcptools.common.client.CallToolRequest;
+import org.openmcptools.common.model.TextContent;
 import org.openmcptools.common.model.Tool;
-import org.openmcptools.common.model.content.TextContent;
 import org.openmcptools.common.toolgroup.client.SyncToolGroupClient;
 import org.openmcptools.common.toolgroup.client.ToolGroupClientListener;
 import org.openmcptools.common.toolgroup.client.impl.spring.SyncMCPToolGroupClientConfig;
