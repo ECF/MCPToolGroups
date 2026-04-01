@@ -1,4 +1,4 @@
-package com.composent.ai.mcp.examples.toolgroup.mcpserver;
+package com.composent.ai.mcp.examples.remote.toolgroup.mcpserver;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -6,58 +6,68 @@ import java.util.List;
 
 import org.openmcptools.common.model.Tool;
 import org.openmcptools.common.toolgroup.server.SyncToolGroupServer;
-import org.openmcptools.common.toolgroup.server.ToolImpl;
+import org.openmcptools.common.toolgroup.server.impl.spring.SyncMCPToolGroupServerConfig;
 import org.openmcptools.transport.server.MCPServerTransportProvider;
+import org.openmcptools.transport.uds.spring.UDSServerTransportConfig;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
-import org.openmcptools.transport.uds.spring.UDSServerTransportConfig;
-import org.openmcptools.common.toolgroup.server.impl.spring.SyncMCPToolGroupServerConfig;
+import com.composent.ai.mcp.examples.toolgroup.api.ExampleToolGroup;
 
-@Component(immediate = true, service = { SyncToolGroupServerImpl.class })
-public class SyncToolGroupServerImpl {
+@Component(immediate = true)
+public class RemoteToolGroupServer {
 
-	private static Logger logger = LoggerFactory.getLogger(SyncToolGroupServerImpl.class);
+	// path to be used for client <-> server communication for UDS socket connection
+	private final Path socketPath = Paths.get("..").resolve("rs.socket").toAbsolutePath();
 
-	// path to be used for unix domain socket transport creation
-	private final Path socketPath = Paths.get("..").resolve(System.getProperty("udsSyncSocketFileName", "s.socket"))
-			.toAbsolutePath();
-
-	// We hold onto the component instance because we can create it and
-	// destroy it (control lifecycle) dynamically when this component is activated or deactivated
 	private final ComponentInstance<SyncToolGroupServer<?>> serverComponent;
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Activate
-	public SyncToolGroupServerImpl(
+	public RemoteToolGroupServer(
 			// Inject MCPServerTransportProvider component factory via Service Component
 			// Runtime (SCR)
 			@Reference(target = UDSServerTransportConfig.SERVER_CF_TARGET) ComponentFactory<MCPServerTransportProvider> transportFactory,
 			// Inject SyncToolGroupServer component factory via SCR
 			@Reference(target = SyncMCPToolGroupServerConfig.SERVER_CF_TARGET) ComponentFactory<SyncToolGroupServer<?>> serverFactory) {
 
-		// Make sure that socketPath is deleted if still present...e.g. from previous
-		// run stopped by debugger/without cleanup
+		// Make sure that socketPath is deleted
 		deleteSocketPathIfExists();
-
-		// Create UDS server transport via transportFactory with appropriate config
-		var udsTransport = transportFactory.newInstance(new UDSServerTransportConfig(socketPath).asProperties())
-				.getInstance();
-
+		
+		// Create transport
+		var transport = transportFactory.newInstance(new UDSServerTransportConfig(socketPath).asProperties()).getInstance();
+		// Create sync server
 		// Create the sync server, with MCP server name, version, and udsTransport
 		this.serverComponent = serverFactory
-				.newInstance(new SyncMCPToolGroupServerConfig("Dynamic sync toolgroups server", "0.0.1", udsTransport)
+				.newInstance(new SyncMCPToolGroupServerConfig("Dynamic sync toolgroups server", "0.0.1", transport)
 						.asProperties());
 
-		logger.debug("sync toolgroup server activated");
 	}
 
+	// remote tools added in bindExampleToolGroup below
+	List<Tool> remoteTools;
+	
+	// The ExampleToolGroup proxy will be injected
+	// when discovered and imported as a remote service
+	@Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC)
+	void bindExampleToolGroup(ExampleToolGroup proxy) {
+		// Using the proxy and the ExampleToolGroup class, process
+		// and add any tools and toolgroups exposed by the ExampleToolGroup class
+		this.remoteTools = addToolGroups(proxy, ExampleToolGroup.class);
+	}
+	
+	void unbindExampleToolGroup(ExampleToolGroup proxy) {
+		if (remoteTools != null) {
+			removeTools(remoteTools.stream().map(Tool::getFullyQualifiedName).toList());
+		}
+	}
+	
 	@Deactivate
 	void deactivate() throws Exception {
 		this.serverComponent.dispose();
@@ -68,16 +78,8 @@ public class SyncToolGroupServerImpl {
 		return this.serverComponent.getInstance().addToolGroup(inst, clazz);
 	}
 
-	public Tool addToolImpl(ToolImpl toolImpl) {
-		return this.serverComponent.getInstance().addToolImpl(toolImpl);
-	}
-
 	public List<Tool> removeTools(List<String> toolNames) {
 		return this.serverComponent.getInstance().removeTools(toolNames);
-	}
-
-	public Tool removeTool(String toolName) {
-		return this.serverComponent.getInstance().removeTool(toolName);
 	}
 
 	private void deleteSocketPathIfExists() {
@@ -85,5 +87,6 @@ public class SyncToolGroupServerImpl {
 			socketPath.toFile().delete();
 		}
 	}
+
 
 }

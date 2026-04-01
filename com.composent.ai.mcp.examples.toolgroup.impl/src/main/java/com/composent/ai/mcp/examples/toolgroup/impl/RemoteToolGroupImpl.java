@@ -10,9 +10,9 @@ import reactor.core.publisher.Mono;
 
 @Component(immediate = true, property = { "service.exported.interfaces=*",
 		"service.exported.configs=ecf.generic.server" })
-public class RemoteToolGroupImplComponent implements ExampleToolGroup {
+public class RemoteToolGroupImpl implements ExampleToolGroup {
 
-	private static Logger logger = LoggerFactory.getLogger(RemoteToolGroupImplComponent.class);
+	private static Logger logger = LoggerFactory.getLogger(RemoteToolGroupImpl.class);
 
 	@Override
 	public double add(double x, double y) {

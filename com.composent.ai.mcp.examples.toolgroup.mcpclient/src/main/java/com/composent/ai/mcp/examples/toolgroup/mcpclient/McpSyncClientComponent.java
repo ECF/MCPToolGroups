@@ -4,15 +4,14 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
-import org.openmcptools.transport.client.MCPClientTransport;
-import org.openmcptools.transport.uds.spring.UDSClientTransportConfig;
-
 import org.openmcptools.common.client.CallToolRequest;
 import org.openmcptools.common.model.TextContent;
 import org.openmcptools.common.model.Tool;
 import org.openmcptools.common.toolgroup.client.SyncToolGroupClient;
 import org.openmcptools.common.toolgroup.client.ToolGroupClientListener;
 import org.openmcptools.common.toolgroup.client.impl.spring.SyncMCPToolGroupClientConfig;
+import org.openmcptools.transport.client.MCPClientTransport;
+import org.openmcptools.transport.uds.spring.UDSClientTransportConfig;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
 import org.osgi.service.component.annotations.Activate;
@@ -25,31 +24,31 @@ import org.slf4j.LoggerFactory;
 @Component(immediate = true)
 public class McpSyncClientComponent {
 
-	private static final String ARITHMETIC_TOOLGROUP_NAME = com.composent.ai.mcp.examples.toolgroup.api.ExampleToolGroup.class.getName() + ".%s";
+	private static final String ARITHMETIC_TOOLGROUP_NAME = com.composent.ai.mcp.examples.toolgroup.api.ExampleToolGroup.class
+			.getName() + ".%s";
 	private static final String ADD_TOOL_NAME = String.format(ARITHMETIC_TOOLGROUP_NAME, "add");
 	private static final String MULTIPLY_TOOL_NAME = String.format(ARITHMETIC_TOOLGROUP_NAME, "multiply");
-	
+
 	private static Logger logger = LoggerFactory.getLogger(McpSyncClientComponent.class);
 
-	private final Path socketPath = Path.of("").toAbsolutePath().getParent()
-			.resolve(System.getProperty("UNIXSOCKET_RELATIVEPATH")).resolve(System.getProperty("UNIXSOCKET_FILENAME"))
+	private final Path socketPath = Path.of("..").resolve((System.getProperty("udsSyncSocketFileName", "s.socket")))
 			.toAbsolutePath();
 
 	private ComponentInstance<SyncToolGroupClient> toolGroupClient;
 
+	@SuppressWarnings("rawtypes")
 	@Activate
 	public McpSyncClientComponent(
-			@SuppressWarnings("rawtypes") @Reference(target = UDSClientTransportConfig.CLIENT_CF_TARGET) ComponentFactory<MCPClientTransport> transportFactory,
+			@Reference(target = UDSClientTransportConfig.CLIENT_CF_TARGET) ComponentFactory<MCPClientTransport> transportFactory,
 			@Reference(target = SyncMCPToolGroupClientConfig.CLIENT_CF_TARGET) ComponentFactory<SyncToolGroupClient> clientFactory) {
-		// Create transport
-		@SuppressWarnings("rawtypes")
+		// Create uds transport
 		ComponentInstance<MCPClientTransport> transport = transportFactory
 				.newInstance(new UDSClientTransportConfig(socketPath).asProperties());
 		// Create client config
 		SyncMCPToolGroupClientConfig clientConfig = new SyncMCPToolGroupClientConfig(transport.getInstance());
 		// This sets up a tool group client listener in the client config.
-		// This listener is notified when update notifications are received 
-		// from the server.  This is for testing the update extension for 
+		// This listener is notified when update notifications are received
+		// from the server. This is for testing the update extension for
 		// dynamically updating tools
 		clientConfig.addToolGroupClientListener(new ToolGroupClientListener() {
 			@Override
@@ -58,7 +57,7 @@ public class McpSyncClientComponent {
 					tools.forEach(t -> {
 						logger.debug("Added tools=" + t + ";roots=" + t.getParentGroupRoots());
 					});
-				} else 	if (eventType.equals(EventType.REMOVE_TOOLS)) {
+				} else if (eventType.equals(EventType.REMOVE_TOOLS)) {
 					tools.forEach(t -> {
 						logger.debug("Removed tool=" + t + ";roots=" + t.getParentGroupRoots());
 					});
@@ -85,17 +84,15 @@ public class McpSyncClientComponent {
 		String y = "6.32";
 
 		// Call add(5.1,6.32)
-		client.callTool(new CallToolRequest(ADD_TOOL_NAME, Map.of("x", x, "y", y)))
-				.getContent().forEach(content -> {
-					logger.debug("add(" + x + "," + y + ")" + " result=" + ((TextContent) content).getText());
-				});
+		client.callTool(new CallToolRequest(ADD_TOOL_NAME, Map.of("x", x, "y", y))).getContent().forEach(content -> {
+			logger.debug("add(" + x + "," + y + ")" + " result=" + ((TextContent) content).getText());
+		});
 
 		String x1 = "10.71";
 		String y1 = "23.86";
 		// Call multiply(10.71,23.86)
-		client.callTool(
-				new CallToolRequest(MULTIPLY_TOOL_NAME, Map.of("x", x1, "y", y1)))
-				.getContent().forEach(content -> {
+		client.callTool(new CallToolRequest(MULTIPLY_TOOL_NAME, Map.of("x", x1, "y", y1))).getContent()
+				.forEach(content -> {
 					logger.debug("multiply(" + x1 + "," + y1 + ")" + " result=" + ((TextContent) content).getText());
 				});
 	}

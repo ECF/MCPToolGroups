@@ -7,10 +7,8 @@ import java.util.List;
 import org.openmcptools.common.model.Tool;
 import org.openmcptools.common.toolgroup.server.AsyncToolGroupServer;
 import org.openmcptools.common.toolgroup.server.ToolImpl;
-//  and async tool group server config
 import org.openmcptools.common.toolgroup.server.impl.spring.AsyncMCPToolGroupServerConfig;
 import org.openmcptools.transport.server.MCPServerTransportProvider;
-//Spring impl configs for uds transport component
 import org.openmcptools.transport.uds.spring.UDSServerTransportConfig;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
@@ -26,29 +24,37 @@ public class AsyncToolGroupServerImpl {
 
 	private static Logger logger = LoggerFactory.getLogger(AsyncToolGroupServerImpl.class);
 
-	// file named to be used for client <-> server communication
-	private final Path socketPath = Paths.get("").resolve("s.socket").toAbsolutePath();
+	// path to be used for unix domain socket transport creation
+	private final Path socketPath = Paths.get("..").resolve(System.getProperty("udsAsyncSocketFileName", "a.socket"))
+			.toAbsolutePath();
 
+	// We hold onto the component instance because we can create it and
+	// destroy it (control lifecycle) dynamically when this component is activated
+	// or deactivated
 	private final ComponentInstance<AsyncToolGroupServer<?>> serverComponent;
 
-	void deleteSocketPathIfExists() {
-		if (socketPath.toFile().exists()) {
-			socketPath.toFile().delete();
-		}
-	}
-
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Activate
 	public AsyncToolGroupServerImpl(
-			@SuppressWarnings("rawtypes") @Reference(target = UDSServerTransportConfig.SERVER_CF_TARGET) ComponentFactory<MCPServerTransportProvider> transportFactory,
+			// Inject MCPServerTransportProvider component factory via Service Component
+			// Runtime (SCR)
+			@Reference(target = UDSServerTransportConfig.SERVER_CF_TARGET) ComponentFactory<MCPServerTransportProvider> transportFactory,
+			// Inject AsyncToolGroupServer component factory via SCR
 			@Reference(target = AsyncMCPToolGroupServerConfig.SERVER_CF_TARGET) ComponentFactory<AsyncToolGroupServer<?>> serverFactory) {
-		// Make sure that socketPath is deleted
+
+		// Make sure that socketPath is deleted if still present...e.g. from previous
+		// run stopped by debugger/without cleanup
 		deleteSocketPathIfExists();
-		// Create transport and then sync server
-		this.serverComponent = serverFactory.newInstance(new AsyncMCPToolGroupServerConfig(
-				"Dynamic async toolgroup server", "0.0.1",
-				transportFactory.newInstance(new UDSServerTransportConfig(socketPath).asProperties()).getInstance())
-				.asProperties());
+
+		// Create UDS server transport via transportFactory with appropriate config
+		var udsTransport = transportFactory.newInstance(new UDSServerTransportConfig(socketPath).asProperties())
+				.getInstance();
+
+		// Create the async server, with MCP server name, version, and udsTransport
+		this.serverComponent = serverFactory
+				.newInstance(new AsyncMCPToolGroupServerConfig("Dynamic sync toolgroups server", "0.0.1", udsTransport)
+						.asProperties());
+
 		logger.debug("sync toolgroup remote server activated");
 	}
 
@@ -72,6 +78,12 @@ public class AsyncToolGroupServerImpl {
 
 	public Tool removeTool(String toolName) {
 		return this.serverComponent.getInstance().removeTool(toolName);
+	}
+
+	void deleteSocketPathIfExists() {
+		if (socketPath.toFile().exists()) {
+			socketPath.toFile().delete();
+		}
 	}
 
 }

@@ -1,9 +1,9 @@
 -buildpath: \
-	io.modelcontextprotocol.sdk.mcp-core,\
 	org.osgi.annotation.versioning,\
 	org.osgi.annotation.bundle,\
 	io.projectreactor.reactor-core,\
 	org.openmcptools.annotation
+	
 Export-Package: com.composent.ai.mcp.examples.toolgroup.api,com.composent.ai.mcp.examples.toolgroup
 
 Bundle-Version:             1.1.0.${tstamp}

@@ -11,9 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component(immediate = true)
-public class DynamicTool {
+public class DynamicHelloWorldTool {
 
-	private static Logger logger = LoggerFactory.getLogger(DynamicTool.class);
+	private static Logger logger = LoggerFactory.getLogger(DynamicHelloWorldTool.class);
 
 	@Reference
 	private SyncToolGroupServerImpl syncServer;
@@ -23,17 +23,17 @@ public class DynamicTool {
 
 	@Activate
 	void activate() {
-		// Build tool dynamically, with at least one parent group
+		// Build tool metadata with one dynamically created parent group
 		Tool t = Tool.builder("helloWorldTool").description("my hello world tool").addParent(Group
 				.builder("com.composent.ai.mcp.examples.dynamic").description("Extra special dynamic group").build())
 				.build();
+		// Add the tool to server, with to server
 		try {
-			// Add to server
+			// Add tool impl with this as the instance (helloWorld method below)
 			this.tool = syncServer.addToolImpl(new ToolImpl(t, this, getClass(), "helloWorld", null));
-		} catch (NoSuchMethodException e) {
+		} catch (NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	@Deactivate
@@ -46,7 +46,7 @@ public class DynamicTool {
 
 	public String helloWorld() {
 		logger.debug("Hello world called.  Returning");
-		return "Hello World";
+		return "Hello MCP World";
 	}
 
 }

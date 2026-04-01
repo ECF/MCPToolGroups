@@ -15,23 +15,32 @@ public class ExampleToolGroupImpl implements ExampleToolGroup {
 
 	private static Logger logger = LoggerFactory.getLogger(ExampleToolGroupImpl.class);
 
-	// This reference will wait for the SyncToolGroupServerImpl
-	// to be activated
+	// This reference will be injected when the server has completed
+	// activation. See SyncToolGroupServerImpl in package for lifecycle
 	@Reference
 	private SyncToolGroupServerImpl syncServer;
-	// This reference will wait for the AsyncToolGroupServerComponent
-	// to be activated
+	// This reference will be injected when the server has completed
+	// activation. Ssee AsyncToolGroupServerImpl in package for lifecycle
 	@Reference
 	private AsyncToolGroupServerImpl asyncServer;
 
 	@Activate
 	void activate() {
-		// Add ExampleToolGroup sync methods for sync server
+		// addToolGroups will dynamically examine the McpTool 
+		// and McpToolGroup annotations on the ExampleToolGroup 
+		// this instance (implements ExampleToolGroup), build
+		// MCP sync tool and toolgroup meta-data, and add these
+		// tools + toolgroups to the syncServer
 		syncServer.addToolGroups(this, ExampleToolGroup.class);
-		// Add ExampleToolGroup async methods for async server
+		// addToolGroups will dynamically examine the McpTool 
+		// and McpToolGroup annotations on the ExampleToolGroup 
+		// this instance (implements ExampleToolGroup), build
+		// MCP sync tool and toolgroup meta-data, and add these
+		// tools + toolgroups to the asyncServer
 		asyncServer.addToolGroups(this, ExampleToolGroup.class);
 	}
 
+	// The following methods implement ExampleToolGroup for the server
 	@Override
 	public double add(double x, double y) {
 		logger.debug("Adding x={} y={}", x, y);

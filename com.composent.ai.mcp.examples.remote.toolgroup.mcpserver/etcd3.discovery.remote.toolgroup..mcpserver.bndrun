@@ -94,38 +94,48 @@
 	io.netty.resolver;version='[4.1.68,4.1.69)';startlevel=1255,\
 	io.netty.buffer;version='[4.1.68,4.1.69)';startlevel=1260,\
 	io.netty.common;version='[4.1.68,4.1.69)';startlevel=1265,\
-	io.modelcontextprotocol.sdk.mcp-json-jackson2;version='[0.17.0,0.17.1)';startlevel=1270,\
+	io.modelcontextprotocol.sdk.mcp-json-jackson2;version='[0.18.0,0.18.1)';startlevel=1270,\
 	com.networknt.json-schema-validator;version='[2.0.0,2.0.1)';startlevel=1275,\
-	com.fasterxml.jackson.dataformat.jackson-dataformat-yaml;version='[2.19.2,2.19.3)';startlevel=1280,\
+	com.fasterxml.jackson.dataformat.jackson-dataformat-yaml;version='[2.21.0,2.21.1)';startlevel=1280,\
 	org.yaml.snakeyaml;version='[2.4.0,2.4.1)';startlevel=1285,\
 	com.ethlo.time.itu;version='[1.14.0,1.14.1)';startlevel=1290,\
 	com.composent.ai.mcp.examples.remote.toolgroup.mcpserver;version=snapshot;startlevel=1295,\
-	com.composent.ai.mcp.transport.uds;version='[2.0.1,2.0.2)';startlevel=1300,\
-	org.eclipse.ecf.ai.mcp.transports;version='[1.0.1,1.0.2)';startlevel=1305,\
-	org.apache.felix.scr;version='[2.2.6,2.2.7)';startlevel=1310,\
-	org.osgi.service.component;version='[1.5.1,1.5.2)';startlevel=1315,\
-	osgi.promise;version='[8.1.0,8.1.1)';startlevel=1320,\
-	org.apache.felix.log;version='[1.3.0,1.3.1)';startlevel=1325,\
-	com.composent.ai.mcp.toolgroup;version=snapshot;startlevel=1330,\
-	com.composent.ai.mcp.examples.toolgroup.api;version=snapshot;startlevel=1335,\
-	org.springaicommunity.mcp-annotations;version='[0.7.1,0.7.2)';startlevel=1340,\
-	wrapped.com.github.victools.jsonschema-module-swagger-2;version='[4.38.0,4.38.1)';startlevel=1345,\
-	wrapped.com.github.victools.jsonschema-module-jackson;version='[4.38.0,4.38.1)';startlevel=1350,\
-	wrapped.com.github.victools.jsonschema-generator;version='[4.38.0,4.38.1)';startlevel=1355,\
-	com.fasterxml.classmate;version='[1.7.0,1.7.1)';startlevel=1360,\
-	io.swagger.core.v3.swagger-annotations.jakarta;version='[2.2.34,2.2.35)';startlevel=1365,\
-	io.modelcontextprotocol.sdk.mcp-core;version='[0.17.0,0.17.1)';startlevel=1370,\
-	slf4j.simple;version='[2.0.9,2.0.10)';startlevel=1375,\
-	slf4j.api;version='[2.0.16,2.0.17)';startlevel=1380,\
-	org.apache.aries.spifly.dynamic.bundle;version='[1.3.6,1.3.7)';startlevel=1385,\
-	org.objectweb.asm.util;version='[9.5.0,9.5.1)';startlevel=1390,\
-	org.objectweb.asm.tree.analysis;version='[9.5.0,9.5.1)';startlevel=1395,\
-	org.objectweb.asm.commons;version='[9.5.0,9.5.1)';startlevel=1400,\
-	org.objectweb.asm.tree;version='[9.5.0,9.5.1)';startlevel=1405,\
-	org.objectweb.asm;version='[9.8.0,9.8.1)';startlevel=1410,\
-	com.fasterxml.jackson.datatype.jackson-datatype-jsr310;version='[2.19.2,2.19.3)';startlevel=1415,\
-	com.fasterxml.jackson.core.jackson-databind;version='[2.19.2,2.19.3)';startlevel=1420,\
-	com.fasterxml.jackson.core.jackson-core;version='[2.19.2,2.19.3)';startlevel=1425,\
-	com.fasterxml.jackson.core.jackson-annotations;version='[2.19.2,2.19.3)';startlevel=1430,\
-	io.projectreactor.reactor-core;version='[3.7.0,3.7.1)';startlevel=1435,\
-	reactive-streams;version='[1.0.4,1.0.5)';startlevel=1440
+	org.openmcptools.transport.uds.spring;version='[3.0.0,3.0.1)';startlevel=1300,\
+	org.openmcptools.transport.uds;version='[3.0.0,3.0.1)';startlevel=1305,\
+	org.eclipse.ecf.ai.mcp.transports;version='[1.0.1,1.0.2)';startlevel=1310,\
+	org.openmcptools.common.impl.spring;version='[3.0.0,3.0.1)';startlevel=1315,\
+	org.springaicommunity.mcp-annotations;version='[0.8.0,0.8.1)';startlevel=1320,\
+	wrapped.com.github.victools.jsonschema-module-swagger-2;version='[4.38.0,4.38.1)';startlevel=1325,\
+	wrapped.com.github.victools.jsonschema-module-jackson;version='[4.38.0,4.38.1)';startlevel=1330,\
+	wrapped.com.github.victools.jsonschema-generator;version='[4.38.0,4.38.1)';startlevel=1335,\
+	com.fasterxml.classmate;version='[1.7.0,1.7.1)';startlevel=1340,\
+	io.swagger.core.v3.swagger-annotations.jakarta;version='[2.2.34,2.2.35)';startlevel=1345,\
+	com.fasterxml.jackson.datatype.jackson-datatype-jsr310;version='[2.20.2,2.20.3)';startlevel=1350,\
+	com.fasterxml.jackson.core.jackson-databind;version='[2.21.0,2.21.1)';startlevel=1355,\
+	com.fasterxml.jackson.core.jackson-core;version='[2.21.0,2.21.1)';startlevel=1360,\
+	org.openmcptools.transport.spring;version='[3.1.0,3.1.1)';startlevel=1365,\
+	jakarta.servlet-api;version='[6.1.0,6.1.1)';startlevel=1370,\
+	org.openmcptools.extensions.update;version='[1.0.1,1.0.2)';startlevel=1375,\
+	org.openmcptools.extensions.groups;version='[1.0.1,1.0.2)';startlevel=1380,\
+	org.openmcptools.common.server;version='[3.0.1,3.0.2)';startlevel=1385,\
+	org.openmcptools.common.client;version='[3.0.0,3.0.1)';startlevel=1390,\
+	org.openmcptools.transport;version='[3.0.0,3.0.1)';startlevel=1395,\
+	io.modelcontextprotocol.sdk.mcp-core;version='[0.18.0,0.18.1)';startlevel=1400,\
+	slf4j.simple;version='[2.0.9,2.0.10)';startlevel=1405,\
+	slf4j.api;version='[2.0.16,2.0.17)';startlevel=1410,\
+	org.apache.aries.spifly.dynamic.bundle;version='[1.3.6,1.3.7)';startlevel=1415,\
+	org.objectweb.asm.util;version='[9.5.0,9.5.1)';startlevel=1420,\
+	org.objectweb.asm.tree.analysis;version='[9.5.0,9.5.1)';startlevel=1425,\
+	org.objectweb.asm.commons;version='[9.5.0,9.5.1)';startlevel=1430,\
+	org.objectweb.asm.tree;version='[9.5.0,9.5.1)';startlevel=1435,\
+	org.objectweb.asm;version='[9.8.0,9.8.1)';startlevel=1440,\
+	com.fasterxml.jackson.core.jackson-annotations;version='[2.21.0,2.21.1)';startlevel=1445,\
+	org.openmcptools.common;version='[3.0.0,3.0.1)';startlevel=1450,\
+	org.apache.felix.scr;version='[2.2.6,2.2.7)';startlevel=1455,\
+	org.osgi.service.component;version='[1.5.1,1.5.2)';startlevel=1460,\
+	osgi.promise;version='[8.1.0,8.1.1)';startlevel=1465,\
+	org.apache.felix.log;version='[1.3.0,1.3.1)';startlevel=1470,\
+	com.composent.ai.mcp.examples.toolgroup.api;version=snapshot;startlevel=1475,\
+	org.openmcptools.annotation;version='[1.0.0,1.0.1)';startlevel=1480,\
+	io.projectreactor.reactor-core;version='[3.7.0,3.7.1)';startlevel=1485,\
+	reactive-streams;version='[1.0.4,1.0.5)';startlevel=1490
